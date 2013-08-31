@@ -6,6 +6,7 @@ import (
 	"smig/component"
 	"smig/component/transform"
 	"smig/math"
+	"smig/common"
 )
 
 type PhysicsManager struct {
@@ -27,7 +28,7 @@ func MakePhysicsManager(tm *transform.SceneManager) *PhysicsManager {
 func (pm *PhysicsManager) JsonCreate(index component.GOiD, compData []byte) error {
 	err := pm.CreateComponent(index)
 	if err != nil {
-		panic(err)
+		common.Log.Error(err)
 	}
 	return nil
 }

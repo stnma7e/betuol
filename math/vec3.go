@@ -23,8 +23,11 @@ func (vec *Vec3) Normalize() *Vec3 {
 	return vec
 }
 func (vec Vec3) Distance(vec2 *Vec3) float32 {
+	return float32(math.Sqrt(float64(vec.DistanceSqrd(vec2))))
+}
+func (vec Vec3) DistanceSqrd(vec2 *Vec3) float32 {
 	split := vec.Subtract(vec2)
-	return split.Magnitude()
+	return split.MagSqrd()
 }
 func (vec Vec3) Subtract(vec2 *Vec3) Vec3 {
 	return Vec3{ vec[0]-vec2[0], vec[1]-vec2[1], vec[2]-vec2[2] }
@@ -33,19 +36,23 @@ func (vec Vec3) Add(vec2 *Vec3) Vec3 {
 	return Vec3{ vec[0]+vec2[0], vec[1]+vec2[1], vec[2]+vec2[2]}
 }
 
-func (vec Vec3) Mult(mat *Mat4x4) *Vec3 {
+func Mult(vec Vec3, mat *Mat4x4) Vec3 {
 	var row1,row2,row3 float32
+
 	for i := range vec {
 		row1 += vec[i]*mat[i]
 	}
+	row1 += 1 * mat[3]
 	for i := range vec {
 		row2 += vec[i]*mat[i+4]
 	}
+	row2 += 1 * mat[7]
 	for i := range vec {
 		row3 += vec[i]*mat[i+8]
 	}
+	row3 += 1 * mat[11]
 
-	return &Vec3{row1,row2,row3}
+	return Vec3{row1,row2,row3}
 }
 func (vec Vec3) MultScalar(scalar float32) Vec3 {
 	return Vec3{vec[0] * scalar, vec[1] * scalar, vec[2] * scalar}

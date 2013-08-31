@@ -8,6 +8,7 @@ type IntQueueNode struct {
 }
 type IntQueue struct {
 	head, tail *IntQueueNode
+	Size int
 }
 
 func (stk *IntQueue) Queue(num int) {
@@ -20,7 +21,7 @@ func (stk *IntQueue) Queue(num int) {
 	if (stk.head == nil) {
 		stk.head = &node
 	}
-
+	stk.Size++
 }
 func (stk *IntQueue) Dequeue() (int,error) {
 	if stk.head != nil {
@@ -31,6 +32,7 @@ func (stk *IntQueue) Dequeue() (int,error) {
 			stk.head = stk.head.backward
 		}
 		stk.tail.backward = stk.head
+		stk.Size--
 		return tmp.value,nil
 	}
 	return 0,fmt.Errorf("stack empty")
@@ -40,6 +42,10 @@ func (stk *IntQueue) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+func (stk *IntQueue) Peek() int {
+	return stk.head.value
 }
 
 func (stk *IntQueue) WalkQueue() {
@@ -57,27 +63,16 @@ func (stk *IntQueue) walkQueue(node *IntQueueNode) {
 	return
 }
 
-func (stk *IntQueue) Size() uint {
-	node := stk.head
-	var i uint
-	for ; ; i++ {
-		if node == nil {
-			break
-		}
-	}
-
-	return i
-}
-
 func (stk *IntQueue) ToList() []int {
 	node := stk.head
-	list := make([]int, stk.Size())
+	list := make([]int, stk.Size)
 	for i := range list {
 		if node == nil {
 			break
 		}
 
 		list[i] = node.value
+		node = node.backward
 	}
 
 	return list

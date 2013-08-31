@@ -3,9 +3,15 @@ package res
 import (
 	"os"
 	"io"
+	"fmt"
 	"encoding/json"
 
 	"smig/component"
+	"smig/common"
+)
+
+const (
+	OBJFILENAME = "obj.json"
 )
 
 type ResourceManager struct {
@@ -23,14 +29,14 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	file, err := os.Open(rm.fileDepot + fileName)
 	if err != nil {
-		panic(err)
+		common.Log.Error(fmt.Sprint(err))
 	}
 	defer file.Close()
 	stats, err := file.Stat()
 	buf := make([]byte, stats.Size())
 	_, err = file.Read(buf)
 	if err != io.EOF && err != nil {
-		panic(err)
+		common.Log.Error(err)
 	}
 	return buf
 }
@@ -40,14 +46,13 @@ func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
 	var obj []component.MapLocation
 	err := json.Unmarshal(mapJson, &obj)
 	if err != nil {
-		panic(err)
+		common.Log.Error(fmt.Sprint(err))
 	}
 
 	for i := range obj {
 		for j := range obj[i].Entities {
 			for k := 0; k < obj[i].Entities[j].Quantity; k++ {
-				breedStr := rm.GetFileContents("map/gameobject/" + obj[i].Entities[j].Breed + "/obj.json")
-				obj[i].Entities[j].CompList = rm.LoadGameObject(breedStr, obj[i].Entities[j].Breed)
+				obj[i].Entities[j].CompList = rm.LoadGameObject(obj[i].Entities[j].Breed)
 			}
 		}
 	}
@@ -55,13 +60,14 @@ func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
 	return obj
 }
 
-func (rm *ResourceManager) LoadGameObject(objJson []byte, objType string) component.GameObject {
+func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
+	objJson := rm.GetFileContents("map/gameobject/" + objType + "/" + OBJFILENAME)
 	var obj struct {
 		Component []string
 	}
 	err := json.Unmarshal(objJson, &obj)
 	if err != nil {
-		panic(err)
+		common.Log.Error(fmt.Sprint(err))
 	}
 
 	gameobj := make(map[string][]byte)

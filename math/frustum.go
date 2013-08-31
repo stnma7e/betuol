@@ -24,10 +24,6 @@ type frustum struct {
 	lookAt, perspMat *Mat4x4
 	sides [SIDE_TOTAL]Plane
 }
-type Sphere struct {
-	Center Vec3
-	Radius float32
-}
 
 func MakeFrustum(nearDist, farDist, fov, aspect float32) *frustum {
 	var frust frustum
@@ -39,12 +35,12 @@ func MakeFrustum(nearDist, farDist, fov, aspect float32) *frustum {
 
 	perspMat     	   := MakePerspectiveMatrix(nearDist,farDist,fov,aspect)
 	frust.perspMat 		= &perspMat
-	frust.Init()
+	frust.init()
 	
 	return &frust
 }
 
-func (frust *frustum) Init() {
+func (frust *frustum) init() {
 		worldToClip := frust.lookAt.Mult(frust.perspMat)
 		for i := 0; i < 4; i++ {
 		frust.sides[LEFT][i]     = worldToClip[12+i] + worldToClip[i]
@@ -75,18 +71,18 @@ func (frust *frustum) LookAt(target, eye, up *Vec3) {
 				 0,0,0, 1 }
 
 	frust.lookAt = m.Mult(&t)
-	frust.Init()
+	frust.init()
 }
 
-func (frust *frustum) IsPointInside(vec *Vec3) bool {
+func (frust *frustum) IsPointInside(vec Vec3) bool {
 	worldToClip := frust.lookAt.Mult(frust.perspMat)
-	vec = vec.Mult(worldToClip)
-	lookAt := Vec3{1,1,1}.Mult(frust.lookAt)
-	if lookAt.Distance(vec) > frust.farDist {
+	vec = Mult(vec, worldToClip)
+	lookAt := Mult(Vec3{1,1,1}, frust.lookAt)
+	if lookAt.Distance(&vec) > frust.farDist {
 		return false
 	}
 	for i := range frust.sides {
-		if frust.sides[i].IsInside(vec) != true {
+		if frust.sides[i].IsInside(&vec) != true {
 			return false
 		}
 	}

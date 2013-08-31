@@ -14,6 +14,7 @@ const (
 	WMAT = 0
 	LMAT = 1
 	ROOTNODE = 0
+	RESIZESTEP = 1
 )
 
 type SceneManager struct {
@@ -21,6 +22,7 @@ type SceneManager struct {
 								 	 // compList[LMAT] == local transform matrices
 	parentChildMap 	map[component.GOiD]common.IntQueue
 	childParentMap  map[component.GOiD]component.GOiD
+	boundingSpheres []math.Sphere
 	meshList 		[]graphics.Mesh
 	movedQueue  	common.IntQueue
 	returnlink  	chan int
@@ -36,14 +38,6 @@ func MakeSceneManager() *SceneManager {
 	tm.parentChildMap = make(map[component.GOiD]common.IntQueue)
 	tm.childParentMap = make(map[component.GOiD]component.GOiD)
 	return &tm
-}
-
-func (tm *SceneManager) Render(glg graphics.GraphicsManager) {
-	go func() {
-		for i := range tm.meshList {
-			glg.Render(&tm.meshList[i], &tm.compList[WMAT][i])
-		}
-	}()
 }
 
 func (tm *SceneManager) Tick(delta float64) {
@@ -72,6 +66,11 @@ func (tm *SceneManager) Tick(delta float64) {
 				wmat := *parent.Mult(&lmat)
 				tm.compList[WMAT][compid[i]] = wmat
 				// fmt.Println(compid[i], "wmat", wmat.ToString())
+
+				sp := &tm.boundingSpheres[compid[i]]
+				sp.Center = math.Vec3 {
+					wmat[3], wmat[7], wmat[11],
+				}
 			}
 
 			tm.returnlink <- 1
@@ -84,54 +83,74 @@ func (tm *SceneManager) Tick(delta float64) {
 
 func (tm *SceneManager) JsonCreate(index component.GOiD, compData []byte) error {
 	var comp struct {
-		Location [3]float32
+		Location math.Vec3
+		Radius float32
 	}
 	err := json.Unmarshal(compData, &comp)
 	if err != nil {
-		panic(err)
+		common.Log.Error(err)
 	}
 
-	err = tm.CreateComponent(index, ROOTNODE)
+	sp := math.Sphere {
+		comp.Location,
+		comp.Radius,
+	}
+
+	err = tm.CreateComponent(index, ROOTNODE, sp)
 	if err != nil {
-		panic(err)
+		common.Log.Error(err)
 	}
-
-	mat := math.Mat4x4{}
-	mat.MakeIdentity()
-	mat[3]  = comp.Location[0]
-	mat[7]  = comp.Location[1]
-	mat[11] = comp.Location[2]
-	tm.Transform(index, &mat)
 
 	return nil
 }
-func (tm *SceneManager) CreateComponent(index, parent component.GOiD) error {
-	if component.GOiD(cap(tm.compList[WMAT]))-1 < index {
-		for i := range tm.compList {
-			newCompList := make([]math.Mat4x4, index + 25)
-			for j := range tm.compList[i] {
-				newCompList[j] = tm.compList[i][j]
-			}
-			tm.compList[i] = newCompList
-		}
-	}
+func (tm *SceneManager) CreateComponent(index, parent component.GOiD, bound math.Sphere) error {
+	tm.resizeArray(index)	
 
 	if !(tm.compList[WMAT][index].IsEmpty()) {
 		return fmt.Errorf("attempt to reuse component.GOiD %d", index)
 	}
-
 	for i := range tm.compList {
 		tm.compList[i][index].MakeIdentity()
 	}
+
+	tm.boundingSpheres[index] = bound
 
 	q, ok := tm.parentChildMap[parent]
 	if !ok {
 		tm.parentChildMap[parent] = common.IntQueue{}
 	}
-
 	q.Queue(int(index))
 
+	mat := math.Mat4x4{}
+	mat.MakeIdentity()
+	mat[3]  = bound.Center[0]
+	mat[7]  = bound.Center[1]
+	mat[11] = bound.Center[2]
+	tm.compList[LMAT][index] = mat
+	tm.compList[WMAT][index] = *tm.compList[WMAT][parent].Mult(&tm.compList[WMAT][index])
+
 	return nil
+}
+func (tm *SceneManager) resizeArray(index component.GOiD) {
+	if cap(tm.compList[WMAT]) - 1 < int(index) {
+
+		for i := range tm.compList {
+			newCompList := make([]math.Mat4x4, index + RESIZESTEP)
+			for j := range tm.compList[i] {
+				newCompList[j] = tm.compList[i][j]
+			}
+			tm.compList[i] = newCompList
+		}
+
+	}
+
+	if cap(tm.boundingSpheres) - 1 < int(index) {
+		tmp := tm.boundingSpheres
+		tm.boundingSpheres = make([]math.Sphere, index + RESIZESTEP)
+		for i := range tmp {
+			tm.boundingSpheres[i] = tmp[i]
+		}
+	}
 }
 
 func (tm *SceneManager) DeleteComponent(index component.GOiD) {
@@ -152,12 +171,27 @@ func (tm *SceneManager) Transform(index component.GOiD, newLocalMat *math.Mat4x4
 	tm.movedQueue.Queue(int(index))
 }
 func (tm *SceneManager) GetTransform(index component.GOiD) (*math.Mat4x4, error) {
-	if tm.compList[WMAT][index].IsEmpty() != true {
-		return &tm.compList[WMAT][index], nil
+	if int(index) >= len(tm.compList[WMAT]) {
+		common.Log.Error("invalid GOiD %v", index)
 	}
-	panic(fmt.Sprintf("invalid GOiD: %v", index))
+	if tm.compList[WMAT][index].IsEmpty() == true {
+		common.Log.Error("invalid GOiD: %v", index)
+	}
+		return &tm.compList[WMAT][index], nil
 }
 
-func (tm *SceneManager) FindObjectsInRange(rootId component.GOiD, radius float32) []component.GOiD {
-	return []component.GOiD{}
+func (tm *SceneManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {
+	sp := math.Sphere {
+		loc, lookRange,
+	}
+	stk := common.IntQueue{}
+
+	for i := range tm.boundingSpheres {
+		bsp := tm.boundingSpheres[i]
+		if sp.Intersects(bsp) {
+			stk.Queue(i)
+		}
+	}
+
+	return &stk
 }

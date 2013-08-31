@@ -54,7 +54,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *Map) []GOiD {
 
 				id, err := gof.Create(smap[i].Entities[j].CompList)
 				if err != nil {
-					panic(err)
+					common.Log.Error(err)
 				}
 				idQueue.Queue(int(id))
 
@@ -77,7 +77,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *Map) []GOiD {
 func (gof *GameObjectFactory) Create(compList GameObject) (GOiD, error) {
 	id := gof.getNewGOiD()
 	if id < 1 {
-		panic(fmt.Sprintf("invalid id: %v", id))
+		common.Log.Error("invalid id: %v", id)
 	}
 
 	transformed := false
@@ -88,13 +88,13 @@ func (gof *GameObjectFactory) Create(compList GameObject) (GOiD, error) {
 
 		mang, ok := gof.EventManagers[k]
 		if !ok {
-			return NULLINDEX, fmt.Errorf("unregistered componentManager (%s) in compList", k)
+			common.Log.Error("unregistered componentManager (%s) in compList", k)
 		}
 
 		err := mang.create(id, v)
 		if err != nil {
 			gof.Delete(id)
-			panic(err)
+			common.Log.Error(err)
 			return NULLINDEX, err
 		}
 	}
@@ -102,14 +102,14 @@ func (gof *GameObjectFactory) Create(compList GameObject) (GOiD, error) {
 	if !transformed {
 		mang, ok := gof.EventManagers[SceneType]
 		if !ok {
-			return NULLINDEX, fmt.Errorf("unregistered componentManager (%s) in compList", SceneType)
+			common.Log.Error("unregistered componentManager (%s) in compList", SceneType)
 		}
 
 		loc := math.Vec3{}
 		err := mang.create(id, makeSceneTypeData(loc.ToJson()))
 		if err != nil {
 			gof.Delete(id)
-			panic(err)
+			common.Log.Error(err)
 			return NULLINDEX, err
 		}
 	}

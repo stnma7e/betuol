@@ -7,6 +7,7 @@ import (
 	glfw "github.com/go-gl/glfw3"
 
 	"smig/math"
+	"smig/common"
 )
 
 type GlGraphics struct {
@@ -15,13 +16,13 @@ type GlGraphics struct {
 
 func GlStart(sizeX, sizeY int, title string) *GlGraphics {
 	if !glfw.Init() {
-		panic("Can't init glfw")
+		common.Log.Error("Can't init glfw")
 	}
 
 	glg := GlGraphics{}
 	window, err := glfw.CreateWindow(sizeX,sizeY,title,nil,nil)
 	if err != nil {
-		panic(err)
+		common.Log.Error(err)
 	}
 	glg.window = window
 	glg.MakeContextCurrent()
@@ -102,7 +103,7 @@ func (glg *GlGraphics) MakeShader(shadType gl.GLenum, shadStr string) gl.Shader 
 	if ok := shader.Get(gl.COMPILE_STATUS); ok < 1 {
 		log := shader.GetInfoLog()
 		shader.Delete()
-		panic(fmt.Sprintf("failed to compile shader. type: %e\n\t%s", shadType, log))
+		common.Log.Error(fmt.Sprintf("failed to compile shader. type: %e\n\t%s", shadType, log))
 	}
 
 	return shader
@@ -127,7 +128,7 @@ func (glg *GlGraphics) LinkProgram(program gl.Program, shaderList []gl.Shader) [
 
 	if ok := program.Get(gl.LINK_STATUS); ok < 1 {
 		log := program.GetInfoLog()
-		panic(fmt.Sprintf("failed to link program\n\t%v", log))
+		common.Log.Error(fmt.Sprintf("failed to link program\n\t%v", log))
 	}
 	for i := range shaderList {
 		program.DetachShader(shaderList[i])
