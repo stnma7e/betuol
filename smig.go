@@ -1,34 +1,20 @@
 package main
 
 import (
-	// "fmt"
-	"time"
 	"os"
 	"flag"
 	"runtime"
 	"runtime/pprof"
 	"log"
 
-	"smig/component"
-	"smig/component/transform"
-	"smig/res"
-	// "smig/component/ai"
-	"smig/component/physics"
-	"smig/component/character"
+	"smig/game"
 	"smig/graphics"
 	"smig/math"
-	// "smig/common"
+	"smig/res"
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
 )
-
-var rm  *res.ResourceManager
-var gof *component.GameObjectFactory
-var tm  *transform.SceneManager
-var pm  *physics.PhysicsManager
-var cm  *character.CharacterManager
-var running bool
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
@@ -36,77 +22,24 @@ func main() {
 	flag.Parse()
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
-	if err != nil {
-		log.Fatal(err)
-	}
-		runtime.SetCPUProfileRate(100)
+		if err != nil {
+			log.Fatal(err)
+		}
+		runtime.SetCPUProfileRate(10000)
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
 
 
 	returnlink := make(chan bool)
-
-	gof = component.MakeGameObjectFactory()
-	tm  = transform.MakeSceneManager()
-	cm  = &character.CharacterManager{}
-	pm  = physics.MakePhysicsManager(tm)
-	rm := res.MakeResourceManager("/home/sam/go/data/")
-	// am := ai.MakeAiManager()
-	gof.Register(component.SceneType, tm, tm.JsonCreate)
-	gof.Register("physics", pm, pm.JsonCreate)
-	gof.Register("character", cm, cm.JsonCreate)
-	// gof.Register("ai", am)
-
-	go func() {
-		running = true
-
-		components := rm.LoadGameObject("player")
-		id, _ := gof.Create(components)
-		go character.StartPlayer(id, tm, cm)
-
-		jmap := rm.LoadJsonMap("map1")
-		gof.CreateFromMap(&jmap)
-
-		// list := [5000]byte{}
-
-		// fmt.Println(list)
-
-		// for i := range list {
-		// 	// list[i], err := gof.Create(components)
-		// 	// if err != nil {
-		// 	// 	common.Log.LogError(err)
-		// 	// }
-		// 	pm.AddForce(list[i], &math.Vec3{-1, -1, -1})
-		// 	pm.AddForce(list[i], &math.Vec3{3, 0, -2})
-		// }
-
-		oldTime := time.Now()
-		for running {
-			time.Sleep(500 * time.Millisecond)
-
-			newTime := time.Since(oldTime)
-			secs := newTime.Seconds()
-			// fmt.Println(newTime)
-
-			pm.Tick(secs)
-			tm.Tick(secs)
-
-			// for i := range list {
-			// 	id := list[i]
-			// 	trans,_ := tm.GetTransform(component.GOiD(id))
-			// 	fmt.Println(id," ",trans.ToString())
-			// }
-			// fmt.Println()
-
-			oldTime = oldTime.Add(newTime)
-		}
+	gm := game.MakeGame("player", 10.0)
+	go gm.Loop(returnlink)
+	gm.CreateFromMap("map1")
 
 
-		returnlink <- true
-	}()
 
 	glg := graphics.GlStart(640, 480, "smig")
+	rm := res.MakeResourceManager("/home/sam/go/data/")
 
 	vertStr := string(rm.GetFileContents("graphics/shader/" + "MatrixTransform.vert"))
 	fragStr := string(rm.GetFileContents("graphics/shader/" + "White.frag"))
@@ -141,7 +74,5 @@ func main() {
 		i = glg.Run()
 	}
 	glfw.Terminate()
-	running = false
-
-	<-returnlink
+	returnlink <- true
 }

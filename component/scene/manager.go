@@ -1,4 +1,4 @@
-package transform
+package scene
 
 import (
 	"fmt"
@@ -170,14 +170,18 @@ func (tm *SceneManager) Transform(index component.GOiD, newLocalMat *math.Mat4x4
 	// fmt.Println(index, "newLocalMat ", newLocalMat.ToString())
 	tm.movedQueue.Queue(int(index))
 }
-func (tm *SceneManager) GetTransform(index component.GOiD) (*math.Mat4x4, error) {
+func (tm *SceneManager) GetTransformPointer(index component.GOiD) *math.Mat4x4 {
 	if int(index) >= len(tm.compList[WMAT]) {
 		common.Log.Error("invalid GOiD %v", index)
 	}
 	if tm.compList[WMAT][index].IsEmpty() == true {
 		common.Log.Error("invalid GOiD: %v", index)
 	}
-		return &tm.compList[WMAT][index], nil
+		return &tm.compList[WMAT][index]
+}
+func (tm *SceneManager) GetObjectLocation(index component.GOiD) math.Vec3 {
+	locMat := tm.compList[WMAT][index]
+	return math.Mult(math.Vec3{}, &locMat)
 }
 
 func (tm *SceneManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {

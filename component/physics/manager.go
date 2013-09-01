@@ -1,24 +1,22 @@
 package physics
 
 import (
-	"fmt"
-
 	"smig/component"
-	"smig/component/transform"
+	"smig/component/scene"
 	"smig/math"
 	"smig/common"
 )
 
 type PhysicsManager struct {
-	tm *transform.SceneManager
+	sm *scene.SceneManager
 	linearForces map[component.GOiD][]math.Vec3
 
 	returnlink chan int
 }
 
-func MakePhysicsManager(tm *transform.SceneManager) *PhysicsManager {
+func MakePhysicsManager(sm *scene.SceneManager) *PhysicsManager {
 	pm := PhysicsManager {
-		tm,
+		sm,
 		make(map[component.GOiD][]math.Vec3),
 		make(chan int),
 	}
@@ -51,18 +49,11 @@ func (pm *PhysicsManager) Tick(delta float64) {
 			}
 			force = force.MultScalar(float32(delta))
 			// fmt.Println("force ",force)
-			transMat,err := pm.tm.GetTransform(index)
-			if err != nil {
-				fmt.Println(err)
-			}
-			var newMat math.Mat4x4
-			for i := range transMat {
-				newMat[i] = transMat[i]
-			}
-			newMat[3]  += force[0]
-			newMat[7]  += force[1]
-			newMat[11] += force[2]
-			pm.tm.Transform(k, &newMat)
+			transMat := *pm.sm.GetTransformPointer(index)
+			transMat[3]  += force[0]
+			transMat[7]  += force[1]
+			transMat[11] += force[2]
+			pm.sm.Transform(k, &transMat)
 	}
 }
 

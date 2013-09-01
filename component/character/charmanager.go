@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 
 	"smig/component"
+	"smig/component/scene"
+	"smig/common"
 )
 
 const (
@@ -17,16 +19,51 @@ const (
 	RESIZESTEP = 20
 )
 
+type AiComputer func(id component.GOiD)
+
 type CharacterManager struct {
 	attributeList 	[NUM_ATTRIBUTES][]float32
 	descriptionList []string
 	greetingList 	[]string
+
+	aiList 			[]AiComputer
+
+	movedlink chan Player
+}
+
+func (cm *CharacterManager) CreatePlayer(id component.GOiD, lookRange float32, sm *scene.SceneManager) {
+	if cm.movedlink == nil {
+		cm.movedlink = make(chan Player)
+	}
+	go StartPlayer(id, lookRange, cm.movedlink, sm, cm)
+}
+
+func (cm *CharacterManager) Tick(delta float64) {
+	select {
+	case pl := <-cm.movedlink:
+		loc :=  pl.Scene.GetObjectLocation(pl.Id)
+		stk := pl.Scene.GetObjectsInLocationRange(loc, pl.RangeOfSight + 20)
+		numObj := stk.Size
+		for i := 0; i < numObj; i++ {
+			id,err := stk.Dequeue()
+			if err != nil {
+				common.Log.Warn(err)
+			}
+			if id == int(pl.Id) || id == 0 {
+				continue
+			}
+
+			// cm.aiList[id](component.GOiD(id))
+		}
+	default:
+		break
+	}
 }
 
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
 		Health, Mana, Strength, Intelligence float32
-		Description, Greeting string
+		Description, Greeting, AiFunction string
 	}
 	json.Unmarshal(data, &comp)
 
@@ -41,10 +78,10 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 		comp.Greeting,
 	}
 
-	return cm.CreateComponent(index, ca)
+	return cm.CreateComponent(index, ca, comp.AiFunction)
 }
 
-func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {
+func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes, aiFuncName string) error {
 	cm.resizeLists(index)
 	for i := range ca.Attributes {
 		cm.attributeList[i][index] = ca.Attributes[i]
@@ -79,6 +116,13 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 		cm.greetingList = make([]string, index + RESIZESTEP)
 		for i := range tmp {
 			cm.greetingList[i] = tmp[i]
+		}
+	}
+	if cap(cm.aiList) - 1 < int(index) {
+		tmp := cm.aiList
+		cm.aiList = make([]AiComputer, index + RESIZESTEP)
+		for i := range tmp {
+			cm.aiList[i] = tmp[i]
 		}
 	}
 }
