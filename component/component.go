@@ -20,4 +20,5 @@ type MapEntity struct {
 	Breed string
 	CompList GameObject
 	Quantity int
+	Radius float32
 }

@@ -1,10 +1,10 @@
 package character
 
 import (
+	"fmt"
 	"encoding/json"
 
 	"smig/component"
-	"smig/component/scene"
 	"smig/common"
 )
 
@@ -13,56 +13,57 @@ const (
 	MANA   			= iota
 	STRENGTH 		= iota
 	INTELLIGENCE 	= iota
+	RANGEOFSIGHT 	= iota
 
 	NUM_ATTRIBUTES  = iota
 
 	RESIZESTEP = 20
 )
 
-type AiComputer func(id component.GOiD)
-
 type CharacterManager struct {
 	attributeList 	[NUM_ATTRIBUTES][]float32
 	descriptionList []string
 	greetingList 	[]string
-
 	aiList 			[]AiComputer
 
-	movedlink chan Player
+	movedlink 		chan component.GOiD
+
+	aiFunctionName	map[string]AiComputer
+	Scene 			*component.SceneManager
 }
 
-func (cm *CharacterManager) CreatePlayer(id component.GOiD, lookRange float32, sm *scene.SceneManager) {
-	if cm.movedlink == nil {
-		cm.movedlink = make(chan Player)
-	}
-	go StartPlayer(id, lookRange, cm.movedlink, sm, cm)
+func MakeCharacterManager(sm *component.SceneManager) *CharacterManager {
+	cm := CharacterManager{}
+	cm.movedlink = make(chan component.GOiD)
+	cm.Scene 	 = sm
+
+	return &cm
 }
 
 func (cm *CharacterManager) Tick(delta float64) {
 	select {
-	case pl := <-cm.movedlink:
-		loc :=  pl.Scene.GetObjectLocation(pl.Id)
-		stk := pl.Scene.GetObjectsInLocationRange(loc, pl.RangeOfSight + 20)
+	case id := <-cm.movedlink:
+		loc :=  cm.Scene.GetObjectLocation(id)
+		stk := cm.Scene.GetObjectsInLocationRange(loc, cm.attributeList[RANGEOFSIGHT][id] + 20)
 		numObj := stk.Size
 		for i := 0; i < numObj; i++ {
-			id,err := stk.Dequeue()
+			charId,err := stk.Dequeue()
 			if err != nil {
 				common.Log.Warn(err)
 			}
-			if id == int(pl.Id) || id == 0 {
+			if charId == int(id) || id == 0 {
 				continue
 			}
 
-			// cm.aiList[id](component.GOiD(id))
+			cm.RunAi(component.GOiD(charId))
 		}
 	default:
-		break
 	}
 }
 
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
-		Health, Mana, Strength, Intelligence float32
+		Health, Mana, Strength, Intelligence, RangeOfSight float32
 		Description, Greeting, AiFunction string
 	}
 	json.Unmarshal(data, &comp)
@@ -73,6 +74,7 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 			comp.Mana,
 			comp.Strength,
 			comp.Intelligence,
+			comp.RangeOfSight,
 		},
 		comp.Description,
 		comp.Greeting,
@@ -89,6 +91,11 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 
 	cm.descriptionList[index] = ca.Description
 	cm.greetingList[index]	  = ca.Greeting
+	var err error
+	cm.aiList[index], err	  = cm.GetComputer(aiFuncName)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return nil
 }
@@ -128,6 +135,11 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 }
 
 func (cm *CharacterManager) DeleteComponent(index component.GOiD) {
+	for i := range cm.attributeList {
+		cm.attributeList[i][index] = -1
+	}
+	cm.descriptionList[index] = ""
+	cm.greetingList[index] = ""
 }
 
 func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {

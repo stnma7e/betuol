@@ -32,7 +32,7 @@ func (stk *Stack) Pop() interface{} {
 	}
 	tmp := stk.tail
 	stk.tail = stk.tail.forward
-	stk.Size++
+	stk.Size--
 	return tmp.value
 }
 

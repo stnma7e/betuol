@@ -2,19 +2,18 @@ package physics
 
 import (
 	"smig/component"
-	"smig/component/scene"
 	"smig/math"
 	"smig/common"
 )
 
 type PhysicsManager struct {
-	sm *scene.SceneManager
+	sm *component.SceneManager
 	linearForces map[component.GOiD][]math.Vec3
 
 	returnlink chan int
 }
 
-func MakePhysicsManager(sm *scene.SceneManager) *PhysicsManager {
+func MakePhysicsManager(sm *component.SceneManager) *PhysicsManager {
 	pm := PhysicsManager {
 		sm,
 		make(map[component.GOiD][]math.Vec3),

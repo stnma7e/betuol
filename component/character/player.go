@@ -3,7 +3,6 @@ package character
 import (
 	"fmt"
 
-	"smig/component/scene"
 	"smig/component"
 	"smig/common"
 )
@@ -12,83 +11,49 @@ const (
 	INTERACTING = 1 << iota
 )
 
-type Player struct {
-	Id component.GOiD
-	Scene *scene.SceneManager
-	Chars *CharacterManager
-	RangeOfSight float32
-	movedlink chan Player
-
-	stateMask int
-}
-
-func StartPlayer(id component.GOiD, lookRange float32, movedlink chan Player, sm *scene.SceneManager, cm *CharacterManager) {
-	pl := Player{}
-	pl.Id = id
-	pl.RangeOfSight = lookRange
-	pl.movedlink = movedlink
-	pl.Scene = sm
-	pl.Chars = cm
-
-	pl.ProcessCommandLine()
-}
-
-func (pl *Player) ProcessCommandLine() {
-	for {
-		var com string
-		ca := pl.Chars.GetCharacterAttributes(pl.Id)
-		loc :=  pl.Scene.GetObjectLocation(pl.Id)
-		fmt.Print(ca.Attributes[HEALTH], ca.Attributes[MANA], loc[:2], " --> ")
-		fmt.Scan(&com)
-		pl.ParseCommand(com)
-	}
-}
-
-func (pl *Player) ParseCommand(com string) {
-	switch com {
-	case "help":
-
+func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {
+	switch command {
 	case "look":
-		pl.Look()
+		PlayerLook(id, chars)
 	case "north":
-		pl.Move("north")
+		PlayerMove("north", id, chars)
 	case "south":
-		pl.Move("south")
+		PlayerMove("south", id, chars)
 	case "east":
-		pl.Move("east")
+		PlayerMove("east", id, chars)
 	case "west":
-		pl.Move("west")
+		PlayerMove("west", id, chars)
 	case "interact":
 		var arg string
 		fmt.Scan(&arg)
-		Println(arg)
-		pl.stateMask = INTERACTING
+		fmt.Println("\t",arg)
 	default:
-		Println("Invalid command. Type \"help\" for choices.")
+		fmt.Println("\tInvalid command. Type \"help\" for choices.")
 	}
 }
 
-func (pl *Player) Look() {
-	loc :=  pl.Scene.GetObjectLocation(pl.Id)
-	stk := pl.Scene.GetObjectsInLocationRange(loc, pl.RangeOfSight)
+func PlayerLook(id component.GOiD, chars *CharacterManager) {
+	loc := chars.Scene.GetObjectLocation(id)
+	ros := chars.attributeList[RANGEOFSIGHT][id]
+	stk := chars.Scene.GetObjectsInLocationRange(loc, ros)
 	numObj := stk.Size
 	for i := 0; i < numObj; i ++ {
-		id, err := stk.Dequeue()
+		charId, err := stk.Dequeue()
 		if err != nil {
 			common.Log.Warn(err)
 		}
 
-		if id == int(pl.Id) || id == 0 {
+		if charId == int(id) || id == 0 {
 			continue
 		}
 
-		ca := pl.Chars.GetCharacterAttributes(component.GOiD(id))
-		Println(ca.Greet())
+		ca := chars.GetCharacterAttributes(component.GOiD(charId))
+		fmt.Println("\t",ca.Greet())
 	}
 }
 
-func (pl *Player) Move(direction string) {
-	transMat := *pl.Scene.GetTransformPointer(pl.Id)
+func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
+	transMat := *chars.Scene.GetTransformPointer(id)
 
 	switch direction {
 	case "north":
@@ -100,12 +65,5 @@ func (pl *Player) Move(direction string) {
 	case "west":
 		transMat[3]--
 	}
-	pl.Scene.Transform(pl.Id, &transMat)
-
-	pl.movedlink <- *pl
-}
-
-
-func Println(s string) {
-	fmt.Printf("\t%s\n", s)
+	chars.Scene.Transform(id, &transMat)
 }

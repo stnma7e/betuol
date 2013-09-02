@@ -1,13 +1,11 @@
-package scene
+package component
 
 import (
 	"fmt"
 	"encoding/json"
 
-	"smig/component"
 	"smig/common"
 	"smig/math"
-	"smig/graphics"
 )
 
 const (
@@ -20,10 +18,9 @@ const (
 type SceneManager struct {
 	compList 		[2][]math.Mat4x4 // compList[WMAT] == world transform matrices
 								 	 // compList[LMAT] == local transform matrices
-	parentChildMap 	map[component.GOiD]common.IntQueue
-	childParentMap  map[component.GOiD]component.GOiD
+	parentChildMap 	map[GOiD]common.IntQueue
+	childParentMap  map[GOiD]GOiD
 	boundingSpheres []math.Sphere
-	meshList 		[]graphics.Mesh
 	movedQueue  	common.IntQueue
 	returnlink  	chan int
 }
@@ -35,8 +32,8 @@ func MakeSceneManager() *SceneManager {
 	}
 	tm.compList[WMAT][ROOTNODE].MakeIdentity()
 	tm.returnlink = make(chan int)
-	tm.parentChildMap = make(map[component.GOiD]common.IntQueue)
-	tm.childParentMap = make(map[component.GOiD]component.GOiD)
+	tm.parentChildMap = make(map[GOiD]common.IntQueue)
+	tm.childParentMap = make(map[GOiD]GOiD)
 	return &tm
 }
 
@@ -60,10 +57,10 @@ func (tm *SceneManager) Tick(delta float64) {
 					break
 				}
 				lmat 		:= tm.compList[LMAT][compid[i]]
-				parentIndex := tm.childParentMap[component.GOiD(compid[i])]
+				parentIndex := tm.childParentMap[GOiD(compid[i])]
 				parent 		:= tm.compList[WMAT][int(parentIndex)]
 
-				wmat := *parent.Mult(&lmat)
+				wmat := *lmat.Mult(&parent)
 				tm.compList[WMAT][compid[i]] = wmat
 				// fmt.Println(compid[i], "wmat", wmat.ToString())
 
@@ -81,7 +78,7 @@ func (tm *SceneManager) Tick(delta float64) {
 	}
 }
 
-func (tm *SceneManager) JsonCreate(index component.GOiD, compData []byte) error {
+func (tm *SceneManager) JsonCreate(index GOiD, compData []byte) error {
 	var comp struct {
 		Location math.Vec3
 		Radius float32
@@ -103,11 +100,11 @@ func (tm *SceneManager) JsonCreate(index component.GOiD, compData []byte) error 
 
 	return nil
 }
-func (tm *SceneManager) CreateComponent(index, parent component.GOiD, bound math.Sphere) error {
+func (tm *SceneManager) CreateComponent(index, parent GOiD, bound math.Sphere) error {
 	tm.resizeArray(index)	
 
 	if !(tm.compList[WMAT][index].IsEmpty()) {
-		return fmt.Errorf("attempt to reuse component.GOiD %d", index)
+		return fmt.Errorf("attempt to reuse GOiD %d", index)
 	}
 	for i := range tm.compList {
 		tm.compList[i][index].MakeIdentity()
@@ -127,11 +124,11 @@ func (tm *SceneManager) CreateComponent(index, parent component.GOiD, bound math
 	mat[7]  = bound.Center[1]
 	mat[11] = bound.Center[2]
 	tm.compList[LMAT][index] = mat
-	tm.compList[WMAT][index] = *tm.compList[WMAT][parent].Mult(&tm.compList[WMAT][index])
+	tm.compList[WMAT][index] = *tm.compList[LMAT][index].Mult(&tm.compList[WMAT][parent])
 
 	return nil
 }
-func (tm *SceneManager) resizeArray(index component.GOiD) {
+func (tm *SceneManager) resizeArray(index GOiD) {
 	if cap(tm.compList[WMAT]) - 1 < int(index) {
 
 		for i := range tm.compList {
@@ -153,13 +150,13 @@ func (tm *SceneManager) resizeArray(index component.GOiD) {
 	}
 }
 
-func (tm *SceneManager) DeleteComponent(index component.GOiD) {
+func (tm *SceneManager) DeleteComponent(index GOiD) {
 	for i := range tm.compList {
 		tm.compList[i][index] = math.Mat4x4{}
 	}
 }
 
-func (tm *SceneManager) Transform(index component.GOiD, newLocalMat *math.Mat4x4) {
+func (tm *SceneManager) Transform(index GOiD, newLocalMat *math.Mat4x4) {
 	tm.compList[LMAT][index] = *newLocalMat
 	// go func() {
 	// 	lmat 	:= tm.compList[LMAT][index]
@@ -170,7 +167,7 @@ func (tm *SceneManager) Transform(index component.GOiD, newLocalMat *math.Mat4x4
 	// fmt.Println(index, "newLocalMat ", newLocalMat.ToString())
 	tm.movedQueue.Queue(int(index))
 }
-func (tm *SceneManager) GetTransformPointer(index component.GOiD) *math.Mat4x4 {
+func (tm *SceneManager) GetTransformPointer(index GOiD) *math.Mat4x4 {
 	if int(index) >= len(tm.compList[WMAT]) {
 		common.Log.Error("invalid GOiD %v", index)
 	}
@@ -179,7 +176,7 @@ func (tm *SceneManager) GetTransformPointer(index component.GOiD) *math.Mat4x4 {
 	}
 		return &tm.compList[WMAT][index]
 }
-func (tm *SceneManager) GetObjectLocation(index component.GOiD) math.Vec3 {
+func (tm *SceneManager) GetObjectLocation(index GOiD) math.Vec3 {
 	locMat := tm.compList[WMAT][index]
 	return math.Mult(math.Vec3{}, &locMat)
 }

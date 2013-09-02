@@ -7,7 +7,7 @@ import (
 	"smig/math"
 )
 
-const SceneType = "transform"
+const SceneType = "scene"
 
 type CreationFunction func(GOiD, []byte) error
 
@@ -20,10 +20,11 @@ type GameObjectFactory struct {
 	topIndex GOiD
 	EventManagers map[string]CreationManager
 	vacantIndices common.IntQueue
+	sm *SceneManager
 }
 
-func MakeGameObjectFactory() *GameObjectFactory {
-	gof := GameObjectFactory{ 1, make(map[string]CreationManager), common.IntQueue{} }
+func MakeGameObjectFactory(sm *SceneManager) *GameObjectFactory {
+	gof := GameObjectFactory{ 1, make(map[string]CreationManager), common.IntQueue{}, sm }
 	return &gof
 }
 
@@ -42,27 +43,21 @@ func (gof *GameObjectFactory) Register(compType string, mang ComponentManager, c
 
 func (gof *GameObjectFactory) CreateFromMap(sceneMap *Map) []GOiD {
 	var idQueue common.IntQueue
-	var count uint
 	smap := *sceneMap
 	for i := range smap {
 		for j := range smap[i].Entities {
 			for k := 0; k < smap[i].Entities[j].Quantity; k++ {
-
-				bytes := smap[i].Location.ToJson()
-				data := makeSceneTypeData(bytes)
-				smap[i].Entities[j].CompList[SceneType] = data
-
-				id, err := gof.Create(smap[i].Entities[j].CompList)
+				id, err := gof.Create(smap[i].Entities[j].CompList, smap[i].Location, smap[i].Entities[j].Radius)
 				if err != nil {
 					common.Log.Error(err)
+				} else {
+					idQueue.Queue(int(id))
 				}
-				idQueue.Queue(int(id))
-
-				count++
 			}
 		}
 	}
 
+	count := idQueue.Size
 	idList := make([]GOiD,count)
 	for i := 0; !idQueue.IsEmpty(); i++ {
 		num, err := idQueue.Dequeue()
@@ -74,18 +69,13 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *Map) []GOiD {
 
 	return idList
 }
-func (gof *GameObjectFactory) Create(compList GameObject) (GOiD, error) {
+func (gof *GameObjectFactory) Create(compList GameObject, location math.Vec3, radius float32) (GOiD, error) {
 	id := gof.getNewGOiD()
 	if id < 1 {
 		common.Log.Error("invalid id: %v", id)
 	}
 
-	transformed := false
 	for k,v := range compList {
-		if k == SceneType {
-			transformed = true
-		}
-
 		mang, ok := gof.EventManagers[k]
 		if !ok {
 			common.Log.Error("unregistered componentManager (%s) in compList", k)
@@ -99,19 +89,14 @@ func (gof *GameObjectFactory) Create(compList GameObject) (GOiD, error) {
 		}
 	}
 
-	if !transformed {
-		mang, ok := gof.EventManagers[SceneType]
-		if !ok {
-			common.Log.Error("unregistered componentManager (%s) in compList", SceneType)
-		}
-
-		loc := math.Vec3{}
-		err := mang.create(id, makeSceneTypeData(loc.ToJson()))
-		if err != nil {
-			gof.Delete(id)
-			common.Log.Error(err)
-			return NULLINDEX, err
-		}
+	sp := math.Sphere {
+		location, radius,
+	}
+	err := gof.sm.CreateComponent(id, ROOTNODE, sp)
+	if err != nil {
+		gof.Delete(id)
+		common.Log.Error(err)
+		return NULLINDEX, err
 	}
 
 	return id, nil
@@ -123,6 +108,7 @@ func (gof *GameObjectFactory) Delete(index GOiD) {
 	for _,v := range gof.EventManagers {
 		v.mang.DeleteComponent(index)
 	}
+	gof.sm.DeleteComponent(index)
 	gof.vacantIndices.Queue(int(index))
 }
 
@@ -142,26 +128,4 @@ func (gof *GameObjectFactory) getNewGOiD() GOiD {
 	}
 
 	return idToUse
-}
-
-func makeSceneTypeData(loc []byte) []byte {
-	data := make([]byte,len(loc)+13)
-	data[0] = '{'
-	data[1] = '"'
-	data[2] = 'l'
-	data[3] = 'o'
-	data[4] = 'c'
-	data[5] = 'a'
-	data[6] = 't'
-	data[7] = 'i'
-	data[8] = 'o'
-	data[9] = 'n'
-	data[10] = '"'
-	data[11] = ':'
-	for i := range loc {
-		data[i+12] = loc[i]
-	}
-	data[len(loc)+12] = '}'
-
-	return data
 }
