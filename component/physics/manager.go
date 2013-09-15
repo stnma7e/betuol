@@ -40,19 +40,21 @@ func (pm *PhysicsManager) DeleteComponent(index component.GOiD) {
 
 func (pm *PhysicsManager) Tick(delta float64) {
 	for k,v := range pm.linearForces {
-		index := k
-			var force math.Vec3
-			for j := range v {
-				newForce := v[j]
-				force = force.Add(&newForce)
-			}
-			force = force.MultScalar(float32(delta))
-			// fmt.Println("force ",force)
-			transMat := *pm.sm.GetTransformPointer(index)
-			transMat[3]  += force[0]
-			transMat[7]  += force[1]
-			transMat[11] += force[2]
-			pm.sm.Transform(k, &transMat)
+		if v == nil {
+			continue
+		}
+		var force math.Vec3
+		for j := range v {
+			newForce := v[j]
+			force = force.Add(&newForce)
+		}
+		force = force.MultScalar(float32(delta))
+		// fmt.Println("force ",force)
+		transMat := *pm.sm.GetTransformPointer(k)
+		transMat[3]  += force[0]
+		transMat[7]  += force[1]
+		transMat[11] += force[2]
+		pm.sm.Transform(k, &transMat)
 	}
 }
 

@@ -174,7 +174,7 @@ func (tm *SceneManager) GetTransformPointer(index GOiD) *math.Mat4x4 {
 	if tm.compList[WMAT][index].IsEmpty() == true {
 		common.Log.Error("invalid GOiD: %v", index)
 	}
-		return &tm.compList[WMAT][index]
+	return &tm.compList[WMAT][index]
 }
 func (tm *SceneManager) GetObjectLocation(index GOiD) math.Vec3 {
 	locMat := tm.compList[WMAT][index]

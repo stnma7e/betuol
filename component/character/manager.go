@@ -8,27 +8,14 @@ import (
 	"smig/common"
 )
 
-const (
-	HEALTH 			= iota
-	MANA   			= iota
-	STRENGTH 		= iota
-	INTELLIGENCE 	= iota
-	RANGEOFSIGHT 	= iota
-
-	NUM_ATTRIBUTES  = iota
-
-	RESIZESTEP = 20
-)
-
 type CharacterManager struct {
 	attributeList 	[NUM_ATTRIBUTES][]float32
 	descriptionList []string
 	greetingList 	[]string
-	aiList 			[]AiComputer
+	factionList 	[]string
 
 	movedlink 		chan component.GOiD
 
-	aiFunctionName	map[string]AiComputer
 	Scene 			*component.SceneManager
 }
 
@@ -54,8 +41,6 @@ func (cm *CharacterManager) Tick(delta float64) {
 			if charId == int(id) || id == 0 {
 				continue
 			}
-
-			cm.RunAi(component.GOiD(charId))
 		}
 	default:
 	}
@@ -64,7 +49,7 @@ func (cm *CharacterManager) Tick(delta float64) {
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
 		Health, Mana, Strength, Intelligence, RangeOfSight float32
-		Description, Greeting, AiFunction string
+		Description, Greeting, AiFunction, Faction string
 	}
 	json.Unmarshal(data, &comp)
 
@@ -78,6 +63,7 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 		},
 		comp.Description,
 		comp.Greeting,
+		comp.Faction,
 	}
 
 	return cm.CreateComponent(index, ca, comp.AiFunction)
@@ -91,11 +77,7 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 
 	cm.descriptionList[index] = ca.Description
 	cm.greetingList[index]	  = ca.Greeting
-	var err error
-	cm.aiList[index], err	  = cm.GetComputer(aiFuncName)
-	if err != nil {
-		fmt.Println(err)
-	}
+	cm.factionList[index] 	  = ca.Faction
 
 	return nil
 }
@@ -125,11 +107,11 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 			cm.greetingList[i] = tmp[i]
 		}
 	}
-	if cap(cm.aiList) - 1 < int(index) {
-		tmp := cm.aiList
-		cm.aiList = make([]AiComputer, index + RESIZESTEP)
+	if cap(cm.factionList) - 1 < int(index) {
+		tmp := cm.factionList
+		cm.factionList = make([]string, index + RESIZESTEP)
 		for i := range tmp {
-			cm.aiList[i] = tmp[i]
+			cm.factionList[i] = tmp[i]
 		}
 	}
 }
@@ -151,4 +133,15 @@ func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *Charac
 	ca.Greeting    = cm.greetingList[index]
 
 	return ca
+}
+
+func (cm *CharacterManager) Update(id component.GOiD, ca *CharacterAttributes) {
+	for i := range cm.attributeList {
+		cm.attributeList[i][id] = ca.Attributes[i]
+	}
+}
+
+func (cm *CharacterManager) Died(id component.GOiD) {
+	fmt.Println(id, "died: ", cm.attributeList[HEALTH][id])
+	// send event of death
 }

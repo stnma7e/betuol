@@ -75,6 +75,7 @@ func (gof *GameObjectFactory) Create(compList GameObject, location math.Vec3, ra
 		common.Log.Error("invalid id: %v", id)
 	}
 
+
 	for k,v := range compList {
 		mang, ok := gof.EventManagers[k]
 		if !ok {
@@ -84,7 +85,7 @@ func (gof *GameObjectFactory) Create(compList GameObject, location math.Vec3, ra
 		err := mang.create(id, v)
 		if err != nil {
 			gof.Delete(id)
-			common.Log.Error(err)
+			fmt.Println(err)
 			return NULLINDEX, err
 		}
 	}

@@ -6,6 +6,11 @@
           "breed": "merchant",
           "quantity": 1,
           "radius": 2
+        },
+        {
+          "breed": "enemy",
+          "quantity": 1,
+          "radius": 1
         }
       ]
   }

@@ -4,5 +4,6 @@
   "strength": 10,
   "intelligence": 15,
   "rangeOfSight": 10,
+  "faction": "alliance",
   "aiFunction": "player"
 }

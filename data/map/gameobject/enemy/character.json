@@ -1,0 +1,11 @@
+{
+  "health": 5,
+  "mana": 10,
+  "strength": 5,
+  "intelligence": 10,
+  "rangeOfSight": 5,
+  "faction": "horde",
+  "description": "An enemy",
+  "greeting": "Rawwrrr. Prepare to be destroyed.",
+  "aiFunction": "enemy"
+}

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"smig/server"
+	"smig/instance"
+	"smig/res"
 )
 
 func main() {
-
 	returnlink := make(chan bool)
-	sv := server.MakeServer(returnlink)
-	go sv.Loop()
+	rm := res.MakeResourceManager("/home/sam/go/src/smig/data/")
+	in := instance.MakeInstance(returnlink, rm)
+	go in.Loop()
 
 	<-returnlink
 }
