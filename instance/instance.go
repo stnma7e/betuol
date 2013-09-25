@@ -15,6 +15,7 @@ import (
 	"smig/common"
 	"smig/math"
 	"smig/event"
+	"smig/graphics"
 )
 
 type Instance struct {
@@ -25,12 +26,13 @@ type Instance struct {
 	rm  *res.ResourceManager
 	em  *event.EventManager
 	am  *ai.AiManager
+	gm  *graphics.GraphicsManager
 
 	returnlink  chan bool
 	commandlink chan string
 }
 
-func MakeInstance(returnlink chan bool, rm *res.ResourceManager) *Instance {
+func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
 	sm 	:= component.MakeSceneManager()
 	gof := component.MakeGameObjectFactory(sm)
 	em  := event.MakeEventManager()
@@ -43,6 +45,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager) *Instance {
 		rm,
 		em,
 		ai.MakeAiManager(sm, cm),
+		gm,
 		returnlink,
 		make(chan string),
 	}
@@ -50,6 +53,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager) *Instance {
 	is.gof.Register("physics", is.pm, is.pm.JsonCreate)
 	is.gof.Register("character", is.cm, is.cm.JsonCreate)
 	is.gof.Register("ai", is.am, is.am.JsonCreate)
+	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
 
 	is.am.RegisterComputer("enemy", is.am.EnemyDecide)
 	is.am.RegisterComputer("player", is.am.PlayerDecide)
@@ -81,6 +85,7 @@ func (is *Instance) Loop() {
 		<-ticks.C
 
 		newTime := time.Since(oldTime)
+		oldTime = time.Now()
 		secs := newTime.Seconds()
 
 		// fmt.Println(newTime)
@@ -91,15 +96,6 @@ func (is *Instance) Loop() {
 		is.cm.Tick(secs)
 		is.pm.Tick(secs)
 		is.sm.Tick(secs)
-
-		// for i := range list {
-		// 	id := list[i]
-		// 	trans,_ := tm.GetTransform(component.GOiD(id))
-		// 	fmt.Println(id," ",trans.ToString())
-		// }
-		// fmt.Println()
-
-		oldTime = time.Now()
 	}
 }
 
@@ -158,5 +154,10 @@ func (is *Instance) CreateObject(objName, location string, radius float32) {
 	if err != nil {
 		common.Log.Error(err)
 	}
+	is.pm.AddForce(id, math.Vec3{0,0.5,0})
 	fmt.Println("\tid:",id)
+}
+
+func (is *Instance) GetSceneManager() *component.SceneManager {
+	return is.sm
 }

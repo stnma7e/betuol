@@ -75,6 +75,15 @@ func (gof *GameObjectFactory) Create(compList GameObject, location math.Vec3, ra
 		common.Log.Error("invalid id: %v", id)
 	}
 
+	sp := math.Sphere {
+		location, radius,
+	}
+	err := gof.sm.CreateComponent(id, ROOTNODE, sp)
+	if err != nil {
+		gof.Delete(id)
+		common.Log.Error(err)
+		return NULLINDEX, err
+	}
 
 	for k,v := range compList {
 		mang, ok := gof.EventManagers[k]
@@ -88,16 +97,6 @@ func (gof *GameObjectFactory) Create(compList GameObject, location math.Vec3, ra
 			fmt.Println(err)
 			return NULLINDEX, err
 		}
-	}
-
-	sp := math.Sphere {
-		location, radius,
-	}
-	err := gof.sm.CreateComponent(id, ROOTNODE, sp)
-	if err != nil {
-		gof.Delete(id)
-		common.Log.Error(err)
-		return NULLINDEX, err
 	}
 
 	return id, nil

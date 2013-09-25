@@ -19,29 +19,29 @@ const (
 	INTERSECT 		int = 2
 )
 
-type frustum struct {
+type Frustum struct {
 	fov, aspect, nearDist, farDist float32
-	lookAt, perspMat *Mat4x4
+	lookAt, perspMat Mat4x4
 	sides [SIDE_TOTAL]Plane
 }
 
-func MakeFrustum(nearDist, farDist, fov, aspect float32) *frustum {
-	var frust frustum
+func MakeFrustum(nearDist, farDist, fov, aspect float32) *Frustum {
+	var frust Frustum
 	frust.fov 	 	 	= fov
 	frust.aspect	 	= aspect
 	frust.nearDist 	 	= nearDist
 	frust.farDist 	 	= farDist
-	frust.lookAt 		= &Mat4x4{}; frust.lookAt.MakeIdentity()
+	frust.lookAt 		= Mat4x4{}; frust.lookAt.MakeIdentity()
 
 	perspMat     	   := MakePerspectiveMatrix(nearDist,farDist,fov,aspect)
-	frust.perspMat 		= &perspMat
+	frust.perspMat 		= perspMat
 	frust.init()
 	
 	return &frust
 }
 
-func (frust *frustum) init() {
-		worldToClip := frust.lookAt.Mult(frust.perspMat)
+func (frust *Frustum) init() {
+		worldToClip := Mult4m4m(frust.perspMat, frust.lookAt)
 		for i := 0; i < 4; i++ {
 		frust.sides[LEFT][i]     = worldToClip[12+i] + worldToClip[i]
 		frust.sides[RIGHT][i]	 = worldToClip[12+i] - worldToClip[i]
@@ -54,35 +54,29 @@ func (frust *frustum) init() {
 		frust.sides[i].Normalize()
 	}
 }
-func (frust *frustum) LookAt(target, eye, up *Vec3) {
-	uPrime    := up.Normalize()
-	f  		  := target.Subtract(eye)
-	f.Normalize()
-	s 		  := f.Cross(uPrime)
-	u 		  := s.Cross(&f)
 
-	m := Mat4x4{ s[0], s[1], s[2],0,
-				 u[0], u[1], u[2],0,
-				-f[0],-f[1],-f[2],0,
-				 0   , 0   , 0   ,1 }
-	t := Mat4x4{ 1,0,0,-eye[0],
-				 0,1,0,-eye[1],
-				 0,0,1,-eye[2],
-				 0,0,0, 1 }
+func (frust *Frustum) LookAt(target, eye, up Vec3) {
+	u := Normalize3v(up)
+	f := Normalize3v(Sub3v3v(target, eye))
+	s := Normalize3v(Cross3v3v(f, u))
+	u  = Cross3v3v(s, f)
 
-	frust.lookAt = m.Mult(&t)
+	frust.lookAt = Mat4x4{ s[0], s[1], s[2],-Dot3v3v(s,eye),
+				 		   u[0], u[1], u[2],-Dot3v3v(u,eye),
+				          -f[0],-f[1],-f[2], Dot3v3v(f,eye),
+				 		   0,    0,    0,    1 }
 	frust.init()
 }
 
-func (frust *frustum) IsPointInside(vec Vec3) bool {
-	worldToClip := frust.lookAt.Mult(frust.perspMat)
-	vec = Mult(vec, worldToClip)
-	lookAt := Mult(Vec3{1,1,1}, frust.lookAt)
-	if lookAt.Distance(&vec) > frust.farDist {
+func (frust *Frustum) ContainsPoint(vec Vec3) bool {
+	worldToClip := Mult4m4m(frust.lookAt, frust.perspMat)
+	vec = Mult4m3v(worldToClip, vec)
+	lookAt := Mult4m3v(frust.lookAt, Vec3{})
+	if lookAt.Distance(vec) > frust.farDist {
 		return false
 	}
 	for i := range frust.sides {
-		if frust.sides[i].IsInside(&vec) != true {
+		if frust.sides[i].IsInside(vec) != true {
 			return false
 		}
 	}
@@ -90,9 +84,9 @@ func (frust *frustum) IsPointInside(vec Vec3) bool {
 	return true
 }
 
-func (frust *frustum) IsSphereInside(sp *Sphere) int {
+func (frust *Frustum) ContainsSphere(sp Sphere) int {
 	for i := range frust.sides {
-		distance := frust.sides[i].Distance(&sp.Center)
+		distance := frust.sides[i].Distance(sp.Center)
 		if distance < -sp.Radius {
 			return OUTSIDE
 		}
@@ -101,4 +95,11 @@ func (frust *frustum) IsSphereInside(sp *Sphere) int {
 		}
 	}
 	return INSIDE
+}
+
+func (frust *Frustum) LookAtMatrix() Mat4x4 {
+	return frust.lookAt
+}
+func (frust *Frustum) Projection() Mat4x4 {
+	return frust.perspMat
 }

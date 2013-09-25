@@ -2,18 +2,18 @@ package common
 
 import "fmt"
 
-type IntQueueNode struct {
-	backward *IntQueueNode
+type intQueueNode struct {
+	backward *intQueueNode
 	value int
 }
 type IntQueue struct {
-	head, tail *IntQueueNode
+	head, tail *intQueueNode
 	Size int
 }
 
 func (stk *IntQueue) Queue(num int) {
-	node := IntQueueNode{stk.head, num}
-	var tmp *IntQueueNode = stk.tail
+	node := intQueueNode{stk.head, num}
+	var tmp *intQueueNode = stk.tail
 	stk.tail = &node
 	if tmp != nil {
 		tmp.backward = stk.tail
@@ -37,6 +37,7 @@ func (stk *IntQueue) Dequeue() (int,error) {
 	}
 	return 0,fmt.Errorf("stack empty")
 }
+
 func (stk *IntQueue) IsEmpty() bool {
 	if stk.head == nil || stk.tail == nil {
 		return true
@@ -51,7 +52,7 @@ func (stk *IntQueue) Peek() int {
 func (stk *IntQueue) WalkQueue() {
 	stk.walkQueue(stk.head)
 }
-func (stk *IntQueue) walkQueue(node *IntQueueNode) {
+func (stk *IntQueue) walkQueue(node *intQueueNode) {
 	if node != nil {
 		fmt.Println(node,"\b,")
 		if node == stk.tail {
@@ -60,7 +61,6 @@ func (stk *IntQueue) walkQueue(node *IntQueueNode) {
 		}
 		stk.walkQueue(node.backward)
 	}
-	return
 }
 
 func (stk *IntQueue) ToList() []int {

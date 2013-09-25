@@ -46,19 +46,19 @@ func (pm *PhysicsManager) Tick(delta float64) {
 		var force math.Vec3
 		for j := range v {
 			newForce := v[j]
-			force = force.Add(&newForce)
+			force = math.Add3v3v(force, newForce)
 		}
-		force = force.MultScalar(float32(delta))
+		force = math.Mult3vf(force, float32(delta))
 		// fmt.Println("force ",force)
-		transMat := *pm.sm.GetTransformPointer(k)
+		transMat := pm.sm.GetTransformMatrix(k)
 		transMat[3]  += force[0]
 		transMat[7]  += force[1]
 		transMat[11] += force[2]
-		pm.sm.Transform(k, &transMat)
+		pm.sm.Transform(k, transMat)
 	}
 }
 
-func (pm *PhysicsManager) AddForce(index component.GOiD, newForce *math.Vec3) {
+func (pm *PhysicsManager) AddForce(index component.GOiD, newForce math.Vec3) {
 	length   := len(pm.linearForces[index])
 	capacity := cap(pm.linearForces[index])
 	if length >= capacity - 2 {
@@ -68,11 +68,11 @@ func (pm *PhysicsManager) AddForce(index component.GOiD, newForce *math.Vec3) {
 		}
 		pm.linearForces[index] = newlist
 	}
-	pm.linearForces[index][length] = *newForce
+	pm.linearForces[index][length] = newForce
 }
-func (pm *PhysicsManager) RemoveForce(index component.GOiD, force *math.Vec3) {
+func (pm *PhysicsManager) RemoveForce(index component.GOiD, force math.Vec3) {
 	for i := range pm.linearForces[index] {
-		if pm.linearForces[index][i].Equals(force) {
+		if math.Equal3v3v(pm.linearForces[index][i], force) {
 			pm.linearForces[index][i] = math.Vec3{}
 			return
 		}

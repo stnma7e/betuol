@@ -1,0 +1,7 @@
+{
+  "modelName": "player",
+  "mesh": "person",
+  "meshType": "wavefront",
+  "vertex": "Lighted",
+  "fragment": "ColorPassthrough"
+}

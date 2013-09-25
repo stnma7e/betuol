@@ -49,6 +49,10 @@ func (stk *Queue) IsEmpty() bool {
 	return false
 }
 
+func (stk *Queue) Peek() interface{} {
+	return stk.head.value
+}
+
 func (stk *Queue) WalkQueue() {
 	stk.walkQueue(stk.head)
 }

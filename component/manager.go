@@ -60,7 +60,7 @@ func (tm *SceneManager) Tick(delta float64) {
 				parentIndex := tm.childParentMap[GOiD(compid[i])]
 				parent 		:= tm.compList[WMAT][int(parentIndex)]
 
-				wmat := *lmat.Mult(&parent)
+				wmat := math.Mult4m4m(parent, lmat)
 				tm.compList[WMAT][compid[i]] = wmat
 				// fmt.Println(compid[i], "wmat", wmat.ToString())
 
@@ -124,7 +124,7 @@ func (tm *SceneManager) CreateComponent(index, parent GOiD, bound math.Sphere) e
 	mat[7]  = bound.Center[1]
 	mat[11] = bound.Center[2]
 	tm.compList[LMAT][index] = mat
-	tm.compList[WMAT][index] = *tm.compList[LMAT][index].Mult(&tm.compList[WMAT][parent])
+	tm.compList[WMAT][index] = math.Mult4m4m(tm.compList[LMAT][index], tm.compList[WMAT][parent])
 
 	return nil
 }
@@ -156,8 +156,8 @@ func (tm *SceneManager) DeleteComponent(index GOiD) {
 	}
 }
 
-func (tm *SceneManager) Transform(index GOiD, newLocalMat *math.Mat4x4) {
-	tm.compList[LMAT][index] = *newLocalMat
+func (tm *SceneManager) Transform(index GOiD, newLocalMat math.Mat4x4) {
+	tm.compList[LMAT][index] = newLocalMat
 	// go func() {
 	// 	lmat 	:= tm.compList[LMAT][index]
 	// 	parent 	:= tm.compList[WMAT][int(tm.parentMap[index])]
@@ -167,18 +167,21 @@ func (tm *SceneManager) Transform(index GOiD, newLocalMat *math.Mat4x4) {
 	// fmt.Println(index, "newLocalMat ", newLocalMat.ToString())
 	tm.movedQueue.Queue(int(index))
 }
-func (tm *SceneManager) GetTransformPointer(index GOiD) *math.Mat4x4 {
+func (tm *SceneManager) GetTransformMatrix(index GOiD) math.Mat4x4 {
 	if int(index) >= len(tm.compList[WMAT]) {
 		common.Log.Error("invalid GOiD %v", index)
 	}
 	if tm.compList[WMAT][index].IsEmpty() == true {
 		common.Log.Error("invalid GOiD: %v", index)
 	}
-	return &tm.compList[WMAT][index]
+	return tm.compList[WMAT][index]
 }
 func (tm *SceneManager) GetObjectLocation(index GOiD) math.Vec3 {
 	locMat := tm.compList[WMAT][index]
-	return math.Mult(math.Vec3{}, &locMat)
+	return math.Mult4m3v(locMat, math.Vec3{})
+}
+func (tm *SceneManager) GetBoundingSphere(index GOiD) math.Sphere {
+	return tm.boundingSpheres[index]
 }
 
 func (tm *SceneManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {

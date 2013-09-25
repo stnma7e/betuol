@@ -53,7 +53,7 @@ func PlayerLook(id component.GOiD, chars *CharacterManager) {
 }
 
 func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
-	transMat := *chars.Scene.GetTransformPointer(id)
+	transMat := chars.Scene.GetTransformMatrix(id)
 
 	switch direction {
 	case "north":
@@ -65,5 +65,5 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 	case "west":
 		transMat[3]--
 	}
-	chars.Scene.Transform(id, &transMat)
+	chars.Scene.Transform(id, transMat)
 }

@@ -1,11 +1,9 @@
 package common
 
-import "fmt"
-
 type Vector struct {
 	array []interface{}
 	emptyIndices IntQueue
-	length uint
+	Length uint
 }
 
 func MakeVector() *Vector {
@@ -20,17 +18,15 @@ func (vc *Vector) Array() []interface{} {
 }
 
 func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance uint) {
-	if cap(vc.array) <= int(vc.length + checkDistance) {
+	if cap(vc.array) <= int(vc.Length + checkDistance) {
 		tmp := vc.array
-		vc.length = uint(len(tmp))
-		vc.array = make([]interface{}, vc.length + resizeStep)
+		vc.Length = uint(len(tmp))
+		vc.array = make([]interface{}, vc.Length + resizeStep)
 		for i := range tmp {
 			vc.array[i] = tmp[i]
 		}
 	}
-
-	fmt.Println(vc.length, len(vc.array))
-	vc.array[vc.length] = data
+	vc.array[vc.Length] = data
 }
 
 func (vc *Vector) Erase(index int) {
