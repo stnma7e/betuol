@@ -1,33 +1,22 @@
 package common
 
 import (
-	"fmt"
+	"log"
 	"os"
 )
 
-type Logger interface {
-	Info(a ...interface{})
-	Warn(a ...interface{})
-	Error(a ...interface{})
-}
+var LogErr, LogWarn, LogInfo *log.Logger
 
-var Log Logger = &ConsoleLogger{}
-
-
-
-type ConsoleLogger struct {
+type logWriter struct {
 
 }
 
-func (lg *ConsoleLogger) Info(a ...interface{}) {
-	fmt.Fprintf(os.Stdout, "INFO:| %v\n", a)
+func (lw *logWriter) Write(p []byte) {
+
 }
 
-func (lg *ConsoleLogger) Warn(a ...interface{}) {
-	fmt.Fprintf(os.Stdout, "WARN:| %v\n", a)
-}
-func (lg *ConsoleLogger) Error(a ...interface{}) {
-	// fmt.Printf(a[0].(string) + "\n", a[1:])
-	fmt.Fprintf(os.Stderr, "ERROR:| %v\n", fmt.Sprintf(a[0].(string), a[1:]))
-	panic("")
+func init() {
+	LogErr = log.New(os.Stderr, "ERROR: ", log.LstdFlags | log.Llongfile)
+	LogWarn = log.New(os.Stderr, "WARN: ", log.LstdFlags | log.Llongfile)
+	LogInfo = log.New(os.Stderr, "INFO: ", log.LstdFlags | log.Llongfile)
 }

@@ -15,12 +15,12 @@ func MagSqrd3v(vec Vec3) float32 {
 	return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]
 }
 
-func (vec Vec3) Distance(vec2 Vec3) float32 {
-	return float32(math.Sqrt(float64(vec.DistanceSqrd(vec2))))
+func Dist3v3v(vec1, vec2 Vec3) float32 {
+	return float32(math.Sqrt(float64(DistSqrd3v3v(vec1, vec2))))
 }
 
-func (vec Vec3) DistanceSqrd(vec2 Vec3) float32 {
-	split := Sub3v3v(vec, vec2)
+func DistSqrd3v3v(vec1, vec2 Vec3) float32 {
+	split := Sub3v3v(vec1, vec2)
 	return MagSqrd3v(split)
 }
 

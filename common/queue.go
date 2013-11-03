@@ -67,7 +67,7 @@ func (stk *Queue) walkQueue(node *queueNode) {
 	}
 }
 
-func (stk *Queue) ToList() []interface{} {
+func (stk *Queue) Array() []interface{} {
 	node := stk.head
 	list := make([]interface{}, stk.Size)
 	for i := range list {

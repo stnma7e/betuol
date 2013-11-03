@@ -23,6 +23,6 @@ void main()
 	cosAngleIncidence = clamp(cosAngleIncidence, 0, 1);
 
 	vec4 color = vec4(1.0,1.0,1.0,1.0);
-	interpColor = lightIntensity * vec4(normal, 1.0);
+//	interpColor = lightIntensity * vec4(normal, 1.0);
 	interpColor = lightIntensity * cosAngleIncidence;
 }

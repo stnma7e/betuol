@@ -1,28 +1,29 @@
 package character
-
 import (
-	"fmt"
 	"encoding/json"
 
 	"smig/component"
+	"smig/event"
 	"smig/common"
 )
 
 type CharacterManager struct {
-	attributeList 	[NUM_ATTRIBUTES][]float32
+	attributeList	[NUM_ATTRIBUTES][]float32
 	descriptionList []string
-	greetingList 	[]string
-	factionList 	[]string
+	greetingList	[]string
+	factionList	[]string
 
-	movedlink 		chan component.GOiD
+	movedlink		chan component.GOiD
 
-	Scene 			*component.SceneManager
+	Scene			*component.TransformManager
+	em			*event.EventManager
 }
 
-func MakeCharacterManager(sm *component.SceneManager) *CharacterManager {
+func MakeCharacterManager(tm *component.TransformManager, em *event.EventManager) *CharacterManager {
 	cm := CharacterManager{}
 	cm.movedlink = make(chan component.GOiD)
-	cm.Scene 	 = sm
+	cm.Scene = tm
+	cm.em	 = em
 
 	return &cm
 }
@@ -36,7 +37,7 @@ func (cm *CharacterManager) Tick(delta float64) {
 		for i := 0; i < numObj; i++ {
 			charId,err := stk.Dequeue()
 			if err != nil {
-				common.Log.Warn(err)
+				common.LogWarn.Print(err)
 			}
 			if charId == int(id) || id == 0 {
 				continue
@@ -51,7 +52,10 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 		Health, Mana, Strength, Intelligence, RangeOfSight float32
 		Description, Greeting, AiFunction, Faction string
 	}
-	json.Unmarshal(data, &comp)
+        err := json.Unmarshal(data, &comp)
+        if err != nil {
+            return err
+        }
 
 	ca := CharacterAttributes {
 		[NUM_ATTRIBUTES]float32 {
@@ -126,6 +130,10 @@ func (cm *CharacterManager) DeleteComponent(index component.GOiD) {
 
 func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {
 	ca := &CharacterAttributes{}
+	if index == 0 {
+		return ca
+	}
+
 	for i := range ca.Attributes {
 		ca.Attributes[i] = cm.attributeList[i][index]
 	}
@@ -135,13 +143,15 @@ func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *Charac
 	return ca
 }
 
-func (cm *CharacterManager) Update(id component.GOiD, ca *CharacterAttributes) {
+func (cm *CharacterManager) UpdateId(id component.GOiD, ca *CharacterAttributes) {
+	if id == 0 {
+		return
+	}
+
+	if ca.Attributes[HEALTH] <= 0 {
+		cm.em.Send(event.DeathEvent{ id })
+	}
 	for i := range cm.attributeList {
 		cm.attributeList[i][id] = ca.Attributes[i]
 	}
-}
-
-func (cm *CharacterManager) Died(id component.GOiD) {
-	fmt.Println(id, "died: ", cm.attributeList[HEALTH][id])
-	// send event of death
 }

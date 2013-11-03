@@ -18,28 +18,49 @@ func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {
 	return
 }
 
+// m00, m01, m02, m03
+// m04, m05, m06, m07
+// m08, m09, m10, m11
+// m12, m13, m14, m15
+
+//func (mat Mat4x4) Inverse() Mat4x4 {
+    //mat2 := mat
+    //mat2[1] = mat[4]
+    //mat2[2] = mat[8]
+    //mat2[6] = mat[9]
+    //mat2[4] = mat[1]
+    //mat2[8] = mat[2]
+    //mat2[9] = mat[6]
+
+    //mat2[3] = -mat[3]
+    //mat2[7] = -mat[7]
+    //mat2[11] = -mat[11]
+
+    //return mat2
+//}
+
 func (mat Mat4x4) Inverse() Mat4x4 {
-	var segs [4]Mat2x2 // four corner 2x2 matrices
-	segs[0] = Mat2x2{mat[0],mat[1],mat[4],mat[5]}
-	segs[1] = Mat2x2{mat[2],mat[3],mat[6],mat[7]}
-	segs[2] = Mat2x2{mat[8],mat[9],mat[12],mat[13]}
-	segs[3] = Mat2x2{mat[10],mat[11],mat[14],mat[15]}
-	for i := range segs {
-		segs[i].Invert()
-	}
+        var segs [4]Mat2x2 // four corner 2x2 matrices
+        segs[0] = Mat2x2{mat[0],mat[1],mat[4],mat[5]}
+        segs[1] = Mat2x2{mat[2],mat[3],mat[6],mat[7]}
+        segs[2] = Mat2x2{mat[8],mat[9],mat[12],mat[13]}
+        segs[3] = Mat2x2{mat[10],mat[11],mat[14],mat[15]}
+        for i := range segs {
+                segs[i].Invert()
+        }
 
-	mat[0],mat[1],mat[4],mat[5]  	= segs[0].Split()
-	mat[2],mat[3],mat[6],mat[7]   	= segs[1].Split()
-	mat[8],mat[9],mat[12],mat[13] 	= segs[2].Split()
-	mat[10],mat[11],mat[14],mat[15]	= segs[3].Split()
+        mat[0],mat[1],mat[4],mat[5]	= segs[0].Split()
+        mat[2],mat[3],mat[6],mat[7]	= segs[1].Split()
+        mat[8],mat[9],mat[12],mat[13]	= segs[2].Split()
+        mat[10],mat[11],mat[14],mat[15]	= segs[3].Split()
 
-	for i := range mat {
-		if math.IsNaN(float64(mat[i])) {
-			mat[i] = 0
-		}
-	}
+        for i := range mat {
+                if math.IsNaN(float64(mat[i])) {
+                        mat[i] = 0
+                }
+        }
 
-	return mat
+        return mat
 }
 
 func (m *Mat4x4) MakeIdentity() {

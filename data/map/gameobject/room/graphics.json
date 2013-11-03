@@ -1,6 +1,6 @@
 {
-  "modelName": "player",
-  "mesh": "tower",
+  "modelName": "room",
+  "mesh": "room",
   "meshType": "wavefront",
   "renderer": "fragmentLighting"
 }

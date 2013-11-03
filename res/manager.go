@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"strings"
 	"strconv"
+	gomath "math"
 
 	"smig/component"
 	"smig/common"
@@ -28,14 +29,14 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	file, err := os.Open(rm.fileDepot + fileName)
 	if err != nil {
-		common.Log.Error(fmt.Sprint(err))
+		common.LogErr.Fatal(err)
 	}
 	defer file.Close()
 	stats, err := file.Stat()
 	buf := make([]byte, stats.Size())
 	_, err = file.Read(buf)
 	if err != io.EOF && err != nil {
-		common.Log.Error(err)
+		common.LogErr.Print(err)
 	}
 	return buf
 }
@@ -45,7 +46,7 @@ func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
 	var obj []component.MapLocation
 	err := json.Unmarshal(mapJson, &obj)
 	if err != nil {
-		common.Log.Error(fmt.Sprint(err))
+		common.LogErr.Print(err)
 	}
 
 	for i := range obj {
@@ -66,7 +67,7 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 	}
 	err := json.Unmarshal(objJson, &obj)
 	if err != nil {
-		common.Log.Error(fmt.Sprint(err))
+		common.LogErr.Print(err)
 	}
 
 	gameobj := make(map[string][]byte)
@@ -81,13 +82,14 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 	return gameobj
 }
 
-func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector) {
+func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {
 	modelStr := rm.GetFileContents("graphics/mesh/" + modelName + ".obj")
 	verts := common.MakeVector()
 	norms := common.MakeVector()
 	texes := common.MakeVector()
 	index := common.MakeVector()
 	lines := strings.SplitAfter(string(modelStr), "\n")
+	var maxDistanceSqrd float32
 	for i := range lines {
 		words := strings.Fields(lines[i])
 		if len(words) < 1 {
@@ -102,7 +104,14 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 			if err != nil {
 				fmt.Println(err)
 			}
-			verts.Push_back(math.Vec3{float32(x), float32(y), float32(z)}, 1, 1)
+			vec := math.Vec3{float32(x), float32(y), float32(z)}
+			verts.Push_back(vec, 1, 1)
+			for i := range verts.Array() {
+				distSqrd := math.DistSqrd3v3v(vec, verts.Array()[i].(math.Vec3))
+				if distSqrd > maxDistanceSqrd {
+					maxDistanceSqrd = distSqrd
+				}
+			}
 		case "vn":
 			x, err := strconv.ParseFloat(words[1], 32)
 			y, err := strconv.ParseFloat(words[2], 32)
@@ -119,9 +128,12 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 			}
 			texes.Push_back(math.Vec2{float32(u), float32(v)}, 1, 1)
 		case "f":
-			numAttributes := 2
-			if !strings.Contains(strings.Join(words[1:], " "), "//") {
+			numAttributes := 1
+			if strings.Contains(strings.Join(words[1:], " "), "/") {
 				numAttributes = 3
+				if strings.Contains(strings.Join(words[1:], " "), "//") {
+					numAttributes = 2
+				}
 			}
 			ints := strings.FieldsFunc(strings.Join(words[1:], " "), func(c rune) bool {
 				if c == '/' {
@@ -145,5 +157,19 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 		
 	}
 
-	return verts, index, norms, texes
+	if verts.IsEmpty() {
+		verts.Push_back(math.Vec3{}, 1, 1)
+	}
+	if index.IsEmpty() {
+		index.Push_back(0, 1, 1)
+	}
+	if norms.IsEmpty() {
+		norms.Push_back(math.Vec3{}, 1, 1)
+	}
+	if texes.IsEmpty() {
+		texes.Push_back(math.Vec2{}, 1, 1)
+	}
+
+	boundingRadius := float32(gomath.Sqrt(float64(maxDistanceSqrd))) / 2
+	return verts, index, norms, texes, boundingRadius
 }

@@ -3,7 +3,7 @@ package common
 type Vector struct {
 	array []interface{}
 	emptyIndices IntQueue
-	Length uint
+	Length int
 }
 
 func MakeVector() *Vector {
@@ -17,10 +17,10 @@ func (vc *Vector) Array() []interface{} {
 	return vc.array
 }
 
-func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance uint) {
-	if cap(vc.array) <= int(vc.Length + checkDistance) {
+func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance int) {
+	if cap(vc.array) <= vc.Length + checkDistance {
 		tmp := vc.array
-		vc.Length = uint(len(tmp))
+		vc.Length = len(tmp)
 		vc.array = make([]interface{}, vc.Length + resizeStep)
 		for i := range tmp {
 			vc.array[i] = tmp[i]
@@ -31,4 +31,13 @@ func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance uint) {
 
 func (vc *Vector) Erase(index int) {
 	vc.array[index] = nil
+}
+
+func (vc *Vector) Empty() {
+    vc.array = make([]interface{}, 0)
+    vc.Length = 0
+}
+
+func (vc *Vector) IsEmpty() bool {
+	return vc.Length == 0
 }

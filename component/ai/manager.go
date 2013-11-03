@@ -6,6 +6,8 @@ import (
 
 	"smig/component"
 	"smig/component/character"
+	"smig/event"
+        "smig/common"
 )
 
 const (
@@ -21,15 +23,17 @@ type AiManager struct {
 	computerTypeMap map[string]AiComputer
 
 	cm *character.CharacterManager
-	sm *component.SceneManager
+	tm *component.TransformManager
+	em *event.EventManager
 }
 
-func MakeAiManager(sm *component.SceneManager, cm *character.CharacterManager) *AiManager {
+func MakeAiManager(tm *component.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {
 	am := AiManager{}
-	am.computerMap  	= make(map[component.GOiD]AiComputer)
+	am.computerMap      = make(map[component.GOiD]AiComputer)
 	am.computerTypeMap  = make(map[string]AiComputer)
 	am.cm = cm
-	am.sm = sm
+	am.tm = tm
+	am.em = em
 	return &am
 }
 
@@ -39,19 +43,19 @@ func (am *AiManager) Tick(delta float64) {
 
 func (am *AiManager) RunAi(id component.GOiD) {
 	comp, ok := am.computerMap[id]
-	if !ok {
+	if !ok || comp == nil {
 		fmt.Println("no computer for id:", id)
 		return
 	}
 	attr := am.cm.GetCharacterAttributes(id)
-	loc := am.sm.GetObjectLocation(id)
-	idQueue := am.sm.GetObjectsInLocationRange(loc, attr.Attributes[character.RANGEOFSIGHT])
+	loc := am.tm.GetObjectLocation(id)
+	idQueue := am.tm.GetObjectsInLocationRange(loc, attr.Attributes[character.RANGEOFSIGHT])
 	size := idQueue.Size
 	neighbors := make([]component.GOiD, size)
 	for i := 0; i < size; i++ {
 		val, err := idQueue.Dequeue()
 		if err != nil {
-			fmt.Println("error: bad dequeue:")
+			common.LogErr.Println("error: bad dequeue:", err)
 			continue
 		}
 		neighbors[i] = component.GOiD(val)
@@ -78,9 +82,16 @@ func (am *AiManager) CreateComponent(id component.GOiD, computerType string) err
 }
 
 func (am *AiManager) DeleteComponent(id component.GOiD) {
-
+    _, ok := am.computerMap[id]; if ok {
+        am.computerMap[id] = nil
+    }
 }
 
 func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {
 	am.computerTypeMap[aiType] = computer
+}
+
+func (am *AiManager) HandleAttack(evt event.Event) {
+	aevt := evt.(event.AttackEvent)
+	am.RunAi(aevt.Char2)
 }

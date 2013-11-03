@@ -1,0 +1,295 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Add3v3v	math/vec3.go	/^func Add3v3v(vec1, vec2 Vec3) Vec3 {$/;"	d
+AddForce	component/physics/manager.go	/^func (pm *PhysicsManager) AddForce(index component.GOiD, newForce math.Vec3) {$/;"	d
+AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	d
+AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager)$/;"	d
+AiManager	component/ai/manager.go	/^type AiManager struct {$/;"	d
+Array	common/queue.go	/^func (stk *Queue) Array() []interface{} {$/;"	d
+Array	common/vector.go	/^func (vc *Vector) Array() []interface{} {$/;"	d
+AttackEvent	event/events.go	/^type AttackEvent struct {$/;"	d
+CharacterAttributes	component/character/character.go	/^type CharacterAttributes struct {$/;"	d
+CharacterManager	component/character/manager.go	/^type CharacterManager struct {$/;"	d
+ChatEvent	event/events.go	/^type ChatEvent struct {$/;"	d
+Closing	graphics/gl.go	/^func (glg *GlGraphicsManager) Closing() bool {$/;"	d
+ComponentManager	component/component.go	/^type ComponentManager interface {$/;"	d
+Connect	net/manager.go	/^func (nm *NetworkManager) Connect(address string) error {$/;"	d
+ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bool {$/;"	d
+ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere) int {$/;"	d
+Create	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {$/;"	d
+CreateComponent	component/ai/manager.go	/^func (am *AiManager) CreateComponent(id component.GOiD, computerType string) error {$/;"	d
+CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes, aiFuncName string) error {$/;"	d
+CreateComponent	component/manager.go	/^func (tm *TransformManager) CreateComponent(index GOiD) error {$/;"	d
+CreateComponent	component/physics/manager.go	/^func (pm *PhysicsManager) CreateComponent(index component.GOiD, mass, restitution float32) error {$/;"	d
+CreateComponent	component/quest/manager.go	/^func (qm *QuestManager) CreateComponent(id component.GOiD) error {$/;"	d
+CreateComponent	graphics/manager.go	/^func (gm *GraphicsManager) CreateComponent(id component.GOiD, model *Model, renderer string) error {$/;"	d
+CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component.GOiD {$/;"	d
+CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) []component.GOiD {$/;"	d
+CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName, location string) component.GOiD {$/;"	d
+CreationFunction	component/gofactory/manager.go	/^type CreationFunction func(component.GOiD, []byte) error$/;"	d
+CreationManager	component/gofactory/manager.go	/^type CreationManager struct {$/;"	d
+Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	d
+DeathEvent	event/events.go	/^type DeathEvent struct {$/;"	d
+Delete	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Delete(index component.GOiD) {$/;"	d
+Delete	graphics/model.go	/^func (mh *Model) Delete() {$/;"	d
+DeleteComponent	component/ai/manager.go	/^func (am *AiManager) DeleteComponent(id component.GOiD) {$/;"	d
+DeleteComponent	component/character/manager.go	/^func (cm *CharacterManager) DeleteComponent(index component.GOiD) {$/;"	d
+DeleteComponent	component/manager.go	/^func (tm *TransformManager) DeleteComponent(index GOiD) {$/;"	d
+DeleteComponent	component/physics/manager.go	/^func (pm *PhysicsManager) DeleteComponent(index component.GOiD) {$/;"	d
+DeleteComponent	component/quest/manager.go	/^func (qm *QuestManager) DeleteComponent(id component.GOiD) {$/;"	d
+DeleteComponent	graphics/manager.go	/^func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {$/;"	d
+Dequeue	common/intqueue.go	/^func (stk *IntQueue) Dequeue() (int,error) {$/;"	d
+Dequeue	common/queue.go	/^func (stk *Queue) Dequeue() (interface{}, error) {$/;"	d
+Dist3v3v	math/vec3.go	/^func Dist3v3v(vec1, vec2 Vec3) float32 {$/;"	d
+DistSqrd3v3v	math/vec3.go	/^func DistSqrd3v3v(vec1, vec2 Vec3) float32 {$/;"	d
+Distance	math/plane.go	/^func (pl *Plane) Distance(vec Vec3) float32 {$/;"	d
+Dot3v3v	math/vec3.go	/^func Dot3v3v(vec1, vec2 Vec3) float32 {$/;"	d
+DrawString	graphics/gl.go	/^func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {$/;"	d
+DrawString	graphics/manager.go	/^func (gm *GraphicsManager) DrawString(x, y float32, text string) {$/;"	d
+Empty	common/vector.go	/^func (vc *Vector) Empty() {$/;"	d
+EnemyDecide	component/ai/computer.go	/^func (am *AiManager) EnemyDecide(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager) {$/;"	d
+Equal3v3v	math/vec3.go	/^func Equal3v3v(vec1, vec2 Vec3) bool {$/;"	d
+Erase	common/vector.go	/^func (vc *Vector) Erase(index int) {$/;"	d
+Event	event/manager.go	/^type Event interface {$/;"	d
+EventListener	event/manager.go	/^type EventListener func(evt Event)$/;"	d
+EventManager	event/manager.go	/^type EventManager struct {$/;"	d
+FirstQuest	component/quest/states.go	/^func (qm *QuestManager) FirstQuest(id component.GOiD, evt event.Event) {$/;"	d
+FragmentPointLightingRenderer	graphics/renderer.go	/^type FragmentPointLightingRenderer struct {$/;"	d
+Frustum	math/frustum.go	/^type Frustum struct {$/;"	d
+GOiD	component/component.go	/^type GOiD uint32$/;"	d
+GameObject	component/component.go	/^type GameObject map[string][]byte$/;"	d
+GameObjectFactory	component/gofactory/manager.go	/^type GameObjectFactory struct {$/;"	d
+GetBoundingSphere	component/manager.go	/^func (tm *TransformManager) GetBoundingSphere(index GOiD) math.Sphere {$/;"	d
+GetCharacterAttributes	component/character/manager.go	/^func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {$/;"	d
+GetEventManager	instance/instance.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	d
+GetEventType	event/events.go	/^func (at AttackEvent) GetEventType() string {$/;"	d
+GetEventType	event/events.go	/^func (ce ChatEvent) GetEventType() string {$/;"	d
+GetEventType	event/events.go	/^func (dt DeathEvent) GetEventType() string {$/;"	d
+GetEventType	event/events.go	/^func (ke KillEvent) GetEventType() string {$/;"	d
+GetEventType	event/events.go	/^func (qt QuestComplete) GetEventType() string {$/;"	d
+GetFileContents	res/manager.go	/^func (rm *ResourceManager) GetFileContents(fileName string) []byte {$/;"	d
+GetObjectLocation	component/manager.go	/^func (tm *TransformManager) GetObjectLocation(index GOiD) math.Vec3 {$/;"	d
+GetObjectsInLocationRange	component/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {$/;"	d
+GetSceneManager	instance/instance.go	/^func (is *Instance) GetSceneManager() component.SceneManager {$/;"	d
+GetSize	graphics/gl.go	/^func (glg *GlGraphicsManager) GetSize() (int, int) {$/;"	d
+GetSize	graphics/manager.go	/^func (gm *GraphicsManager) GetSize() (int, int) {$/;"	d
+GetTransform4m	component/manager.go	/^func (tm *TransformManager) GetTransform4m(index GOiD) math.Mat4x4 {$/;"	d
+GetTransformMatrix	component/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index GOiD) math.Mat4x4 {$/;"	d
+GlGraphicsManager	graphics/gl.go	/^type GlGraphicsManager struct {$/;"	d
+GlLoadTexture	graphics/image.go	/^func GlLoadTexture(filename string) gl.Texture {$/;"	d
+GlStart	graphics/gl.go	/^func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {$/;"	d
+GlfwKeyCallback	graphics/gl.go	/^func GlfwKeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {$/;"	d
+GraphicsComponent	graphics/manager.go	/^type GraphicsComponent struct {$/;"	d
+GraphicsManager	graphics/manager.go	/^type GraphicsManager struct {$/;"	d
+Greet	component/character/character.go	/^func (ca *CharacterAttributes) Greet() string {$/;"	d
+HandleAttack	component/ai/manager.go	/^func (am *AiManager) HandleAttack(evt event.Event) {$/;"	d
+HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) HandleAttack(evt event.Event) {$/;"	d
+HandleChat	component/character/delegates.go	/^func (cm *CharacterManager) HandleChat(evt event.Event) {$/;"	d
+HandleDeath	component/gofactory/manager.go	/^func (gof *GameObjectFactory) HandleDeath(evt event.Event) {$/;"	d
+HandleEvent	component/quest/manager.go	/^func (qm *QuestManager) HandleEvent(evt event.Event) {$/;"	d
+HandleInputs	graphics/gl.go	/^\/\/ func (glg *GlGraphicsManager) HandleInputs(eye math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+HandleInputs	graphics/gl.go	/^\/\/func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+HandleInputs	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+HandleInputs	graphics/manager.go	/^func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+Instance	instance/instance.go	/^type Instance struct {$/;"	d
+IntQueue	common/intqueue.go	/^type IntQueue struct {$/;"	d
+Interaction	component/character/character.go	/^type Interaction func(id1 component.GOiD, id2 component.GOiD)$/;"	d
+Intersects	math/sphere.go	/^func (sp *Sphere) Intersects(sp2 Sphere) bool {$/;"	d
+Inverse	math/mat4x4.go	/^\/\/func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
+Inverse	math/mat4x4.go	/^func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
+Invert	math/mat2x2.go	/^func (mat *Mat2x2) Invert() {$/;"	d
+IsEmpty	common/intqueue.go	/^func (stk *IntQueue) IsEmpty() bool {$/;"	d
+IsEmpty	common/queue.go	/^func (stk *Queue) IsEmpty() bool {$/;"	d
+IsEmpty	common/stack.go	/^func (stk *Stack) IsEmpty() bool {$/;"	d
+IsEmpty	common/vector.go	/^func (vc *Vector) IsEmpty() bool {$/;"	d
+IsEmpty	math/mat4x4.go	/^func (m *Mat4x4) IsEmpty() bool {$/;"	d
+IsInside	math/plane.go	/^func (pl *Plane) IsInside(vec Vec3) bool {$/;"	d
+IsOnPlane	math/plane.go	/^func (pl *Plane) IsOnPlane(vec Vec3) bool {$/;"	d
+JsonCreate	component/ai/manager.go	/^func (am *AiManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
+JsonCreate	component/character/manager.go	/^func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {$/;"	d
+JsonCreate	component/physics/manager.go	/^func (pm *PhysicsManager) JsonCreate(index component.GOiD, compData []byte) error {$/;"	d
+JsonCreate	component/quest/manager.go	/^func (qm *QuestManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
+JsonCreate	graphics/manager.go	/^func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {$/;"	d
+KillEvent	event/events.go	/^type KillEvent struct {$/;"	d
+KillQuest	component/quest/states.go	/^func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {$/;"	d
+LinkProgram	graphics/gl.go	/^func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribLocation {$/;"	d
+LoadFont	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadFont() {$/;"	d
+LoadGameObject	res/manager.go	/^func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {$/;"	d
+LoadJsonMap	res/manager.go	/^func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {$/;"	d
+LoadModel	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.ResourceManager) *Model {$/;"	d
+LoadModelWavefront	res/manager.go	/^func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {$/;"	d
+LoadShader	graphics/gl.go	/^func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {$/;"	d
+LogErr	common/log.go	/^var LogErr, LogWarn, LogInfo *log.Logger$/;"	d
+LookAt	math/frustum.go	/^func (frust *Frustum) LookAt(target, eye, up Vec3) {$/;"	d
+LookAtMatrix	math/frustum.go	/^func (frust *Frustum) LookAtMatrix() Mat4x4 {$/;"	d
+Loop	instance/instance.go	/^func (is *Instance) Loop() {$/;"	d
+Mag3v	math/vec3.go	/^func Mag3v(vec Vec3) float32 {$/;"	d
+Mag4v	math/vec4.go	/^func Mag4v(vec Vec4) float32 {$/;"	d
+MagSqrd3v	math/vec3.go	/^func MagSqrd3v(vec Vec3) float32 {$/;"	d
+MagSqrd4v	math/vec4.go	/^func MagSqrd4v(vec Vec4) float32 {$/;"	d
+MakeAiManager	component/ai/manager.go	/^func MakeAiManager(tm *component.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {$/;"	d
+MakeCharacterManager	component/character/manager.go	/^func MakeCharacterManager(tm *component.TransformManager, em *event.EventManager) *CharacterManager {$/;"	d
+MakeContextCurrent	graphics/gl.go	/^func (glg *GlGraphicsManager) MakeContextCurrent() {$/;"	d
+MakeEventManager	event/manager.go	/^func MakeEventManager() *EventManager {$/;"	d
+MakeFragmentPointLightingRenderer	graphics/renderer.go	/^func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsManager) Renderer {$/;"	d
+MakeFrustum	math/frustum.go	/^func MakeFrustum(nearDist, farDist, fov, aspect float32) *Frustum {$/;"	d
+MakeGameObjectFactory	component/gofactory/manager.go	/^func MakeGameObjectFactory(tm *component.TransformManager) *GameObjectFactory {$/;"	d
+MakeGraphicsManager	graphics/manager.go	/^func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {$/;"	d
+MakeIdentity	math/mat4x4.go	/^func (m *Mat4x4) MakeIdentity() {$/;"	d
+MakeInstance	instance/instance.go	/^func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager, nm *net.NetworkManager) *Instance {$/;"	d
+MakeModel	graphics/model.go	/^func MakeModel(vertexList  []math.Vec3,$/;"	d
+MakeNetworkManager	net/manager.go	/^func MakeNetworkManager() *NetworkManager {$/;"	d
+MakePerspectiveMatrix	math/mat4x4.go	/^func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {$/;"	d
+MakePhysicsManager	component/physics/manager.go	/^func MakePhysicsManager(tm *component.TransformManager) *PhysicsManager {$/;"	d
+MakePlane3v	math/plane.go	/^func MakePlane3v(p1,p2,p3 Vec3) Plane {$/;"	d
+MakeQuestManager	component/quest/manager.go	/^func MakeQuestManager() *QuestManager {$/;"	d
+MakeResourceManager	res/manager.go	/^func MakeResourceManager(fileDepot string) *ResourceManager {$/;"	d
+MakeTransformManager	component/manager.go	/^func MakeTransformManager() *TransformManager {$/;"	d
+MakeVector	common/vector.go	/^func MakeVector() *Vector {$/;"	d
+Map	component/component.go	/^type Map []MapLocation$/;"	d
+MapEntity	component/component.go	/^type MapEntity struct {$/;"	d
+MapLocation	component/component.go	/^type MapLocation struct {$/;"	d
+Mat2x2	math/mat2x2.go	/^type Mat2x2 [4]float32$/;"	d
+Mat4x4	math/mat4x4.go	/^type Mat4x4 [16]float32$/;"	d
+Model	graphics/model.go	/^type Model struct {$/;"	d
+ModelTransfer	graphics/manager.go	/^type ModelTransfer struct {$/;"	d
+Mult	math/mat2x2.go	/^func (mat *Mat2x2) Mult(scalar float32) {$/;"	d
+Mult3vf	math/vec3.go	/^func Mult3vf(vec Vec3, scalar float32) Vec3 {$/;"	d
+Mult4m3v	math/vec3.go	/^func Mult4m3v(mat Mat4x4, vec Vec3) Vec3 {$/;"	d
+Mult4m4m	math/mat4x4.go	/^func Mult4m4m(mat1, mat2 Mat4x4) Mat4x4 {$/;"	d
+Mult4m4mj	math/mat4x4.go	/^\/\/ func Mult4m4mj(mat1, mat2 Mat4x4) (ret Mat4x4) {$/;"	d
+Mult4m4v	math/vec4.go	/^func Mult4m4v(mat Mat4x4, vec Vec4) Vec4 {$/;"	d
+Mult4v4v	math/vec4.go	/^func Mult4v4v(vec1, vec2 Vec4) (ret Vec4) {$/;"	d
+NetworkManager	net/manager.go	/^type NetworkManager struct {$/;"	d
+Normalize	math/plane.go	/^func (pl *Plane) Normalize() {$/;"	d
+Normalize3v	math/vec3.go	/^func Normalize3v(vec Vec3) Vec3 {$/;"	d
+ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {$/;"	d
+ParseSysConsole	instance/instance.go	/^func (is *Instance) ParseSysConsole() {$/;"	d
+Peek	common/intqueue.go	/^func (stk *IntQueue) Peek() int {$/;"	d
+Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	d
+PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
+Plane	math/plane.go	/^type Plane Vec4$/;"	d
+PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	d
+PlayerDecide	component/ai/computer.go	/^func (am *AiManager) PlayerDecide(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager) {$/;"	d
+PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	d
+PlayerMove	component/character/player.go	/^func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {$/;"	d
+Pop	common/stack.go	/^func (stk *Stack) Pop() interface{} {$/;"	d
+Projection	math/frustum.go	/^func (frust *Frustum) Projection() Mat4x4 {$/;"	d
+Push	common/stack.go	/^func (stk *Stack) Push(val interface{}) {$/;"	d
+Push_back	common/vector.go	/^func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance int) {$/;"	d
+QuestComplete	component/quest/manager.go	/^func (qm *QuestManager) QuestComplete(evt event.Event) {$/;"	d
+QuestComplete	event/events.go	/^type QuestComplete struct {$/;"	d
+QuestManager	component/quest/manager.go	/^type QuestManager struct {$/;"	d
+QuestState	component/quest/states.go	/^type QuestState func(id component.GOiD, evt event.Event)$/;"	d
+Queue	common/intqueue.go	/^func (stk *IntQueue) Queue(num int) {$/;"	d
+Queue	common/queue.go	/^func (stk *Queue) Queue(a interface{}) {$/;"	d
+Queue	common/queue.go	/^type Queue struct {$/;"	d
+RecieveBytes	net/manager.go	/^func (nm *NetworkManager) RecieveBytes(size int, timeout float32) ([]byte, error) {$/;"	d
+Register	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Register(compType string, mang component.ComponentManager, creationFunc CreationFunction) error {$/;"	d
+RegisterComputer	component/ai/manager.go	/^func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {$/;"	d
+RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eventType string, listener EventListener) {$/;"	d
+RegisterRenderer	graphics/manager.go	/^func (gm *GraphicsManager) RegisterRenderer(rendType string, rend Renderer) {$/;"	d
+RemoveForce	component/physics/manager.go	/^func (pm *PhysicsManager) RemoveForce(index component.GOiD, force math.Vec3) {$/;"	d
+Render	graphics/renderer.go	/^func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, projectMat math.Mat4x4) {$/;"	d
+RenderAll	graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneManager) {$/;"	d
+RenderModel	graphics/renderer.go	/^func (rd *renderer) RenderModel(mod Model) {$/;"	d
+Renderer	graphics/renderer.go	/^type Renderer interface {$/;"	d
+ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	d
+RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$/;"	d
+SceneManager	component/component.go	/^type SceneManager interface {$/;"	d
+Send	event/manager.go	/^func (em *EventManager) Send(evt Event) {$/;"	d
+Send	net/manager.go	/^func (nm *NetworkManager) Send(evt event.Event) {$/;"	d
+SendBytes	net/manager.go	/^func (nm *NetworkManager) SendBytes(b []byte) {$/;"	d
+SetBoundingSphere	component/manager.go	/^func (tm *TransformManager) SetBoundingSphere(index GOiD, bound math.Sphere) {$/;"	d
+SetTransform	component/manager.go	/^func (tm *TransformManager) SetTransform(index GOiD, newLocalMat math.Mat4x4) {$/;"	d
+ShouldClose	graphics/gl.go	/^func (glg *GlGraphicsManager) ShouldClose() {$/;"	d
+Shutdown	instance/instance.go	/^func (is *Instance) Shutdown() {$/;"	d
+Sphere	math/sphere.go	/^type Sphere struct {$/;"	d
+Split	math/mat2x2.go	/^func (segs *Mat2x2) Split() (a,b,c,d float32) {$/;"	d
+Stack	common/stack.go	/^type Stack struct {$/;"	d
+StackNode	common/stack.go	/^type StackNode struct {$/;"	d
+StartScript	instance/script.go	/^func (is *Instance) StartScript() {$/;"	d
+Sub3v3v	math/vec3.go	/^func Sub3v3v(vec1, vec2 Vec3) Vec3 {$/;"	d
+SwapBuffers	graphics/gl.go	/^func (glg *GlGraphicsManager) SwapBuffers() {$/;"	d
+Test_AddIsNotEmpty	common/queue_test.go	/^func Test_AddIsNotEmpty(t *testing.T) {$/;"	d
+Test_AddMultipleItems	common/queue_test.go	/^func Test_AddMultipleItems(t *testing.T) {$/;"	d
+Test_DeQueueWithNoItems	common/queue_test.go	/^func Test_DeQueueWithNoItems(t *testing.T) {$/;"	d
+Test_IsEmpty	common/queue_test.go	/^func Test_IsEmpty(t *testing.T) {$/;"	d
+Test_OverDequeue	common/queue_test.go	/^func Test_OverDequeue(t *testing.T) {$/;"	d
+Test_WalkQueue	common/queue_test.go	/^func Test_WalkQueue(t *testing.T) {$/;"	d
+Tick	component/ai/manager.go	/^func (am *AiManager) Tick(delta float64) {$/;"	d
+Tick	component/character/manager.go	/^func (cm *CharacterManager) Tick(delta float64) {$/;"	d
+Tick	component/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d
+Tick	component/physics/manager.go	/^func (pm *PhysicsManager) Tick(delta float64) {$/;"	d
+Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
+Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
+Tick	graphics/gl.go	/^func (glg *GlGraphicsManager) Tick() {$/;"	d
+Tick	graphics/manager.go	/^func (gm *GraphicsManager) Tick() bool {$/;"	d
+Tick	net/manager.go	/^func (nm *NetworkManager) Tick() {$/;"	d
+ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	d
+ToList	common/intqueue.go	/^func (stk *IntQueue) ToList() []int {$/;"	d
+Top	common/stack.go	/^func (stk *Stack) Top() interface{} {$/;"	d
+TransformManager	component/manager.go	/^type TransformManager struct {$/;"	d
+UpdateId	component/character/manager.go	/^func (cm *CharacterManager) UpdateId(id component.GOiD, ca *CharacterAttributes) {$/;"	d
+Vec2	math/vec2.go	/^type Vec2 [2]float32/;"	d
+Vec3	math/vec3.go	/^type Vec3 [3]float32$/;"	d
+Vec4	math/vec4.go	/^type Vec4 [4]float32$/;"	d
+Vector	common/vector.go	/^type Vector struct {$/;"	d
+WalkQueue	common/intqueue.go	/^func (stk *IntQueue) WalkQueue() {$/;"	d
+WalkQueue	common/queue.go	/^func (stk *Queue) WalkQueue() {$/;"	d
+WindowManager	graphics/graphics.go	/^type WindowManager interface {$/;"	d
+Write	common/log.go	/^func (lw *logWriter) Write(p []byte) {$/;"	d
+arg	component/character/player.go	/^		var arg string$/;"	d
+arg	instance/instance.go	/^			var arg component.GOiD$/;"	d
+arg	instance/instance.go	/^			var arg string$/;"	d
+attr	component/ai/computer.go	/^	var attr *character.CharacterAttributes$/;"	d
+boundingRadius	graphics/gl.go	/^	var boundingRadius float32$/;"	d
+breed	instance/instance.go	/^			var breed, location string$/;"	d
+chat	component/character/delegates.go	/^func chat(r, s, m string) {$/;"	d
+close	graphics/gl.go	/^func (glg *GlGraphicsManager) close() {$/;"	d
+cols	math/mat4x4.go	/^\/\/ 	var cols [4]Vec4$/;"	d
+command	component/ai/computer.go	/^	var command string$/;"	d
+command	instance/instance.go	/^			var command string$/;"	d
+comp	component/character/manager.go	/^	var comp struct {$/;"	d
+dtime	graphics/gl.go	/^        \/\/var dtime float32 = 1$/;"	d
+err	component/manager.go	/^	\/\/ 	var err error$/;"	d
+force	component/physics/manager.go	/^		\/\/var force math.Vec3$/;"	d
+frust	math/frustum.go	/^	var frust Frustum$/;"	d
+g_tex	graphics/gl.go	/^var g_tex gl.Texture \/\/= GlLoadTexture("\/home\/sam\/downloads\/tower\/tower_diffuse.png")$/;"	d
+getNewGOiD	component/gofactory/manager.go	/^func (gof *GameObjectFactory) getNewGOiD() component.GOiD {$/;"	d
+idQueue	component/gofactory/manager.go	/^	var idQueue common.IntQueue$/;"	d
+idToUse	component/gofactory/manager.go	/^	var idToUse component.GOiD$/;"	d
+index	component/manager.go	/^	\/\/ 	var index [BLOCKSIZE]int$/;"	d
+init	common/log.go	/^func init() {$/;"	d
+init	math/frustum.go	/^func (frust *Frustum) init() {$/;"	d
+intQueueNode	common/intqueue.go	/^type intQueueNode struct {$/;"	d
+lightingRenderer	graphics/renderer.go	/^type lightingRenderer struct {$/;"	d
+logWriter	common/log.go	/^type logWriter struct {$/;"	d
+main	smig.go	/^func main() {$/;"	d
+maxDistanceSqrd	res/manager.go	/^	var maxDistanceSqrd float32$/;"	d
+normArray	graphics/renderer.go	/^    var normArray [9]float32$/;"	d
+normDot	math/plane.go	/^	var normDot float32$/;"	d
+normal	math/plane.go	/^	var normal [4]float32$/;"	d
+numberCompleted	component/manager.go	/^	\/\/ var numberCompleted int$/;"	d
+obj	component/ai/manager.go	/^	var obj struct {$/;"	d
+obj	component/physics/manager.go	/^        var obj struct {$/;"	d
+obj	res/manager.go	/^	var obj []component.MapLocation$/;"	d
+obj	res/manager.go	/^	var obj struct {$/;"	d
+queueNode	common/queue.go	/^type queueNode struct {$/;"	d
+renderer	graphics/renderer.go	/^type renderer struct {$/;"	d
+resizeArray	component/manager.go	/^func (tm *TransformManager) resizeArray(index GOiD) {$/;"	d
+resizeArrays	graphics/manager.go	/^func (gm *GraphicsManager) resizeArrays(id component.GOiD) {$/;"	d
+resizeLists	component/character/manager.go	/^func (cm *CharacterManager) resizeLists(index component.GOiD) {$/;"	d
+row1	math/vec3.go	/^	var row1,row2,row3 float32$/;"	d
+row1	math/vec4.go	/^	var row1,row2,row3,row4 float32$/;"	d
+rows	math/mat4x4.go	/^\/\/ 	var rows [4]Vec4$/;"	d
+segs	math/mat4x4.go	/^        var segs [4]Mat2x2 \/\/ four corner 2x2 matrices$/;"	d
+tmp	common/intqueue.go	/^	var tmp *intQueueNode = stk.tail$/;"	d
+tmp	common/queue.go	/^	var tmp *queueNode = stk.tail$/;"	d
+vertsVector	graphics/gl.go	/^	var vertsVector, indiciesVector, normsVector, uvVector *common.Vector$/;"	d
+walkQueue	common/intqueue.go	/^func (stk *IntQueue) walkQueue(node *intQueueNode) {$/;"	d
+walkQueue	common/queue.go	/^func (stk *Queue) walkQueue(node *queueNode) {$/;"	d

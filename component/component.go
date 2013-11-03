@@ -6,7 +6,11 @@ type GOiD uint32
 const NULLINDEX = 0
 
 type ComponentManager interface {
-	DeleteComponent(index GOiD)
+	DeleteComponent(GOiD)
+}
+
+type SceneManager interface {
+    GetTransform4m(index GOiD) math.Mat4x4
 }
 
 type GameObject map[string][]byte
@@ -20,5 +24,4 @@ type MapEntity struct {
 	Breed string
 	CompList GameObject
 	Quantity int
-	Radius float32
 }

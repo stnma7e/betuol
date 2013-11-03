@@ -2,10 +2,12 @@ package graphics
 
 import (
 	"encoding/json"
+        //"fmt"
 
 	"smig/math"
 	"smig/component"
 	"smig/res"
+        "smig/common"
 
 	"github.com/go-gl/gl"
 )
@@ -16,13 +18,15 @@ const (
 
 
 type GraphicsManager struct {
-	window WindowManager
+	window *GlGraphicsManager
 	rm *res.ResourceManager
 
-	models []Model
+	models []*Model
 
 	modellink chan ModelTransfer
 	errorlink chan error
+        renderTypeMap map[string]Renderer
+        renderMap map[string]*common.Vector
 }
 
 type ModelTransfer struct {
@@ -30,30 +34,51 @@ type ModelTransfer struct {
 	model *GraphicsComponent
 }
 type GraphicsComponent struct {
-	ModelName, Mesh, MeshType, Vertex, Fragment string
+	ModelName, Mesh, MeshType, Renderer string
 }
 
-func MakeGraphicsManager(window WindowManager, rm *res.ResourceManager, modellink chan ModelTransfer, errorlink chan error) *GraphicsManager {
-	return &GraphicsManager{
+func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {
+      gm := &GraphicsManager{
 		window, rm,
-		make([]Model, 0),
-		modellink,
-		errorlink,
+		make([]*Model, 0),
+		make(chan ModelTransfer),
+		make(chan error),
+                make(map[string]Renderer),
+                make(map[string]*common.Vector),
 	}
+
+        gm.RegisterRenderer("fragmentLighting", MakeFragmentPointLightingRenderer(rm, window))
+        for k,_ := range gm.renderTypeMap {
+            gm.renderMap[k] = common.MakeVector()
+        }
+
+        return gm
 }
 
 func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {
 	obj := GraphicsComponent{}
-	json.Unmarshal(compData, &obj)
+        err := json.Unmarshal(compData, &obj)
+        if err != nil {
+            common.LogErr.Println(err)
+        }
+        // load model before sending it to the main thread
+        // you can send a goroutine to load the non-GL information,
+        // then use the main thread to do all the OpenGL related stuff
 
 	gm.modellink <- ModelTransfer{ id, &obj }
 
 	return <-gm.errorlink
 }
 
-func (gm *GraphicsManager) CreateComponent(id component.GOiD, model Model) error {
+func (gm *GraphicsManager) CreateComponent(id component.GOiD, model *Model, renderer string) error {
 	gm.resizeArrays(id)
 	gm.models[id] = model
+        rend, ok := gm.renderMap[renderer]
+        if !ok {
+            common.LogErr.Printf("no renderer for type '%s'\n", renderer)
+        } else {
+            rend.Push_back(id, 1,1)
+        }
 
 	return nil
 }
@@ -61,7 +86,7 @@ func (gm *GraphicsManager) CreateComponent(id component.GOiD, model Model) error
 func (gm *GraphicsManager) resizeArrays(id component.GOiD) {
 	if cap(gm.models) - 1 < int(id) {
 		newModels := gm.models
-		gm.models = make([]Model, id + RESIZESTEP)
+		gm.models = make([]*Model, id + RESIZESTEP)
 		for i := range newModels {
 			gm.models[i] = newModels[i]
 		}
@@ -69,7 +94,9 @@ func (gm *GraphicsManager) resizeArrays(id component.GOiD) {
 }
 
 func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {
-	gm.models[id] = Model{}
+	if len(gm.models) > int(id) {
+		gm.models[id] = nil
+	}
 }
 
 func (gm *GraphicsManager) Tick() bool {
@@ -81,7 +108,7 @@ func (gm *GraphicsManager) Tick() bool {
 	for i := true; i; {
 		select {
 		case gc := <-gm.modellink:
-			gm.errorlink <- gm.CreateComponent(gc.id, gm.window.LoadModel(gc.model, gm.rm))
+			gm.errorlink <- gm.CreateComponent(gc.id, gm.window.LoadModel(gc.model, gm.rm), gc.model.Renderer)
 		default:
 			i = false
 		}
@@ -90,14 +117,47 @@ func (gm *GraphicsManager) Tick() bool {
 	return true
 }
 
-func (gm *GraphicsManager) RenderAll(camera *math.Frustum, sm *component.SceneManager) {
+func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneManager) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-	for i := 1; i < len(gm.models); i++ {
-		transMat := sm.GetTransformMatrix(component.GOiD(i))
-		bounding := sm.GetBoundingSphere(component.GOiD(i))
-		if camera.ContainsSphere(bounding) > math.OUTSIDE {
-			gm.window.Render(gm.models[i], transMat, camera.LookAtMatrix(), camera.Projection())
-		}
-	}
+        //for i := 1; i < len(gm.models); i++ {
+          //fmt.Println(gm.models[i])
+                //transMat := tm.GetTransform4m(component.GOiD(i))
+                //bounding := tm.GetBoundingSphere(component.GOiD(i))
+                //if gm.models[i] == nil {
+                        //continue
+                //}
+                //if camera.ContainsSphere(bounding) > math.OUTSIDE {
+                        //gm.window.Render(*gm.models[i], transMat, camera.LookAtMatrix(), camera.Projection())
+                //}
+        //}
+
+        //fmt.Println(camera.LookAtMatrix(), camera.Projection())
+
+        for k,v := range gm.renderTypeMap {
+            models := gm.renderMap[k].Array()
+            for i := range models {
+                id := models[i].(component.GOiD)
+                transMat := tm.GetTransform4m(id)
+                //gm.window.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
+                v.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
+            }
+        }
+}
+
+
+func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
+	return gm.window.HandleInputs(eye, target, up)
+}
+
+func (gm *GraphicsManager) DrawString(x, y float32, text string) {
+	gm.window.DrawString(x, y, text)
+}
+
+func (gm *GraphicsManager) GetSize() (int, int) {
+	return gm.window.GetSize()
+}
+
+func (gm *GraphicsManager) RegisterRenderer(rendType string, rend Renderer) {
+    gm.renderTypeMap[rendType] = rend
 }

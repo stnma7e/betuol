@@ -1,3 +1,4 @@
 {
-	
+    "mass": 10,
+    "restitution": 0.2
 }

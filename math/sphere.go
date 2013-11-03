@@ -7,7 +7,7 @@ type Sphere struct {
 
 func (sp *Sphere) Intersects(sp2 Sphere) bool {
 	radius := sp.Radius + sp2.Radius
-	if sp.Center.DistanceSqrd(sp2.Center) > radius*radius {
+	if DistSqrd3v3v(sp.Center, sp2.Center) > radius*radius {
 		return false
 	}
 
