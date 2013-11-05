@@ -33,6 +33,8 @@ type Instance struct {
 	gm  *graphics.GraphicsManager
         nm  *net.NetworkManager
 
+        tmSnapshot component.TransformManager
+
 	returnlink  chan bool
 	commandlink chan string
 
@@ -55,6 +57,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
                 quest.MakeQuestManager(),
 		gm,
                 nm,
+                *tm,
 		returnlink,
 		make(chan string),
 		0,
@@ -118,15 +121,17 @@ func (is *Instance) Loop() {
                 //fmt.Println(data)
 
 		is.ParseSysConsole()
+
+                if numTicks % 10 == 0 {
+                    is.am.Tick(secs)
+                }
+
 		is.em.Tick(secs)
                 is.qm.Tick(secs)
 		is.cm.Tick(secs)
                 //is.pm.Tick(secs)
 		is.tm.Tick(secs)
-
-                if numTicks % 10 == 0 {
-                    is.am.Tick(secs)
-                }
+                is.tmSnapshot = *is.tm
 	}
 }
 
@@ -192,8 +197,10 @@ func (is *Instance) CreateObject(objName, location string) component.GOiD {
 	return id
 }
 
-func (is *Instance) GetSceneManager() component.SceneManager {
-	return is.tm
+func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {
+        snap := is.tmSnapshot
+        // prevents the snapshot from changing during the rendering process
+	return &snap
 }
 
 func (is *Instance) GetEventManager() *event.EventManager {

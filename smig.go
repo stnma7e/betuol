@@ -41,7 +41,6 @@ func main() {
 	gm    := graphics.MakeGraphicsManager(glg, rm)
 
 	in := instance.MakeInstance(returnlink, rm, gm, nm)
-        pm := in.GetSceneManager()
 	go in.Loop()
 
 
@@ -59,7 +58,10 @@ func main() {
                         //nm.Tick()
 			eye, target, up = gm.HandleInputs(eye, target, up)
 			cam.LookAt(target, eye, up)
-			gm.RenderAll(cam, pm)
+
+                        tm := in.GetSceneManagerSnapshot()
+			gm.RenderAll(cam, tm)
+
                         gm.DrawString(10, 10, "fps: " + fpsStr)
                         gm.DrawString(10, 25, "spf: " + spfStr)
 
