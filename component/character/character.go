@@ -5,11 +5,11 @@ import (
 )
 
 const (
-	HEALTH 			= iota
-	MANA   			= iota
-	STRENGTH 		= iota
-	INTELLIGENCE 	= iota
-	RANGEOFSIGHT 	= iota
+	HEALTH		= iota
+	MANA		= iota
+	STRENGTH	= iota
+	INTELLIGENCE	= iota
+	RANGEOFSIGHT	= iota
 
 	NUM_ATTRIBUTES  = iota
 

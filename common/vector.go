@@ -29,8 +29,18 @@ func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance int) {
 	vc.array[vc.Length] = data
 }
 
+func (vc *Vector) Insert(data interface{}) {
+    space, err := vc.emptyIndices.Dequeue()
+    if err != nil {
+        vc.Push_back(data, 1,1)
+    } else {
+        vc.array[space] = data
+    }
+}
+
 func (vc *Vector) Erase(index int) {
 	vc.array[index] = nil
+        vc.emptyIndices.Queue(index)
 }
 
 func (vc *Vector) Empty() {

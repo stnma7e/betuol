@@ -9,6 +9,7 @@ AddForce	component/physics/manager.go	/^func (pm *PhysicsManager) AddForce(index
 AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	d
 AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager)$/;"	d
 AiManager	component/ai/manager.go	/^type AiManager struct {$/;"	d
+Array	common/intqueue.go	/^func (stk *IntQueue) Array() []int {$/;"	d
 Array	common/queue.go	/^func (stk *Queue) Array() []interface{} {$/;"	d
 Array	common/vector.go	/^func (vc *Vector) Array() []interface{} {$/;"	d
 AttackEvent	event/events.go	/^type AttackEvent struct {$/;"	d
@@ -22,7 +23,7 @@ ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bo
 ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere) int {$/;"	d
 Create	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {$/;"	d
 CreateComponent	component/ai/manager.go	/^func (am *AiManager) CreateComponent(id component.GOiD, computerType string) error {$/;"	d
-CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes, aiFuncName string) error {$/;"	d
+CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {$/;"	d
 CreateComponent	component/manager.go	/^func (tm *TransformManager) CreateComponent(index GOiD) error {$/;"	d
 CreateComponent	component/physics/manager.go	/^func (pm *PhysicsManager) CreateComponent(index component.GOiD, mass, restitution float32) error {$/;"	d
 CreateComponent	component/quest/manager.go	/^func (qm *QuestManager) CreateComponent(id component.GOiD) error {$/;"	d
@@ -68,12 +69,13 @@ GetCharacterAttributes	component/character/manager.go	/^func (cm *CharacterManag
 GetEventManager	instance/instance.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	d
 GetEventType	event/events.go	/^func (at AttackEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (ce ChatEvent) GetEventType() string {$/;"	d
+GetEventType	event/events.go	/^func (ce PlayerCreatedEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (dt DeathEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (ke KillEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (qt QuestComplete) GetEventType() string {$/;"	d
 GetFileContents	res/manager.go	/^func (rm *ResourceManager) GetFileContents(fileName string) []byte {$/;"	d
 GetObjectLocation	component/manager.go	/^func (tm *TransformManager) GetObjectLocation(index GOiD) math.Vec3 {$/;"	d
-GetObjectsInLocationRange	component/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {$/;"	d
+GetObjectsInLocationRadius	component/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.IntQueue {$/;"	d
 GetSceneManager	instance/instance.go	/^func (is *Instance) GetSceneManager() component.SceneManager {$/;"	d
 GetSize	graphics/gl.go	/^func (glg *GlGraphicsManager) GetSize() (int, int) {$/;"	d
 GetSize	graphics/manager.go	/^func (gm *GraphicsManager) GetSize() (int, int) {$/;"	d
@@ -86,7 +88,6 @@ GlfwKeyCallback	graphics/gl.go	/^func GlfwKeyCallback(window *glfw.Window, key g
 GraphicsComponent	graphics/manager.go	/^type GraphicsComponent struct {$/;"	d
 GraphicsManager	graphics/manager.go	/^type GraphicsManager struct {$/;"	d
 Greet	component/character/character.go	/^func (ca *CharacterAttributes) Greet() string {$/;"	d
-HandleAttack	component/ai/manager.go	/^func (am *AiManager) HandleAttack(evt event.Event) {$/;"	d
 HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) HandleAttack(evt event.Event) {$/;"	d
 HandleChat	component/character/delegates.go	/^func (cm *CharacterManager) HandleChat(evt event.Event) {$/;"	d
 HandleDeath	component/gofactory/manager.go	/^func (gof *GameObjectFactory) HandleDeath(evt event.Event) {$/;"	d
@@ -95,6 +96,8 @@ HandleInputs	graphics/gl.go	/^\/\/ func (glg *GlGraphicsManager) HandleInputs(ey
 HandleInputs	graphics/gl.go	/^\/\/func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
 HandleInputs	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
 HandleInputs	graphics/manager.go	/^func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+HandlePlayerCreated	component/ai/manager.go	/^func (am *AiManager) HandlePlayerCreated(evt event.Event) {$/;"	d
+Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) {$/;"	d
 Instance	instance/instance.go	/^type Instance struct {$/;"	d
 IntQueue	common/intqueue.go	/^type IntQueue struct {$/;"	d
 Interaction	component/character/character.go	/^type Interaction func(id1 component.GOiD, id2 component.GOiD)$/;"	d
@@ -174,6 +177,7 @@ Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	d
 PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
 Plane	math/plane.go	/^type Plane Vec4$/;"	d
 PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	d
+PlayerCreatedEvent	event/events.go	/^type PlayerCreatedEvent struct {$/;"	d
 PlayerDecide	component/ai/computer.go	/^func (am *AiManager) PlayerDecide(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager) {$/;"	d
 PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	d
 PlayerMove	component/character/player.go	/^func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {$/;"	d
@@ -205,6 +209,7 @@ Send	event/manager.go	/^func (em *EventManager) Send(evt Event) {$/;"	d
 Send	net/manager.go	/^func (nm *NetworkManager) Send(evt event.Event) {$/;"	d
 SendBytes	net/manager.go	/^func (nm *NetworkManager) SendBytes(b []byte) {$/;"	d
 SetBoundingSphere	component/manager.go	/^func (tm *TransformManager) SetBoundingSphere(index GOiD, bound math.Sphere) {$/;"	d
+SetLocation	component/manager.go	/^func (tm *TransformManager) SetLocation(index GOiD, newLocation math.Vec3) {$/;"	d
 SetTransform	component/manager.go	/^func (tm *TransformManager) SetTransform(index GOiD, newLocalMat math.Mat4x4) {$/;"	d
 ShouldClose	graphics/gl.go	/^func (glg *GlGraphicsManager) ShouldClose() {$/;"	d
 Shutdown	instance/instance.go	/^func (is *Instance) Shutdown() {$/;"	d
@@ -231,7 +236,6 @@ Tick	graphics/gl.go	/^func (glg *GlGraphicsManager) Tick() {$/;"	d
 Tick	graphics/manager.go	/^func (gm *GraphicsManager) Tick() bool {$/;"	d
 Tick	net/manager.go	/^func (nm *NetworkManager) Tick() {$/;"	d
 ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	d
-ToList	common/intqueue.go	/^func (stk *IntQueue) ToList() []int {$/;"	d
 Top	common/stack.go	/^func (stk *Stack) Top() interface{} {$/;"	d
 TransformManager	component/manager.go	/^type TransformManager struct {$/;"	d
 UpdateId	component/character/manager.go	/^func (cm *CharacterManager) UpdateId(id component.GOiD, ca *CharacterAttributes) {$/;"	d

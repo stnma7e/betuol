@@ -11,16 +11,16 @@ import (
 )
 
 const (
-	IDLE_STATE 	 = iota
-	RUN_STATE 	 = iota
+	IDLE_STATE	 = iota
+	RUN_STATE	 = iota
 	ATTACK_STATE = iota
 )
 
 type AiManager struct {
-	stateList []int
-
 	computerMap map[component.GOiD]AiComputer
 	computerTypeMap map[string]AiComputer
+
+        players *common.Vector
 
 	cm *character.CharacterManager
 	tm *component.TransformManager
@@ -31,6 +31,7 @@ func MakeAiManager(tm *component.TransformManager, cm *character.CharacterManage
 	am := AiManager{}
 	am.computerMap      = make(map[component.GOiD]AiComputer)
 	am.computerTypeMap  = make(map[string]AiComputer)
+        am.players = common.MakeVector()
 	am.cm = cm
 	am.tm = tm
 	am.em = em
@@ -38,7 +39,27 @@ func MakeAiManager(tm *component.TransformManager, cm *character.CharacterManage
 }
 
 func (am *AiManager) Tick(delta float64) {
-
+    players := am.players.Array()
+    for i := range players {
+        loc := am.tm.GetObjectLocation(players[i].(component.GOiD))
+        charsInRadius := am.tm.GetObjectsInLocationRadius(loc, 5)
+        chars := charsInRadius.Array()
+        for j := 0; j < len(chars); j++ {
+            if func() bool {
+                              for k := range players {
+                                   if chars[j] == int(players[k].(component.GOiD)) {
+                                       return true
+                                   }
+                               }
+                               return false
+                           }() { //end func
+                fmt.Println("here")
+                continue
+            } else {
+                am.RunAi(component.GOiD(chars[j]))
+            }
+        }
+    }
 }
 
 func (am *AiManager) RunAi(id component.GOiD) {
@@ -49,7 +70,7 @@ func (am *AiManager) RunAi(id component.GOiD) {
 	}
 	attr := am.cm.GetCharacterAttributes(id)
 	loc := am.tm.GetObjectLocation(id)
-	idQueue := am.tm.GetObjectsInLocationRange(loc, attr.Attributes[character.RANGEOFSIGHT])
+	idQueue := am.tm.GetObjectsInLocationRadius(loc, attr.Attributes[character.RANGEOFSIGHT])
 	size := idQueue.Size
 	neighbors := make([]component.GOiD, size)
 	for i := 0; i < size; i++ {
@@ -77,6 +98,9 @@ func (am *AiManager) CreateComponent(id component.GOiD, computerType string) err
 		return fmt.Errorf("bad ai type: %s", computerType)
 	}
 	am.computerMap[id] = computer
+        if computerType == "player" {
+            am.em.Send(event.PlayerCreatedEvent{ id })
+        }
 
 	return nil
 }
@@ -91,7 +115,7 @@ func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {
 	am.computerTypeMap[aiType] = computer
 }
 
-func (am *AiManager) HandleAttack(evt event.Event) {
-	aevt := evt.(event.AttackEvent)
-	am.RunAi(aevt.Char2)
+func (am *AiManager) HandlePlayerCreated(evt event.Event) {
+    pcevt := evt.(event.PlayerCreatedEvent)
+    am.players.Insert(pcevt.PlayerID)
 }

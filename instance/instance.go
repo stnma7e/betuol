@@ -70,11 +70,11 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.am.RegisterComputer("player", is.am.PlayerDecide)
 
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
-	is.em.RegisterListener("attack", is.am.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
 	is.em.RegisterListener("attack", is.qm.HandleEvent)
 	is.em.RegisterListener("kill", is.qm.HandleEvent)
         is.em.RegisterListener("chat", is.cm.HandleChat)
+        is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -97,11 +97,12 @@ func (is *Instance) Loop() {
 
 	is.player = is.CreateObject("player", "0,0,0")
         is.qm.AddQuest(is.player, is.qm.FirstQuest)
+        is.tm.SetLocation(is.player, math.Vec3{10,10,10})
 
         is.StartScript()
 
 
-	for {
+        for numTicks := 0; ; {
 		<-ticks.C
 
 		newTime := time.Since(oldTime)
@@ -119,10 +120,13 @@ func (is *Instance) Loop() {
 		is.ParseSysConsole()
 		is.em.Tick(secs)
                 is.qm.Tick(secs)
-		is.am.Tick(secs)
 		is.cm.Tick(secs)
                 //is.pm.Tick(secs)
 		is.tm.Tick(secs)
+
+                if numTicks % 10 == 0 {
+                    is.am.Tick(secs)
+                }
 	}
 }
 

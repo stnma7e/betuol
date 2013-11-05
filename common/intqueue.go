@@ -63,7 +63,7 @@ func (stk *IntQueue) walkQueue(node *intQueueNode) {
 	}
 }
 
-func (stk *IntQueue) ToList() []int {
+func (stk *IntQueue) Array() []int {
 	node := stk.head
 	list := make([]int, stk.Size)
 	for i := range list {

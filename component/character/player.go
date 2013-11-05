@@ -42,7 +42,7 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 func PlayerLook(id component.GOiD, chars *CharacterManager) {
 	loc := chars.Scene.GetObjectLocation(id)
 	ros := chars.attributeList[RANGEOFSIGHT][id]
-	stk := chars.Scene.GetObjectsInLocationRange(loc, ros)
+	stk := chars.Scene.GetObjectsInLocationRadius(loc, ros)
 	numObj := stk.Size
 	for i := 0; i < numObj; i ++ {
 		charId, err := stk.Dequeue()
@@ -72,8 +72,7 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 	case "east":
 		transMat[3]++
 	case "west":
-		transMat[3]--
-	}
+		transMat[3]-- }
 	chars.Scene.SetTransform(id, transMat)
 }
 

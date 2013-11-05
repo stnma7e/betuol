@@ -132,6 +132,11 @@ func (tm *TransformManager) DeleteComponent(index GOiD) {
 func (tm *TransformManager) SetTransform(index GOiD, newLocalMat math.Mat4x4) {
 	tm.matList[index] = newLocalMat
 }
+func (tm *TransformManager) SetLocation(index GOiD, newLocation math.Vec3) {
+    tm.matList[index][3] = newLocation[0]
+    tm.matList[index][7] = newLocation[1]
+    tm.matList[index][11] = newLocation[2]
+}
 func (tm *TransformManager) GetTransform4m(index GOiD) math.Mat4x4 {
     return tm.GetTransformMatrix(index)
 }
@@ -161,7 +166,7 @@ func (tm *TransformManager) SetBoundingSphere(index GOiD, bound math.Sphere) {
 	tm.matList[index] = mat
 }
 
-func (tm *TransformManager) GetObjectsInLocationRange(loc math.Vec3, lookRange float32) *common.IntQueue {
+func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.IntQueue {
 	sp := math.Sphere {
 		loc, lookRange,
 	}

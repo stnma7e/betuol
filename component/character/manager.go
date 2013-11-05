@@ -32,7 +32,7 @@ func (cm *CharacterManager) Tick(delta float64) {
 	select {
 	case id := <-cm.movedlink:
 		loc :=  cm.Scene.GetObjectLocation(id)
-		stk := cm.Scene.GetObjectsInLocationRange(loc, cm.attributeList[RANGEOFSIGHT][id] + 20)
+		stk := cm.Scene.GetObjectsInLocationRadius(loc, cm.attributeList[RANGEOFSIGHT][id] + 20)
 		numObj := stk.Size
 		for i := 0; i < numObj; i++ {
 			charId,err := stk.Dequeue()
@@ -50,7 +50,7 @@ func (cm *CharacterManager) Tick(delta float64) {
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
 		Health, Mana, Strength, Intelligence, RangeOfSight float32
-		Description, Greeting, AiFunction, Faction string
+		Description, Greeting, Faction string
 	}
         err := json.Unmarshal(data, &comp)
         if err != nil {
@@ -70,10 +70,10 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 		comp.Faction,
 	}
 
-	return cm.CreateComponent(index, ca, comp.AiFunction)
+	return cm.CreateComponent(index, ca)
 }
 
-func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes, aiFuncName string) error {
+func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {
 	cm.resizeLists(index)
 	for i := range ca.Attributes {
 		cm.attributeList[i][index] = ca.Attributes[i]
@@ -81,7 +81,7 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 
 	cm.descriptionList[index] = ca.Description
 	cm.greetingList[index]	  = ca.Greeting
-	cm.factionList[index] 	  = ca.Faction
+	cm.factionList[index]	  = ca.Faction
 
 	return nil
 }
