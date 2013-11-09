@@ -1,12 +1,13 @@
 package physics
 
 import (
-	"smig/component"
-	"smig/math"
-
         "fmt"
         "encoding/json"
         gomath "math"
+
+	"smig/component"
+        "smig/component/scenemanager"
+	"smig/math"
 )
 
 const (
@@ -15,7 +16,7 @@ const (
 )
 
 type PhysicsManager struct {
-	tm *component.TransformManager
+	tm *scenemanager.TransformManager
 	//linearForces map[component.GOiD][]math.Vec3
         attrib map[component.GOiD][2]float32
         velocity map[component.GOiD]math.Vec3
@@ -24,7 +25,7 @@ type PhysicsManager struct {
 	returnlink chan int
 }
 
-func MakePhysicsManager(tm *component.TransformManager) *PhysicsManager {
+func MakePhysicsManager(tm *scenemanager.TransformManager) *PhysicsManager {
 	pm := PhysicsManager {
 		tm,
 		//make(map[component.GOiD][]math.Vec3),

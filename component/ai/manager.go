@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"smig/component"
+        "smig/component/scenemanager"
 	"smig/component/character"
 	"smig/event"
         "smig/common"
@@ -23,11 +24,11 @@ type AiManager struct {
         players *common.Vector
 
 	cm *character.CharacterManager
-	tm *component.TransformManager
+	tm *scenemanager.TransformManager
 	em *event.EventManager
 }
 
-func MakeAiManager(tm *component.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {
+func MakeAiManager(tm *scenemanager.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {
 	am := AiManager{}
 	am.computerMap      = make(map[component.GOiD]AiComputer)
 	am.computerTypeMap  = make(map[string]AiComputer)
@@ -53,7 +54,6 @@ func (am *AiManager) Tick(delta float64) {
                                }
                                return false
                            }() { //end func
-                fmt.Println("here")
                 continue
             } else {
                 am.RunAi(component.GOiD(chars[j]))
@@ -65,7 +65,7 @@ func (am *AiManager) Tick(delta float64) {
 func (am *AiManager) RunAi(id component.GOiD) {
 	comp, ok := am.computerMap[id]
 	if !ok || comp == nil {
-		fmt.Println("no computer for id:", id)
+		//common.LogWarn.Println("no computer for id:", id)
 		return
 	}
 	attr := am.cm.GetCharacterAttributes(id)
@@ -116,6 +116,9 @@ func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {
 }
 
 func (am *AiManager) HandlePlayerCreated(evt event.Event) {
+    if evt.GetEventType() != "playerCreated" {
+        return
+    }
     pcevt := evt.(event.PlayerCreatedEvent)
     am.players.Insert(pcevt.PlayerID)
 }

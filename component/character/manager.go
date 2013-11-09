@@ -5,6 +5,7 @@ import (
 	"smig/component"
 	"smig/event"
 	"smig/common"
+        "smig/component/scenemanager"
 )
 
 type CharacterManager struct {
@@ -15,11 +16,11 @@ type CharacterManager struct {
 
 	movedlink		chan component.GOiD
 
-	Scene			*component.TransformManager
+	Scene			*scenemanager.TransformManager
 	em			*event.EventManager
 }
 
-func MakeCharacterManager(tm *component.TransformManager, em *event.EventManager) *CharacterManager {
+func MakeCharacterManager(tm *scenemanager.TransformManager, em *event.EventManager) *CharacterManager {
 	cm := CharacterManager{}
 	cm.movedlink = make(chan component.GOiD)
 	cm.Scene = tm

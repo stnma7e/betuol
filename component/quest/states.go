@@ -7,6 +7,8 @@ import (
 
 type QuestState func(id component.GOiD, evt event.Event)
 
+var moveQuestTicker int
+
 func (qm *QuestManager) FirstQuest(id component.GOiD, evt event.Event) {
     if evt.GetEventType()!= "attack" {
         return
@@ -25,4 +27,20 @@ func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {
         return
     }
     qm.em.Send(event.QuestComplete{ kevt.Killer, "KillQuest" })
+}
+
+func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {
+    if evt.GetEventType() != "characterMoved" {
+        return
+    }
+    cevt := evt.(event.CharacterMoveEvent)
+    if cevt.CharID != id {
+        return
+    }
+    if moveQuestTicker < 2 {
+        // the location of the player is changed once during gameobject creation and once during instance startup
+        moveQuestTicker++
+        return
+    }
+    qm.em.Send(event.QuestComplete{ cevt.CharID, "FirstMoveQuest" })
 }

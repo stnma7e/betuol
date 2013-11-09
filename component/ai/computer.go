@@ -13,7 +13,7 @@ type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *chara
 func (am *AiManager) PlayerDecide(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager) {
 	ca := chars.GetCharacterAttributes(id)
 	loc :=  chars.Scene.GetObjectLocation(id)
-	fmt.Print(ca.Attributes[character.HEALTH], ca.Attributes[character.MANA], loc[:2], " --> ")
+	fmt.Println(ca.Attributes[character.HEALTH], ca.Attributes[character.MANA], loc)
 
 	var command string
 	fmt.Scan(&command)

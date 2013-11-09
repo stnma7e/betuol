@@ -3,7 +3,6 @@ package graphics
 import (
 	"unsafe"
 	"github.com/go-gl/gl"
-        "fmt"
 
 	"smig/math"
 )
@@ -80,10 +79,6 @@ func MakeModel(vertexList  []math.Vec3,
 	indexBuffer := gl.GenBuffer()
 	indexBuffer.Bind(gl.ELEMENT_ARRAY_BUFFER)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indexList) * int(unsafe.Sizeof(uint32(1))), &indexList[0], gl.STATIC_DRAW)
-
-        sizeptr := gl.GetBufferParameteriv(gl.ELEMENT_ARRAY_BUFFER, gl.BUFFER_SIZE)
-        size := sizeptr / int32(unsafe.Sizeof(float32(1)))
-        fmt.Println(size)
 
 	indexBuffer.Unbind(gl.ELEMENT_ARRAY_BUFFER)
 	model.buffers[INDEX] = indexBuffer

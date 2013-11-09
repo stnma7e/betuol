@@ -1,7 +1,6 @@
 package graphics
 
 import (
-	"fmt"
         //"unsafe"
         gomath "math"
 	"time"
@@ -222,16 +221,16 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	if ok {
 		return modelPtr
 	} else {
-		fmt.Println("mesh not yet loaded: ", comp.Mesh)
+		common.LogInfo.Println("mesh not yet loaded: ", comp.Mesh)
 	}
 
 	var vertsVector, indiciesVector, normsVector, uvVector *common.Vector
-	var boundingRadius float32
+	//var boundingRadius float32
 	switch comp.MeshType {
 		case "wavefront":
-			vertsVector, indiciesVector, normsVector, uvVector, boundingRadius = rm.LoadModelWavefront(comp.Mesh)
+			vertsVector, indiciesVector, normsVector, uvVector, /*boundingRadius*/_ = rm.LoadModelWavefront(comp.Mesh)
 	}
-	fmt.Println(boundingRadius)
+	//fmt.Println(boundingRadius)
 
 	vts := vertsVector.Array()
 	verts := make([]math.Vec3, len(vts))
@@ -264,7 +263,7 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	model := MakeModel(verts, indicies, norms, uvs, tex)
 	glg.modelMap[comp.ModelName] = &model
 
-	fmt.Println("model loaded", time.Since(oldTime))
+	common.LogInfo.Println("model loaded", time.Since(oldTime))
 	return &model
 }
 
@@ -291,7 +290,6 @@ func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribL
 	attribArray := [NUMATTR]gl.AttribLocation{}
 	for i := range attribArray {
 		attribArray[i] = gl.AttribLocation(i)
-                fmt.Println(i)
 	}
 
 	program.Link()

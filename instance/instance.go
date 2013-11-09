@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"smig/component"
+	"smig/component/scenemanager"
 	"smig/component/gofactory"
 	"smig/component/physics"
 	"smig/component/character"
@@ -23,7 +24,7 @@ import (
 
 type Instance struct {
 	gof *gofactory.GameObjectFactory
-	tm  *component.TransformManager
+	tm  *scenemanager.TransformManager
 	pm  *physics.PhysicsManager
 	cm  *character.CharacterManager
 	rm  *res.ResourceManager
@@ -33,7 +34,7 @@ type Instance struct {
 	gm  *graphics.GraphicsManager
         nm  *net.NetworkManager
 
-        tmSnapshot component.TransformManager
+        tmSnapshot scenemanager.TransformManager
 
 	returnlink  chan bool
 	commandlink chan string
@@ -42,9 +43,9 @@ type Instance struct {
 }
 
 func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager, nm *net.NetworkManager) *Instance {
-	tm  := component.MakeTransformManager()
-	gof := gofactory.MakeGameObjectFactory(tm)
 	em  := event.MakeEventManager()
+	tm  := scenemanager.MakeTransformManager(em)
+	gof := gofactory.MakeGameObjectFactory(tm)
 	cm  := character.MakeCharacterManager(tm, em)
 	is  := &Instance {
 		gof,
@@ -75,6 +76,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
 	is.em.RegisterListener("attack", is.qm.HandleEvent)
+        is.em.RegisterListener("characterMoved", is.qm.HandleEvent)
 	is.em.RegisterListener("kill", is.qm.HandleEvent)
         is.em.RegisterListener("chat", is.cm.HandleChat)
         is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
@@ -91,7 +93,6 @@ func (is *Instance) Loop() {
 
 	go func() {
 		for {
-			fmt.Print("> ")
 			var command string
 			fmt.Scan(&command)
 			is.commandlink <- command
@@ -100,7 +101,7 @@ func (is *Instance) Loop() {
 
 	is.player = is.CreateObject("player", "0,0,0")
         is.qm.AddQuest(is.player, is.qm.FirstQuest)
-        is.tm.SetLocation(is.player, math.Vec3{10,10,10})
+        is.tm.SetLocation(is.player, math.Vec3{3,0,0})
 
         is.StartScript()
 

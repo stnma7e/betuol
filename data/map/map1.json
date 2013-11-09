@@ -3,17 +3,18 @@
     "location": [0,0,0],
     "entities": [
         {
-          "breed": "merchant",
+          "breed": "manInJail",
           "quantity": 1
-        },
+        }
+    ]
+  },
+  {
+    "location": [0,0,1],
+    "entities": [
         {
           "breed": "room",
           "quantity": 1
-        },
-        {
-          "breed": "enemy",
-          "quantity": 1
         }
-      ]
+    ]
   }
 ]

@@ -2,7 +2,7 @@ package graphics
 
 import (
     "unsafe"
-    "fmt"
+    //"fmt"
 
     "github.com/go-gl/gl"
 
@@ -48,8 +48,6 @@ func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsM
     fplr.uniforms[LMODELPOS]  = fplr.program.GetUniformLocation("modelSpaceLightPosition")
     fplr.uniforms[LINTENSE]   = fplr.program.GetUniformLocation("lightIntensity")
     fplr.uniforms[AMBINTENSE] = fplr.program.GetUniformLocation("ambientIntensity")
-
-    fmt.Println(fplr.uniforms[LINTENSE], fplr.lightIntensity, fplr.uniforms[AMBINTENSE], fplr.ambientIntensity)
 
     return &fplr
 }

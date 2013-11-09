@@ -2,6 +2,7 @@ package event
 
 import (
 	"smig/component"
+        "smig/math"
 )
 
 type AttackEvent struct {
@@ -47,4 +48,12 @@ type PlayerCreatedEvent struct {
 }
 func (ce PlayerCreatedEvent) GetEventType() string {
     return "playerCreated"
+}
+
+type CharacterMoveEvent struct {
+    CharID component.GOiD
+    NewLocation math.Vec3
+}
+func (cme CharacterMoveEvent) GetEventType() string {
+    return "characterMoved"
 }

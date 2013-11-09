@@ -66,9 +66,9 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 
 	switch direction {
 	case "north":
-		transMat[7]++
+		transMat[11]++
 	case "south":
-		transMat[7]--
+		transMat[11]--
 	case "east":
 		transMat[3]++
 	case "west":

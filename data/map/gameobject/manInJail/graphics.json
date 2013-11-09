@@ -1,0 +1,6 @@
+{
+  "modelName": "manInJail",
+  "mesh": "cube",
+  "meshType": "wavefront",
+  "renderer": "fragmentLighting"
+}

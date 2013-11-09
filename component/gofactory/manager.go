@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"smig/component"
+        "smig/component/scenemanager"
 	"smig/common"
 	"smig/math"
 	"smig/event"
@@ -22,10 +23,10 @@ type GameObjectFactory struct {
 	topIndex component.GOiD
 	EventManagers map[string]CreationManager
 	vacantIndices common.IntQueue
-	tm *component.TransformManager
+	tm *scenemanager.TransformManager
 }
 
-func MakeGameObjectFactory(tm *component.TransformManager) *GameObjectFactory {
+func MakeGameObjectFactory(tm *scenemanager.TransformManager) *GameObjectFactory {
 	gof := GameObjectFactory{ 1, make(map[string]CreationManager), common.IntQueue{}, tm }
 	return &gof
 }
@@ -83,6 +84,7 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 		common.LogErr.Print(err)
 		return component.NULLINDEX, err
 	}
+        gof.tm.SetLocation(id, location)
 
 	for k,v := range compList {
 		mang, ok := gof.EventManagers[k]

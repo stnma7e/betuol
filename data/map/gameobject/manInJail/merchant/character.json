@@ -1,0 +1,10 @@
+{
+  "health": 5,
+  "mana": 10,
+  "strength": 5,
+  "intelligence": 10,
+  "rangeOfSight": 1,
+  "description": "A merchant",
+  "greeting": "Hello, welcome to Betuol, the capital of The Good Guys.",
+  "aiFunction": "merchant"
+}

@@ -29,6 +29,7 @@ func (em *EventManager) Tick(delta float64) {
 		listeners, ok := em.listenerMap[evt.GetEventType()]
 		if !ok {
 			common.LogErr.Printf("no listener registered for %s", evt.GetEventType())
+                        break
 		}
 		listenersArray := listeners.Array()
 		for i := range listenersArray {

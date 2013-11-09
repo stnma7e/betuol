@@ -1,0 +1,10 @@
+{
+  "health": 5,
+  "mana": 10,
+  "strength": 5,
+  "intelligence": 10,
+  "rangeOfSight": 1,
+  "description": "A man in prison",
+  "greeting": "Hey, what did you do to get in prison?",
+  "aiFunction": "merchant"
+}
