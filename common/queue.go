@@ -6,12 +6,12 @@ import (
 
 type queueNode struct {
 	backward *queueNode
-	value interface{}
+	value    interface{}
 }
 
 type Queue struct {
 	head, tail *queueNode
-	Size int
+	Size       int
 }
 
 func (stk *Queue) Queue(a interface{}) {
@@ -21,7 +21,7 @@ func (stk *Queue) Queue(a interface{}) {
 	if tmp != nil {
 		tmp.backward = stk.tail
 	}
-	if (stk.head == nil) {
+	if stk.head == nil {
 		stk.head = &node
 	}
 	stk.Size++
@@ -37,9 +37,9 @@ func (stk *Queue) Dequeue() (interface{}, error) {
 		}
 		stk.tail.backward = stk.head
 		stk.Size--
-		return tmp.value,nil
+		return tmp.value, nil
 	}
-	return 0,fmt.Errorf("stack empty")
+	return 0, fmt.Errorf("stack empty")
 }
 
 func (stk *Queue) IsEmpty() bool {
@@ -58,7 +58,7 @@ func (stk *Queue) WalkQueue() {
 }
 func (stk *Queue) walkQueue(node *queueNode) {
 	if node != nil {
-		fmt.Println(node,"\b,")
+		fmt.Println(node, "\b,")
 		if node == stk.tail {
 			fmt.Println()
 			return

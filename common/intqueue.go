@@ -8,7 +8,7 @@ type intQueueNode struct {
 }
 type IntQueue struct {
 	head, tail *intQueueNode
-	Size int
+	Size  int
 }
 
 func (stk *IntQueue) Queue(num int) {
@@ -18,12 +18,12 @@ func (stk *IntQueue) Queue(num int) {
 	if tmp != nil {
 		tmp.backward = stk.tail
 	}
-	if (stk.head == nil) {
+	if stk.head == nil {
 		stk.head = &node
 	}
 	stk.Size++
 }
-func (stk *IntQueue) Dequeue() (int,error) {
+func (stk *IntQueue) Dequeue() (int, error) {
 	if stk.head != nil {
 		tmp := stk.head
 		if stk.head == stk.tail {
@@ -33,9 +33,9 @@ func (stk *IntQueue) Dequeue() (int,error) {
 		}
 		stk.tail.backward = stk.head
 		stk.Size--
-		return tmp.value,nil
+		return tmp.value, nil
 	}
-	return 0,fmt.Errorf("stack empty")
+	return 0, fmt.Errorf("stack empty")
 }
 
 func (stk *IntQueue) IsEmpty() bool {
@@ -54,7 +54,7 @@ func (stk *IntQueue) WalkQueue() {
 }
 func (stk *IntQueue) walkQueue(node *intQueueNode) {
 	if node != nil {
-		fmt.Println(node,"\b,")
+		fmt.Println(node, "\b,")
 		if node == stk.tail {
 			fmt.Println()
 			return

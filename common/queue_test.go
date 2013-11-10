@@ -1,13 +1,14 @@
 package common
 
 import "testing"
+
 //import "fmt"
 
 func Test_IsEmpty(t *testing.T) {
 
 	q := &IntQueue{}
-	
-	if ! q.IsEmpty() {
+
+	if !q.IsEmpty() {
 		t.Error("Queue has no items, but IsEmpty() returned false.")
 	}
 }
@@ -21,9 +22,9 @@ func Test_AddIsNotEmpty(t *testing.T) {
 	if q.IsEmpty() {
 		t.Error("Stack should not be empty.")
 	}
-	
+
 	value, error := q.Dequeue()
-	
+
 	if error != nil || value != 1 {
 		t.Error("Unexpected value when dequeuing item from stack")
 	}
@@ -43,7 +44,7 @@ func Test_AddMultipleItems(t *testing.T) {
 
 	value1, error := q.Dequeue()
 
-	t.Log("Item dequeued is ", value1);
+	t.Log("Item dequeued is ", value1)
 
 	if error != nil {
 		t.Error("Unexpected error dequeuing item.")
@@ -53,8 +54,8 @@ func Test_AddMultipleItems(t *testing.T) {
 
 	value2, error := q.Dequeue()
 
-	t.Log("Item dequeued is ", value2);
-	
+	t.Log("Item dequeued is ", value2)
+
 	if error != nil {
 		t.Error("Unexpected error dequeuing item.")
 	} else if value2 != 15 {
@@ -63,14 +64,13 @@ func Test_AddMultipleItems(t *testing.T) {
 
 	value3, error := q.Dequeue()
 
-	t.Log("Item dequeued is ", value3);
-	
+	t.Log("Item dequeued is ", value3)
+
 	if error != nil {
 		t.Error("Unexpected error dequeuing item.")
 	} else if value3 != 1998 {
 		t.Error("Unexpected value when dequeuing item.")
 	}
-	
 
 	if !q.IsEmpty() {
 		t.Error("Queue should be empty.")
@@ -81,15 +81,15 @@ func Test_DeQueueWithNoItems(t *testing.T) {
 
 	q := &IntQueue{}
 	value, error := q.Dequeue()
-	
-	if (!(error != nil && value == 0)) {
+
+	if !(error != nil && value == 0) {
 		t.Error("Expected empty stack error and 0 for value.", error, value)
 	}
 
 }
 
 func Test_WalkQueue(t *testing.T) {
-	
+
 	q := &IntQueue{}
 	q.Queue(133)
 	q.Queue(999)
@@ -103,16 +103,16 @@ func Test_WalkQueue(t *testing.T) {
 }
 
 func Test_OverDequeue(t *testing.T) {
-		
+
 	q := &IntQueue{}
 	q.Queue(133)
 	q.Queue(999)
 
 	q.Dequeue()
 	q.Dequeue()
-	value, error :=	q.Dequeue()
+	value, error := q.Dequeue()
 
-	if (!(error != nil && value == 0)) {
+	if !(error != nil && value == 0) {
 		t.Error("Expected empty stack error and 0 for value.", error, value)
 	}
 

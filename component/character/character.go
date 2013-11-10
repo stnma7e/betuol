@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	HEALTH		= iota
-	MANA		= iota
-	STRENGTH	= iota
-	INTELLIGENCE	= iota
-	RANGEOFSIGHT	= iota
+	HEALTH       = iota
+	MANA         = iota
+	STRENGTH     = iota
+	INTELLIGENCE = iota
+	RANGEOFSIGHT = iota
 
-	NUM_ATTRIBUTES  = iota
+	NUM_ATTRIBUTES = iota
 
 	RESIZESTEP = 20
 )
@@ -19,7 +19,7 @@ const (
 type Interaction func(id1 component.GOiD, id2 component.GOiD)
 
 type CharacterAttributes struct {
-	Attributes [NUM_ATTRIBUTES]float32
+	Attributes                     [NUM_ATTRIBUTES]float32
 	Description, Greeting, Faction string
 }
 

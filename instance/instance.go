@@ -1,25 +1,25 @@
 package instance
 
 import (
-	"time"
-	"math/rand"
 	"fmt"
-	"strings"
+	"math/rand"
 	"strconv"
+	"strings"
+	"time"
 
+	"smig/common"
 	"smig/component"
-	"smig/component/scenemanager"
+	"smig/component/ai"
+	"smig/component/character"
 	"smig/component/gofactory"
 	"smig/component/physics"
-	"smig/component/character"
-	"smig/component/ai"
-        "smig/component/quest"
-	"smig/res"
-	"smig/math"
+	"smig/component/quest"
+	"smig/component/scenemanager"
 	"smig/event"
 	"smig/graphics"
-        "smig/net"
-	"smig/common"
+	"smig/math"
+	"smig/net"
+	"smig/res"
 )
 
 type Instance struct {
@@ -30,11 +30,11 @@ type Instance struct {
 	rm  *res.ResourceManager
 	em  *event.EventManager
 	am  *ai.AiManager
-        qm  *quest.QuestManager
+	qm  *quest.QuestManager
 	gm  *graphics.GraphicsManager
-        nm  *net.NetworkManager
+	nm  *net.NetworkManager
 
-        tmSnapshot scenemanager.TransformManager
+	tmSnapshot scenemanager.TransformManager
 
 	returnlink  chan bool
 	commandlink chan string
@@ -43,11 +43,11 @@ type Instance struct {
 }
 
 func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager, nm *net.NetworkManager) *Instance {
-	em  := event.MakeEventManager()
-	tm  := scenemanager.MakeTransformManager(em)
+	em := event.MakeEventManager()
+	tm := scenemanager.MakeTransformManager(em)
 	gof := gofactory.MakeGameObjectFactory(tm)
-	cm  := character.MakeCharacterManager(tm, em)
-	is  := &Instance {
+	cm := character.MakeCharacterManager(tm, em)
+	is := &Instance{
 		gof,
 		tm,
 		physics.MakePhysicsManager(tm),
@@ -55,10 +55,10 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 		rm,
 		em,
 		ai.MakeAiManager(tm, cm, em),
-                quest.MakeQuestManager(),
+		quest.MakeQuestManager(),
 		gm,
-                nm,
-                *tm,
+		nm,
+		*tm,
 		returnlink,
 		make(chan string),
 		0,
@@ -68,7 +68,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.gof.Register("character", is.cm, is.cm.JsonCreate)
 	is.gof.Register("ai", is.am, is.am.JsonCreate)
 	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
-        is.gof.Register("quest", is.qm, is.qm.JsonCreate)
+	is.gof.Register("quest", is.qm, is.qm.JsonCreate)
 
 	is.am.RegisterComputer("enemy", is.am.EnemyDecide)
 	is.am.RegisterComputer("player", is.am.PlayerDecide)
@@ -76,10 +76,10 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
 	is.em.RegisterListener("attack", is.qm.HandleEvent)
-        is.em.RegisterListener("characterMoved", is.qm.HandleEvent)
+	is.em.RegisterListener("characterMoved", is.qm.HandleEvent)
 	is.em.RegisterListener("kill", is.qm.HandleEvent)
-        is.em.RegisterListener("chat", is.cm.HandleChat)
-        is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
+	is.em.RegisterListener("chat", is.cm.HandleChat)
+	is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -100,13 +100,12 @@ func (is *Instance) Loop() {
 	}()
 
 	is.player = is.CreateObject("player", "0,0,0")
-        is.qm.AddQuest(is.player, is.qm.FirstQuest)
-        is.tm.SetLocation(is.player, math.Vec3{3,0,0})
+	is.qm.AddQuest(is.player, is.qm.FirstQuest)
+	is.tm.SetLocation(is.player, math.Vec3{3, 0, 0})
 
-        is.StartScript()
+	is.StartScript()
 
-
-        for numTicks := 0; ; {
+	for numTicks := 0; ; {
 		<-ticks.C
 
 		newTime := time.Since(oldTime)
@@ -115,24 +114,24 @@ func (is *Instance) Loop() {
 
 		// fmt.Println(newTime)
 
-                _, err := is.nm.RecieveBytes(100, 5)
-                if err != nil {
-                    //common.LogWarn.Print(err)
-                }
-                //fmt.Println(data)
+		_, err := is.nm.RecieveBytes(100, 5)
+		if err != nil {
+			//common.LogWarn.Print(err)
+		}
+		//fmt.Println(data)
 
 		is.ParseSysConsole()
 
-                if numTicks % 10 == 0 {
-                    is.am.Tick(secs)
-                }
+		if numTicks%10 == 0 {
+			is.am.Tick(secs)
+		}
 
 		is.em.Tick(secs)
-                is.qm.Tick(secs)
+		is.qm.Tick(secs)
 		is.cm.Tick(secs)
-                //is.pm.Tick(secs)
+		//is.pm.Tick(secs)
 		is.tm.Tick(secs)
-                is.tmSnapshot = *is.tm
+		is.tmSnapshot = *is.tm
 	}
 }
 
@@ -176,34 +175,34 @@ func (is *Instance) Shutdown() {
 
 func (is *Instance) CreateFromMap(mapName string) []component.GOiD {
 	jmap := is.rm.LoadJsonMap(mapName)
-        return is.gof.CreateFromMap(&jmap)
+	return is.gof.CreateFromMap(&jmap)
 }
 
 func (is *Instance) CreateObject(objName, location string) component.GOiD {
 	components := is.rm.LoadGameObject(objName)
-	strLoc := strings.Split(location,",")
+	strLoc := strings.Split(location, ",")
 	f1, err := strconv.ParseFloat(strLoc[0], 32)
 	f2, err := strconv.ParseFloat(strLoc[1], 32)
 	f3, err := strconv.ParseFloat(strLoc[2], 32)
 	if err != nil {
 		fmt.Println(err)
 	}
-	id, err := is.gof.Create(components, math.Vec3{float32(f1),float32(f2),float32(f3)})
+	id, err := is.gof.Create(components, math.Vec3{float32(f1), float32(f2), float32(f3)})
 	if err != nil {
 		common.LogErr.Print(err)
 	}
 	// is.pm.AddForce(id, math.Vec3{0,0.5,0})
-	fmt.Println("\tid:",id)
+	fmt.Println("\tid:", id)
 
 	return id
 }
 
 func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {
-        snap := is.tmSnapshot
-        // prevents the snapshot from changing during the rendering process
+	snap := is.tmSnapshot
+	// prevents the snapshot from changing during the rendering process
 	return &snap
 }
 
 func (is *Instance) GetEventManager() *event.EventManager {
-    return is.em
+	return is.em
 }

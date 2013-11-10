@@ -2,12 +2,12 @@ package graphics
 
 import (
 	"encoding/json"
-        //"fmt"
+	//"fmt"
 
-	"smig/math"
+	"smig/common"
 	"smig/component"
+	"smig/math"
 	"smig/res"
-        "smig/common"
 
 	"github.com/go-gl/gl"
 )
@@ -16,21 +16,20 @@ const (
 	RESIZESTEP = 1
 )
 
-
 type GraphicsManager struct {
 	window *GlGraphicsManager
-	rm *res.ResourceManager
+	rm     *res.ResourceManager
 
 	models []*Model
 
-	modellink chan ModelTransfer
-	errorlink chan error
-        renderTypeMap map[string]Renderer
-        renderMap map[string]*common.Vector
+	modellink     chan ModelTransfer
+	errorlink     chan error
+	renderTypeMap map[string]Renderer
+	renderMap     map[string]*common.Vector
 }
 
 type ModelTransfer struct {
-	id component.GOiD
+	id    component.GOiD
 	model *GraphicsComponent
 }
 type GraphicsComponent struct {
@@ -38,34 +37,34 @@ type GraphicsComponent struct {
 }
 
 func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {
-      gm := &GraphicsManager{
+	gm := &GraphicsManager{
 		window, rm,
 		make([]*Model, 0),
 		make(chan ModelTransfer),
 		make(chan error),
-                make(map[string]Renderer),
-                make(map[string]*common.Vector),
+		make(map[string]Renderer),
+		make(map[string]*common.Vector),
 	}
 
-        gm.RegisterRenderer("fragmentLighting", MakeFragmentPointLightingRenderer(rm, window))
-        for k,_ := range gm.renderTypeMap {
-            gm.renderMap[k] = common.MakeVector()
-        }
+	gm.RegisterRenderer("fragmentLighting", MakeFragmentPointLightingRenderer(rm, window))
+	for k, _ := range gm.renderTypeMap {
+		gm.renderMap[k] = common.MakeVector()
+	}
 
-        return gm
+	return gm
 }
 
 func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {
 	obj := GraphicsComponent{}
-        err := json.Unmarshal(compData, &obj)
-        if err != nil {
-            common.LogErr.Println(err)
-        }
-        // load model before sending it to the main thread
-        // you can send a goroutine to load the non-GL information,
-        // then use the main thread to do all the OpenGL related stuff
+	err := json.Unmarshal(compData, &obj)
+	if err != nil {
+		common.LogErr.Println(err)
+	}
+	// load model before sending it to the main thread
+	// you can send a goroutine to load the non-GL information,
+	// then use the main thread to do all the OpenGL related stuff
 
-	gm.modellink <- ModelTransfer{ id, &obj }
+	gm.modellink <- ModelTransfer{id, &obj}
 
 	return <-gm.errorlink
 }
@@ -73,20 +72,20 @@ func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error 
 func (gm *GraphicsManager) CreateComponent(id component.GOiD, model *Model, renderer string) error {
 	gm.resizeArrays(id)
 	gm.models[id] = model
-        rend, ok := gm.renderMap[renderer]
-        if !ok {
-            common.LogErr.Printf("no renderer for type '%s'\n", renderer)
-        } else {
-            rend.Push_back(id, 1,1)
-        }
+	rend, ok := gm.renderMap[renderer]
+	if !ok {
+		common.LogErr.Printf("no renderer for type '%s'\n", renderer)
+	} else {
+		rend.Push_back(id, 1, 1)
+	}
 
 	return nil
 }
 
 func (gm *GraphicsManager) resizeArrays(id component.GOiD) {
-	if cap(gm.models) - 1 < int(id) {
+	if cap(gm.models)-1 < int(id) {
 		newModels := gm.models
-		gm.models = make([]*Model, id + RESIZESTEP)
+		gm.models = make([]*Model, id+RESIZESTEP)
 		for i := range newModels {
 			gm.models[i] = newModels[i]
 		}
@@ -120,31 +119,30 @@ func (gm *GraphicsManager) Tick() bool {
 func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneManager) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        //for i := 1; i < len(gm.models); i++ {
-          //fmt.Println(gm.models[i])
-                //transMat := tm.GetTransform4m(component.GOiD(i))
-                //bounding := tm.GetBoundingSphere(component.GOiD(i))
-                //if gm.models[i] == nil {
-                        //continue
-                //}
-                //if camera.ContainsSphere(bounding) > math.OUTSIDE {
-                        //gm.window.Render(*gm.models[i], transMat, camera.LookAtMatrix(), camera.Projection())
-                //}
-        //}
+	//for i := 1; i < len(gm.models); i++ {
+	//fmt.Println(gm.models[i])
+	//transMat := tm.GetTransform4m(component.GOiD(i))
+	//bounding := tm.GetBoundingSphere(component.GOiD(i))
+	//if gm.models[i] == nil {
+	//continue
+	//}
+	//if camera.ContainsSphere(bounding) > math.OUTSIDE {
+	//gm.window.Render(*gm.models[i], transMat, camera.LookAtMatrix(), camera.Projection())
+	//}
+	//}
 
-        //fmt.Println(camera.LookAtMatrix(), camera.Projection())
+	//fmt.Println(camera.LookAtMatrix(), camera.Projection())
 
-        for k,v := range gm.renderTypeMap {
-            models := gm.renderMap[k].Array()
-            for i := range models {
-                id := models[i].(component.GOiD)
-                transMat := tm.GetTransform4m(id)
-                //gm.window.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
-                v.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
-            }
-        }
+	for k, v := range gm.renderTypeMap {
+		models := gm.renderMap[k].Array()
+		for i := range models {
+			id := models[i].(component.GOiD)
+			transMat := tm.GetTransform4m(id)
+			//gm.window.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
+			v.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
+		}
+	}
 }
-
 
 func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
 	return gm.window.HandleInputs(eye, target, up)
@@ -159,5 +157,5 @@ func (gm *GraphicsManager) GetSize() (int, int) {
 }
 
 func (gm *GraphicsManager) RegisterRenderer(rendType string, rend Renderer) {
-    gm.renderTypeMap[rendType] = rend
+	gm.renderTypeMap[rendType] = rend
 }

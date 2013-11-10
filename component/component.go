@@ -3,6 +3,7 @@ package component
 import "smig/math"
 
 type GOiD uint32
+
 const NULLINDEX = 0
 
 type ComponentManager interface {
@@ -10,7 +11,7 @@ type ComponentManager interface {
 }
 
 type SceneManager interface {
-    GetTransform4m(index GOiD) math.Mat4x4
+	GetTransform4m(index GOiD) math.Mat4x4
 }
 
 type GameObject map[string][]byte
@@ -21,7 +22,7 @@ type MapLocation struct {
 	Entities []MapEntity
 }
 type MapEntity struct {
-	Breed string
+	Breed    string
 	CompList GameObject
 	Quantity int
 }

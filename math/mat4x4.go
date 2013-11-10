@@ -24,50 +24,50 @@ func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {
 // m12, m13, m14, m15
 
 //func (mat Mat4x4) Inverse() Mat4x4 {
-    //mat2 := mat
-    //mat2[1] = mat[4]
-    //mat2[2] = mat[8]
-    //mat2[6] = mat[9]
-    //mat2[4] = mat[1]
-    //mat2[8] = mat[2]
-    //mat2[9] = mat[6]
+//mat2 := mat
+//mat2[1] = mat[4]
+//mat2[2] = mat[8]
+//mat2[6] = mat[9]
+//mat2[4] = mat[1]
+//mat2[8] = mat[2]
+//mat2[9] = mat[6]
 
-    //mat2[3] = -mat[3]
-    //mat2[7] = -mat[7]
-    //mat2[11] = -mat[11]
+//mat2[3] = -mat[3]
+//mat2[7] = -mat[7]
+//mat2[11] = -mat[11]
 
-    //return mat2
+//return mat2
 //}
 
 func (mat Mat4x4) Inverse() Mat4x4 {
-        var segs [4]Mat2x2 // four corner 2x2 matrices
-        segs[0] = Mat2x2{mat[0],mat[1],mat[4],mat[5]}
-        segs[1] = Mat2x2{mat[2],mat[3],mat[6],mat[7]}
-        segs[2] = Mat2x2{mat[8],mat[9],mat[12],mat[13]}
-        segs[3] = Mat2x2{mat[10],mat[11],mat[14],mat[15]}
-        for i := range segs {
-                segs[i].Invert()
-        }
+	var segs [4]Mat2x2 // four corner 2x2 matrices
+	segs[0] = Mat2x2{mat[0], mat[1], mat[4], mat[5]}
+	segs[1] = Mat2x2{mat[2], mat[3], mat[6], mat[7]}
+	segs[2] = Mat2x2{mat[8], mat[9], mat[12], mat[13]}
+	segs[3] = Mat2x2{mat[10], mat[11], mat[14], mat[15]}
+	for i := range segs {
+		segs[i].Invert()
+	}
 
-        mat[0],mat[1],mat[4],mat[5]	= segs[0].Split()
-        mat[2],mat[3],mat[6],mat[7]	= segs[1].Split()
-        mat[8],mat[9],mat[12],mat[13]	= segs[2].Split()
-        mat[10],mat[11],mat[14],mat[15]	= segs[3].Split()
+	mat[0], mat[1], mat[4], mat[5] = segs[0].Split()
+	mat[2], mat[3], mat[6], mat[7] = segs[1].Split()
+	mat[8], mat[9], mat[12], mat[13] = segs[2].Split()
+	mat[10], mat[11], mat[14], mat[15] = segs[3].Split()
 
-        for i := range mat {
-                if math.IsNaN(float64(mat[i])) {
-                        mat[i] = 0
-                }
-        }
+	for i := range mat {
+		if math.IsNaN(float64(mat[i])) {
+			mat[i] = 0
+		}
+	}
 
-        return mat
+	return mat
 }
 
 func (m *Mat4x4) MakeIdentity() {
 	for i := range m {
 		m[i] = 0
 	}
-	m[0], m[5], m[10], m[15] = 1,1,1,1
+	m[0], m[5], m[10], m[15] = 1, 1, 1, 1
 }
 
 func (m *Mat4x4) IsEmpty() bool {
@@ -96,17 +96,17 @@ func Mult4m4m(mat1, mat2 Mat4x4) Mat4x4 {
 }
 
 // func Mult4m4mj(mat1, mat2 Mat4x4) (ret Mat4x4) {
-// 	var rows [4]Vec4
-// 	var cols [4]Vec4
-// 	for i := 0; i < 4; i++ {
-// 		rows[i] = Vec4{mat1[0+(4*i)],mat1[1+(4*i)],mat1[2+(4*i)],mat1[3+(4*i)]}
-// 		cols[i] = Vec4{mat2[0+i],mat2[1+i],mat2[2+i],mat2[3+i]}
-// 	}
-// 	for i := 0; i < 4; i++ {
-// 		for j := 0; j < 4; j++ {
-// 			ret[j+(4*i)] = rows[i][0]*cols[j][0] + rows[i][1]*cols[j][1] + rows[i][2]*cols[j][2] + rows[i][3]*cols[j][3]
-// 		}
-// 	}
+//      var rows [4]Vec4
+//      var cols [4]Vec4
+//      for i := 0; i < 4; i++ {
+//              rows[i] = Vec4{mat1[0+(4*i)],mat1[1+(4*i)],mat1[2+(4*i)],mat1[3+(4*i)]}
+//              cols[i] = Vec4{mat2[0+i],mat2[1+i],mat2[2+i],mat2[3+i]}
+//      }
+//      for i := 0; i < 4; i++ {
+//              for j := 0; j < 4; j++ {
+//                      ret[j+(4*i)] = rows[i][0]*cols[j][0] + rows[i][1]*cols[j][1] + rows[i][2]*cols[j][2] + rows[i][3]*cols[j][3]
+//              }
+//      }
 
-// 	return
+//      return
 // }

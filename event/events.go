@@ -2,58 +2,65 @@ package event
 
 import (
 	"smig/component"
-        "smig/math"
+	"smig/math"
 )
 
 type AttackEvent struct {
-    Char1,Char2 component.GOiD
+	Char1, Char2 component.GOiD
 }
+
 func (at AttackEvent) GetEventType() string {
-    return "attack"
+	return "attack"
 }
 
 type DeathEvent struct {
-    Id component.GOiD
+	Id component.GOiD
 }
+
 func (dt DeathEvent) GetEventType() string {
-    return "death"
+	return "death"
 }
 
 type KillEvent struct {
-    Killer, Dead component.GOiD
+	Killer, Dead component.GOiD
 }
+
 func (ke KillEvent) GetEventType() string {
-    return "kill"
+	return "kill"
 }
 
 type QuestComplete struct {
-    Id component.GOiD
-    QuestName string
+	Id        component.GOiD
+	QuestName string
 }
+
 func (qt QuestComplete) GetEventType() string {
-    return "questComplete"
+	return "questComplete"
 }
 
 type ChatEvent struct {
-    Sender component.GOiD
-    Reciever component.GOiD
-    Message string
+	Sender   component.GOiD
+	Reciever component.GOiD
+	Message  string
 }
+
 func (ce ChatEvent) GetEventType() string {
-    return "chat"
+	return "chat"
 }
 
 type PlayerCreatedEvent struct {
-    PlayerID component.GOiD
+	PlayerID component.GOiD
 }
+
 func (ce PlayerCreatedEvent) GetEventType() string {
-    return "playerCreated"
+	return "playerCreated"
 }
 
 type CharacterMoveEvent struct {
-    CharID component.GOiD
-    NewLocation math.Vec3
+	CharID      component.GOiD
+	NewLocation math.Vec3
 }
+
 func (cme CharacterMoveEvent) GetEventType() string {
-    return "characterMoved"
+	return "characterMoved"
 }

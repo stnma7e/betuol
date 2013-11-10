@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"smig/common"
 	"smig/component"
 	"smig/event"
-	"smig/common"
 )
 
 const (
@@ -40,11 +40,11 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 }
 
 func PlayerLook(id component.GOiD, chars *CharacterManager) {
-	loc := chars.Scene.GetObjectLocation(id)
+	loc := chars.sm.GetObjectLocation(id)
 	ros := chars.attributeList[RANGEOFSIGHT][id]
-	stk := chars.Scene.GetObjectsInLocationRadius(loc, ros)
+	stk := chars.sm.GetObjectsInLocationRadius(loc, ros)
 	numObj := stk.Size
-	for i := 0; i < numObj; i ++ {
+	for i := 0; i < numObj; i++ {
 		charId, err := stk.Dequeue()
 		if err != nil {
 			common.LogErr.Print(err)
@@ -55,14 +55,14 @@ func PlayerLook(id component.GOiD, chars *CharacterManager) {
 		}
 
 		ca := chars.GetCharacterAttributes(component.GOiD(charId))
-                if ca.Description != "" {
-		    fmt.Println("\t",ca.Greet())
-                }
+		if ca.Description != "" {
+			fmt.Println("\t", ca.Greet())
+		}
 	}
 }
 
 func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
-	transMat := chars.Scene.GetTransformMatrix(id)
+	transMat := chars.sm.GetTransformMatrix(id)
 
 	switch direction {
 	case "north":
@@ -72,10 +72,11 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 	case "east":
 		transMat[3]++
 	case "west":
-		transMat[3]-- }
-	chars.Scene.SetTransform(id, transMat)
+		transMat[3]--
+	}
+	chars.sm.SetTransform(id, transMat)
 }
 
 func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {
-	chars.em.Send(event.AttackEvent{ player, enemy })
+	chars.em.Send(event.AttackEvent{player, enemy})
 }

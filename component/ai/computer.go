@@ -2,7 +2,7 @@ package ai
 
 import (
 	"fmt"
-	
+
 	"smig/component"
 	"smig/component/character"
 	"smig/event"
@@ -12,7 +12,7 @@ type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *chara
 
 func (am *AiManager) PlayerDecide(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager) {
 	ca := chars.GetCharacterAttributes(id)
-	loc :=  chars.Scene.GetObjectLocation(id)
+	loc := am.tm.GetObjectLocation(id)
 	fmt.Println(ca.Attributes[character.HEALTH], ca.Attributes[character.MANA], loc)
 
 	var command string
@@ -34,6 +34,5 @@ func (am *AiManager) EnemyDecide(id component.GOiD, neighbors []component.GOiD, 
 			continue
 		}
 	}
-	am.em.Send(event.AttackEvent{ id, component.GOiD(i) })
+	am.em.Send(event.AttackEvent{id, component.GOiD(i)})
 }
-

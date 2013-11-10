@@ -16,6 +16,5 @@ type WindowManager interface {
 	HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3)
 	DrawString(x, y float32, text string)
 	GetSize() (int, int)
-        SwapBuffers()
+	SwapBuffers()
 }
-

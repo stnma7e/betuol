@@ -1,26 +1,26 @@
 package res
 
 import (
-	"os"
-	"io"
-	"fmt"
 	"encoding/json"
-	"strings"
-	"strconv"
+	"fmt"
+	"io"
 	gomath "math"
+	"os"
+	"strconv"
+	"strings"
 
-	"smig/component"
 	"smig/common"
+	"smig/component"
 	"smig/math"
 )
 
 type ResourceManager struct {
 	fileDepot string
-	resMap map[string][]byte
+	resMap    map[string][]byte
 }
 
 func MakeResourceManager(fileDepot string) *ResourceManager {
-	return &ResourceManager {
+	return &ResourceManager{
 		fileDepot,
 		make(map[string][]byte),
 	}
@@ -75,7 +75,7 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 		gameobj[obj.Component[i]] = nil
 	}
 
-	for k,_ := range gameobj {
+	for k, _ := range gameobj {
 		gameobj[k] = rm.GetFileContents("map/gameobject/" + objType + "/" + k + ".json")
 	}
 
@@ -144,9 +144,9 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 				}
 				return false
 			})
-			one,   err 	:= strconv.ParseInt(ints[0*numAttributes], 10, 32)
-			two,   err 	:= strconv.ParseInt(ints[1*numAttributes], 10, 32)
-			three, err 	:= strconv.ParseInt(ints[2*numAttributes], 10, 32)
+			one, err := strconv.ParseInt(ints[0*numAttributes], 10, 32)
+			two, err := strconv.ParseInt(ints[1*numAttributes], 10, 32)
+			three, err := strconv.ParseInt(ints[2*numAttributes], 10, 32)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -154,7 +154,7 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 			index.Push_back(uint32(two-1), 1, 1)
 			index.Push_back(uint32(three-1), 1, 1)
 		}
-		
+
 	}
 
 	if verts.IsEmpty() {

@@ -2,12 +2,12 @@ package common
 
 type StackNode struct {
 	forward *StackNode
-	value interface{}
+	value   interface{}
 }
 
 type Stack struct {
 	head, tail *StackNode
-	Size int
+	Size       int
 }
 
 func (stk *Stack) Top() interface{} {
@@ -15,7 +15,7 @@ func (stk *Stack) Top() interface{} {
 }
 
 func (stk *Stack) Push(val interface{}) {
-	sn := StackNode {
+	sn := StackNode{
 		stk.tail,
 		val,
 	}

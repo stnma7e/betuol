@@ -3,11 +3,11 @@ package gofactory
 import (
 	"fmt"
 
-	"smig/component"
-        "smig/component/scenemanager"
 	"smig/common"
-	"smig/math"
+	"smig/component"
+	"smig/component/scenemanager"
 	"smig/event"
+	"smig/math"
 )
 
 const SceneType = "scene"
@@ -15,19 +15,19 @@ const SceneType = "scene"
 type CreationFunction func(component.GOiD, []byte) error
 
 type CreationManager struct {
-	mang component.ComponentManager
+	mang   component.ComponentManager
 	create CreationFunction
 }
 
 type GameObjectFactory struct {
-	topIndex component.GOiD
+	topIndex      component.GOiD
 	EventManagers map[string]CreationManager
 	vacantIndices common.IntQueue
-	tm *scenemanager.TransformManager
+	tm            *scenemanager.TransformManager
 }
 
 func MakeGameObjectFactory(tm *scenemanager.TransformManager) *GameObjectFactory {
-	gof := GameObjectFactory{ 1, make(map[string]CreationManager), common.IntQueue{}, tm }
+	gof := GameObjectFactory{1, make(map[string]CreationManager), common.IntQueue{}, tm}
 	return &gof
 }
 
@@ -36,7 +36,7 @@ func (gof *GameObjectFactory) Register(compType string, mang component.Component
 	if isthere {
 		return fmt.Errorf("attempt to register manager (%s) failed; space already filled", compType)
 	} else { // manager does not already exist
-		gof.EventManagers[compType] = CreationManager {
+		gof.EventManagers[compType] = CreationManager{
 			mang,
 			creationFunc,
 		}
@@ -61,7 +61,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component
 	}
 
 	count := idQueue.Size
-	idList := make([]component.GOiD,count)
+	idList := make([]component.GOiD, count)
 	for i := 0; !idQueue.IsEmpty(); i++ {
 		num, err := idQueue.Dequeue()
 		if err != nil {
@@ -84,9 +84,9 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 		common.LogErr.Print(err)
 		return component.NULLINDEX, err
 	}
-        gof.tm.SetLocation(id, location)
+	gof.tm.SetLocation(id, location)
 
-	for k,v := range compList {
+	for k, v := range compList {
 		mang, ok := gof.EventManagers[k]
 		if !ok {
 			common.LogWarn.Print("unregistered component.ComponentManager (%s) in compList", k)
@@ -106,7 +106,7 @@ func (gof *GameObjectFactory) Delete(index component.GOiD) {
 	if index == 0 {
 		return
 	}
-	for _,v := range gof.EventManagers {
+	for _, v := range gof.EventManagers {
 		v.mang.DeleteComponent(index)
 	}
 	gof.tm.DeleteComponent(index)

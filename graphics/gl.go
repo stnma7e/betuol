@@ -1,78 +1,78 @@
 package graphics
 
 import (
-        //"unsafe"
-        gomath "math"
-	"time"
+	//"unsafe"
+	gomath "math"
 	"os"
+	"time"
 
 	"github.com/go-gl/gl"
-	"github.com/go-gl/gltext"
 	glfw "github.com/go-gl/glfw3"
+	"github.com/go-gl/gltext"
 
-	"smig/math"
 	"smig/common"
+	"smig/math"
 	"smig/res"
 )
 
 const NOPROGRAM gl.Program = 0
-const NOVAO	gl.VertexArray = 0
+const NOVAO gl.VertexArray = 0
 
 var g_tex gl.Texture //= GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
 
 type GlGraphicsManager struct {
-	window *glfw.Window
+	window   *glfw.Window
 	modelMap map[string]*Model
 
 	loadedFont *gltext.Font
-        program gl.Program
+	program    gl.Program
 }
 
 func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {
-    if !glfw.Init() {
-        common.LogErr.Fatal("GLFW init failed.")
-    }
+	if !glfw.Init() {
+		common.LogErr.Fatal("GLFW init failed.")
+	}
 
-    glg := GlGraphicsManager{}
-    glg.modelMap = make(map[string]*Model)
+	glg := GlGraphicsManager{}
+	glg.modelMap = make(map[string]*Model)
 
-    window, err := glfw.CreateWindow(sizeX,sizeY,title,nil,nil)
-    if err != nil {
-	common.LogErr.Fatal(err)
-    }
-    glg.window = window
-    glg.MakeContextCurrent()
-    glg.window.SetKeyCallback(GlfwKeyCallback)
+	window, err := glfw.CreateWindow(sizeX, sizeY, title, nil, nil)
+	if err != nil {
+		common.LogErr.Fatal(err)
+	}
+	glg.window = window
+	glg.MakeContextCurrent()
+	glg.window.SetKeyCallback(GlfwKeyCallback)
 
-    gl.Enable(gl.CULL_FACE);
-    gl.CullFace(gl.BACK);
-    gl.FrontFace(gl.CCW);
+	gl.Enable(gl.CULL_FACE)
+	gl.CullFace(gl.BACK)
+	gl.FrontFace(gl.CCW)
 
-    gl.Enable(gl.DEPTH_TEST)
-    gl.Enable(gl.DEPTH_CLAMP)
-    gl.DepthFunc(gl.LESS)
-    gl.DepthRange(0.0, 1.0)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.DEPTH_CLAMP)
+	gl.DepthFunc(gl.LESS)
+	gl.DepthRange(0.0, 1.0)
 
-    gl.ClearColor(0.0,0.0,0.0,0.0)
-    gl.ClearDepth(1.0)
-    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    gl.Viewport(0,0,sizeX,sizeY)
+	gl.ClearColor(0.0, 0.0, 0.0, 0.0)
+	gl.ClearDepth(1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.Viewport(0, 0, sizeX, sizeY)
 
-    g_tex = GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
+	g_tex = GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
 
-    return &glg
+	return &glg
 }
 
 func (glg *GlGraphicsManager) Tick() {
-        glg.SwapBuffers()
+	glg.SwapBuffers()
 	glfw.PollEvents()
 
-	x,y := glg.window.GetSize()
-	gl.Viewport(0,0,x,y)
+	x, y := glg.window.GetSize()
+	gl.Viewport(0, 0, x, y)
 }
 
 func (glg *GlGraphicsManager) SwapBuffers() {
-        glg.window.SwapBuffers()
+	glg.window.SwapBuffers()
 }
 
 func (glg *GlGraphicsManager) ShouldClose() {
@@ -98,116 +98,116 @@ func GlfwKeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glf
 }
 
 // func (glg *GlGraphicsManager) HandleInputs(eye math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
-// 	mouse_x, mouse_y   := glg.window.GetCursorPosition()
-// 	window_x, window_y := glg.window.GetSize()
-// 	const mouseSpeed = 0.001
+//      mouse_x, mouse_y   := glg.window.GetCursorPosition()
+//      window_x, window_y := glg.window.GetSize()
+//      const mouseSpeed = 0.001
 
-// 	horizontalAngle := 3.14 + mouseSpeed * float64(window_x / 2) - mouse_x
-// 	verticalAngle   := mouseSpeed  * float64(window_y / 2) - mouse_y
+//      horizontalAngle := 3.14 + mouseSpeed * float64(window_x / 2) - mouse_x
+//      verticalAngle   := mouseSpeed  * float64(window_y / 2) - mouse_y
 
-// 	direction := math.Vec3{
-// 		float32(gomath.Cos(verticalAngle) * gomath.Sin(horizontalAngle)),
-// 		float32(gomath.Sin(verticalAngle)),
-// 		float32(gomath.Cos(verticalAngle) * gomath.Cos(horizontalAngle)),
-// 	}
-// 	right := math.Vec3 {
-// 		float32(gomath.Sin(horizontalAngle - 3.14 / 2.0)),
-// 		0,
-// 		float32(gomath.Cos(horizontalAngle - 3.14 / 2.0)),
-// 	}
-// 	up := math.Cross3v3v(right, direction)
+//      direction := math.Vec3{
+//              float32(gomath.Cos(verticalAngle) * gomath.Sin(horizontalAngle)),
+//              float32(gomath.Sin(verticalAngle)),
+//              float32(gomath.Cos(verticalAngle) * gomath.Cos(horizontalAngle)),
+//      }
+//      right := math.Vec3 {
+//              float32(gomath.Sin(horizontalAngle - 3.14 / 2.0)),
+//              0,
+//              float32(gomath.Cos(horizontalAngle - 3.14 / 2.0)),
+//      }
+//      up := math.Cross3v3v(right, direction)
 
-// 	if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-// 		eye = math.Add3v3v(eye, math.Mult3vf(direction, 0.1))
-// 	}	
-// 	if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-// 		eye = math.Sub3v3v(eye, math.Mult3vf(direction, 0.1))
-// 	}	
-// 	if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
-// 		eye = math.Add3v3v(eye, math.Mult3vf(right, 0.1))
-// 	}	
-// 	if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
-// 		eye = math.Sub3v3v(eye, math.Mult3vf(right, 0.1))
-// 	}
-// 	return eye, direction, up
+//      if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
+//              eye = math.Add3v3v(eye, math.Mult3vf(direction, 0.1))
+//      }
+//      if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
+//              eye = math.Sub3v3v(eye, math.Mult3vf(direction, 0.1))
+//      }
+//      if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
+//              eye = math.Add3v3v(eye, math.Mult3vf(right, 0.1))
+//      }
+//      if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
+//              eye = math.Sub3v3v(eye, math.Mult3vf(right, 0.1))
+//      }
+//      return eye, direction, up
 // }
 
 //func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
-	//if glg.window.GetKey(glfw.KeyLeftShift) == glfw.Press {
-		//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-		//eye = math.Add3v3v(eye, math.Vec3{0,0.1,0})
-		//}	
-		//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-			//eye = math.Sub3v3v(eye, math.Vec3{0,0.1,0})
-		//}	
-	//} else {
-		//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-			//eye = math.Add3v3v(eye, math.Vec3{0.1,0,0})
-		//}	
-		//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-			//eye = math.Sub3v3v(eye, math.Vec3{0.1,0,0})
-		//}
-		//if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
-			//eye = math.Add3v3v(eye, math.Vec3{0,0,0.1})
-		//}	
-		//if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
-			//eye = math.Sub3v3v(eye, math.Vec3{0,0,0.1})
-		//}
-	//}
-	//return eye, math.Vec3{}, math.Vec3{}
+//if glg.window.GetKey(glfw.KeyLeftShift) == glfw.Press {
+//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
+//eye = math.Add3v3v(eye, math.Vec3{0,0.1,0})
+//}
+//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
+//eye = math.Sub3v3v(eye, math.Vec3{0,0.1,0})
+//}
+//} else {
+//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
+//eye = math.Add3v3v(eye, math.Vec3{0.1,0,0})
+//}
+//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
+//eye = math.Sub3v3v(eye, math.Vec3{0.1,0,0})
+//}
+//if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
+//eye = math.Add3v3v(eye, math.Vec3{0,0,0.1})
+//}
+//if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
+//eye = math.Sub3v3v(eye, math.Vec3{0,0,0.1})
+//}
+//}
+//return eye, math.Vec3{}, math.Vec3{}
 //}
 
 func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
-        const STEPSIZE = 0.1
-        const MOUSESPEED = 0.0001
-        mouse_x, mouse_y := glg.window.GetCursorPosition()
-        win_w, win_h := glg.window.GetSize()
+	const STEPSIZE = 0.1
+	const MOUSESPEED = 0.0001
+	mouse_x, mouse_y := glg.window.GetCursorPosition()
+	win_w, win_h := glg.window.GetSize()
 
-        horizontalAngle := 3.14159 + (MOUSESPEED * (float64(win_w / 2) - mouse_x))
-        verticalAngle   := MOUSESPEED * (float64(win_h / 2) - mouse_y)
-        direction := math.Vec3 {
-            float32(gomath.Cos(verticalAngle) * gomath.Sin(horizontalAngle)),
-            float32(gomath.Sin(verticalAngle)),
-            float32(gomath.Cos(verticalAngle) * gomath.Cos(horizontalAngle)),
-        }
-        right := math.Vec3 {
-            float32(gomath.Sin(horizontalAngle - (3.14159 / 2.0))),
-            0,
-            float32(gomath.Cos(horizontalAngle - (3.14159 / 2.0))),
-        }
-        up = math.Cross3v3v(right, direction)
-        //var dtime float32 = 1
+	horizontalAngle := 3.14159 + (MOUSESPEED * (float64(win_w/2) - mouse_x))
+	verticalAngle := MOUSESPEED * (float64(win_h/2) - mouse_y)
+	direction := math.Vec3{
+		float32(gomath.Cos(verticalAngle) * gomath.Sin(horizontalAngle)),
+		float32(gomath.Sin(verticalAngle)),
+		float32(gomath.Cos(verticalAngle) * gomath.Cos(horizontalAngle)),
+	}
+	right := math.Vec3{
+		float32(gomath.Sin(horizontalAngle - (3.14159 / 2.0))),
+		0,
+		float32(gomath.Cos(horizontalAngle - (3.14159 / 2.0))),
+	}
+	up = math.Cross3v3v(right, direction)
+	//var dtime float32 = 1
 
-        left := math.Cross3v3v(target, up)
-        left = math.Mult3vf(math.Normalize3v(left), STEPSIZE)
-        //forward := math.Mult3vf(target, STEPSIZE)
+	left := math.Cross3v3v(target, up)
+	left = math.Mult3vf(math.Normalize3v(left), STEPSIZE)
+	//forward := math.Mult3vf(target, STEPSIZE)
 	if glg.window.GetKey(glfw.KeyLeftShift) == glfw.Press {
 		if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-		eye = math.Add3v3v(eye, math.Vec3{0,0.1,0})
+			eye = math.Add3v3v(eye, math.Vec3{0, 0.1, 0})
 		}
 		if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-			eye = math.Sub3v3v(eye, math.Vec3{0,0.1,0})
+			eye = math.Sub3v3v(eye, math.Vec3{0, 0.1, 0})
 		}
 	} else {
 		if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-                  //eye = math.Add3v3v(eye, math.Mult3vf(direction, dtime * STEPSIZE))
-                  eye = math.Add3v3v(eye, math.Vec3{0,0,0.1})
+			//eye = math.Add3v3v(eye, math.Mult3vf(direction, dtime * STEPSIZE))
+			eye = math.Add3v3v(eye, math.Vec3{0, 0, 0.1})
 		}
 		if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
 			//eye = math.Sub3v3v(eye, math.Mult3vf(direction, dtime * STEPSIZE))
-                  eye = math.Sub3v3v(eye, math.Vec3{0,0,0.1})
+			eye = math.Sub3v3v(eye, math.Vec3{0, 0, 0.1})
 		}
 		if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
 			//eye = math.Add3v3v(eye, math.Mult3vf(right, dtime * STEPSIZE))
-                  eye = math.Add3v3v(eye, math.Vec3{0.1,0,0})
+			eye = math.Add3v3v(eye, math.Vec3{0.1, 0, 0})
 		}
 		if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
 			//eye = math.Sub3v3v(eye, math.Mult3vf(right, dtime * STEPSIZE))
-                  eye = math.Sub3v3v(eye, math.Vec3{0.1,0,0})
+			eye = math.Sub3v3v(eye, math.Vec3{0.1, 0, 0})
 		}
 	}
 	//return eye, math.Add3v3v(eye, direction), up
-        return eye, target, up
+	return eye, target, up
 }
 
 //*****************************
@@ -227,8 +227,8 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	var vertsVector, indiciesVector, normsVector, uvVector *common.Vector
 	//var boundingRadius float32
 	switch comp.MeshType {
-		case "wavefront":
-			vertsVector, indiciesVector, normsVector, uvVector, /*boundingRadius*/_ = rm.LoadModelWavefront(comp.Mesh)
+	case "wavefront":
+		vertsVector, indiciesVector, normsVector, uvVector /*boundingRadius*/, _ = rm.LoadModelWavefront(comp.Mesh)
 	}
 	//fmt.Println(boundingRadius)
 
@@ -257,9 +257,9 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	}
 
 	tex := make([]gl.Texture, 1)
-        tex[0] = g_tex
+	tex[0] = g_tex
 
-        //fmt.Println(verts, inx)
+	//fmt.Println(verts, inx)
 	model := MakeModel(verts, indicies, norms, uvs, tex)
 	glg.modelMap[comp.ModelName] = &model
 
@@ -276,7 +276,7 @@ func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
 		infoLog := shader.GetInfoLog()
 		shader.Delete()
 		common.LogErr.Printf("failed to compile shader type: %e\n\t%s", shadType, infoLog)
-                panic("")
+		panic("")
 	}
 
 	return shader
@@ -323,7 +323,7 @@ func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {
 	const sample = "0 1 2 3 4 5 6 7 8 9 A B C D E F"
 	if glg.loadedFont == nil {
 		common.LogWarn.Print("font not yet loaded.")
-                glg.LoadFont()
+		glg.LoadFont()
 	}
 	_, h := glg.loadedFont.GlyphBounds()
 	y = y + float32(h)
@@ -335,8 +335,8 @@ func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {
 	gl.Color4f(1, 1, 1, 1)
 	err := glg.loadedFont.Printf(x, y, text)
 	if err != nil {
-                //common.LogErr.Print(err)
-                // spams error messages
-                // NEED TO FIX LATER
+		//common.LogErr.Print(err)
+		// spams error messages
+		// NEED TO FIX LATER
 	}
 }

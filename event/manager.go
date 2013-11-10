@@ -16,39 +16,39 @@ type EventManager struct {
 }
 
 func MakeEventManager() *EventManager {
-	return &EventManager {
+	return &EventManager{
 		make(chan Event),
 		make(map[string]*common.Queue),
 	}
 }
 
 func (em *EventManager) Tick(delta float64) {
-    for {
-	select {
-	case evt := <-em.eventlink:
-		listeners, ok := em.listenerMap[evt.GetEventType()]
-		if !ok {
-			common.LogErr.Printf("no listener registered for %s", evt.GetEventType())
-                        break
+	for {
+		select {
+		case evt := <-em.eventlink:
+			listeners, ok := em.listenerMap[evt.GetEventType()]
+			if !ok {
+				common.LogErr.Printf("no listener registered for %s", evt.GetEventType())
+				break
+			}
+			listenersArray := listeners.Array()
+			for i := range listenersArray {
+				listenersArray[i].(EventListener)(evt)
+			}
+		default:
+			return
 		}
-		listenersArray := listeners.Array()
-		for i := range listenersArray {
-			listenersArray[i].(EventListener)(evt)
-		}
-	default:
-            return
 	}
-    }
 }
 
 func (em *EventManager) RegisterListener(eventType string, listener EventListener) {
-        _, ok := em.listenerMap[eventType]
-        if !ok {
-            em.listenerMap[eventType] = &common.Queue{}
-        }
-        if em.listenerMap[eventType] == nil {
-            em.listenerMap[eventType] = &common.Queue{}
-        }
+	_, ok := em.listenerMap[eventType]
+	if !ok {
+		em.listenerMap[eventType] = &common.Queue{}
+	}
+	if em.listenerMap[eventType] == nil {
+		em.listenerMap[eventType] = &common.Queue{}
+	}
 	em.listenerMap[eventType].Queue(listener)
 }
 
