@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"bufio"
+	"os"
 
 	"smig/common"
 	"smig/component"
@@ -92,10 +94,23 @@ func (is *Instance) Loop() {
 	ticks := time.NewTicker(time.Second / 60)
 
 	go func() {
+		r := bufio.NewReaderSize(os.Stdin, 4*1024)
 		for {
-			var command string
-			fmt.Scan(&command)
-			is.commandlink <- command
+			line, err := r.ReadString('\n')
+			if err != nil {
+				common.LogErr.Println(err)
+			}
+			s := string(line)
+			if s[len(s)-1] == '\n' {
+				s = line[:len(s)-1]
+			}
+			if s[len(s)-1] == '\r' {
+				s = line[:len(s)-1]
+			}
+			if s != "" {
+				is.commandlink <- s
+				s = ""
+			}
 		}
 	}()
 
@@ -104,6 +119,8 @@ func (is *Instance) Loop() {
 	is.tm.SetLocation(is.player, math.Vec3{3, 0, 0})
 
 	is.StartScript()
+
+	//is.am.SetUpdateAiNearPlayer(false)
 
 	for numTicks := 0; ; {
 		<-ticks.C
@@ -138,21 +155,28 @@ func (is *Instance) Loop() {
 func (is *Instance) ParseSysConsole() {
 	select {
 	case command := <-is.commandlink:
-		switch command {
+		args := strings.SplitAfter(command, " ")
+		for i := range args {
+			if i == len(args)-1 {
+				continue
+			}
+			args[i] = args[i][:len(args[i])-1]
+		}
+		fmt.Println(args)
+		switch args[0] {
 		case "exit":
 			is.returnlink <- true
 		case "loadmap":
-			var arg string
-			fmt.Scan(&arg)
-			is.CreateFromMap(arg)
+			is.CreateFromMap(args[1])
 		case "loadobj":
-			var breed, location string
-			fmt.Scan(&breed, &location)
-			is.CreateObject(breed, location)
+			is.CreateObject(args[1], args[2])
+			//is.CreateObject(breed, location)
 		case "runai":
-			var arg component.GOiD
-			fmt.Scan(&arg)
-			is.am.RunAi(arg)
+			arg, err := strconv.Atoi(args[1])
+			if err != nil {
+				common.LogErr.Println(err)
+			}
+			is.am.RunAi(component.GOiD(arg))
 		case "player":
 			is.am.RunAi(is.player)
 		default:

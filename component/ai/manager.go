@@ -26,6 +26,8 @@ type AiManager struct {
 	cm *character.CharacterManager
 	tm *scenemanager.TransformManager
 	em *event.EventManager
+
+	aiTicker func(delta float64)
 }
 
 func MakeAiManager(tm *scenemanager.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {
@@ -36,10 +38,33 @@ func MakeAiManager(tm *scenemanager.TransformManager, cm *character.CharacterMan
 	am.cm = cm
 	am.tm = tm
 	am.em = em
+	am.aiTicker = am.UpdateAiNearPlayer
 	return &am
 }
 
 func (am *AiManager) Tick(delta float64) {
+	am.aiTicker(delta)
+}
+
+func (am *AiManager) UpdateAi(delta float64) {
+	players := am.players.Array()
+	for k,_ := range am.computerMap {
+		if func() bool {
+			for i := range players {
+				if k == players[i].(component.GOiD) {
+					return true
+				}
+			}
+			return false
+		}() { //end func
+			continue
+		} else {
+			am.RunAi(component.GOiD(k))
+		}
+	}
+}
+
+func (am *AiManager) UpdateAiNearPlayer(delta float64) {
 	players := am.players.Array()
 	for i := range players {
 		loc := am.tm.GetObjectLocation(players[i].(component.GOiD))
@@ -114,6 +139,14 @@ func (am *AiManager) DeleteComponent(id component.GOiD) {
 
 func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {
 	am.computerTypeMap[aiType] = computer
+}
+
+func (am *AiManager) SetUpdateAiNearPlayer(yes bool) {
+	if yes {
+		am.aiTicker = am.UpdateAiNearPlayer
+	} else {
+		am.aiTicker = am.UpdateAi
+	}
 }
 
 func (am *AiManager) HandlePlayerCreated(evt event.Event) {
