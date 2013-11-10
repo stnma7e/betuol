@@ -11,19 +11,16 @@ type QuestManager struct {
 	quests map[component.GOiD]QuestState
 }
 
-func MakeQuestManager() *QuestManager {
+func MakeQuestManager(em *event.EventManager) *QuestManager {
 	qm := &QuestManager{
-		event.MakeEventManager(),
+		em,
 		make(map[component.GOiD]QuestState),
 	}
-
-	qm.em.RegisterListener("questComplete", qm.QuestComplete)
 
 	return qm
 }
 
 func (qm *QuestManager) Tick(delta float64) {
-	qm.em.Tick(delta)
 }
 
 func (qm *QuestManager) JsonCreate(id component.GOiD, data []byte) error {
@@ -53,5 +50,5 @@ func (qm *QuestManager) HandleEvent(evt event.Event) {
 
 func (qm *QuestManager) QuestComplete(evt event.Event) {
 	qevt := evt.(event.QuestComplete)
-	common.LogInfo.Printf("Congrats, %v. You completed the quest: %s.", qevt.Id, qevt.QuestName)
+	common.LogInfo.Printf("%v completed the quest: %s.", qevt.Id, qevt.QuestName)
 }

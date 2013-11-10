@@ -57,7 +57,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 		rm,
 		em,
 		ai.MakeAiManager(tm, cm, em),
-		quest.MakeQuestManager(),
+		quest.MakeQuestManager(em),
 		gm,
 		nm,
 		*tm,
@@ -80,6 +80,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.em.RegisterListener("attack", is.qm.HandleEvent)
 	is.em.RegisterListener("characterMoved", is.qm.HandleEvent)
 	is.em.RegisterListener("kill", is.qm.HandleEvent)
+	is.em.RegisterListener("questComplete", is.qm.QuestComplete)
 	is.em.RegisterListener("chat", is.cm.HandleChat)
 	is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
 

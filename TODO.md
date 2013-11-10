@@ -15,6 +15,8 @@ TODO
 
 - Fix 4x4 matrix inverse
 
+- Add sorting method to sort events by time in EventManager
+
 <u>_Long-term_</u>
 ---------
 

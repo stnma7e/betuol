@@ -3,22 +3,26 @@ package character
 import (
 	"fmt"
 	"math/rand"
-	"strconv"
 
+	"smig/component"
 	"smig/common"
 	"smig/event"
 )
 
-func chat(r, s, m string) {
-	fmt.Printf("%s says to %s: %s\n", s, r, m)
+func chat(r, s component.GOiD, m string) {
+	if r == 0 {
+		fmt.Printf("%v says to WORLD: %s\n", s, m)
+	} else {
+		fmt.Printf("%v says to %v: %s\n", s, r, m)
+	}
 }
 func (cm *CharacterManager) HandleChat(evt event.Event) {
 	cevt := evt.(event.ChatEvent)
 	switch cevt.Reciever {
 	case 0:
-		chat("WORLD", strconv.Itoa(int(cevt.Sender)), cevt.Message)
+		chat(0, cevt.Sender, cevt.Message)
 	default:
-		chat(strconv.Itoa(int(cevt.Reciever)), strconv.Itoa(int(cevt.Sender)), cevt.Message)
+		chat(cevt.Reciever, cevt.Sender, cevt.Message)
 	}
 }
 
