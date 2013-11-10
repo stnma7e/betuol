@@ -13,7 +13,6 @@ type CharacterManager struct {
 	attributeList   [NUM_ATTRIBUTES][]float32
 	descriptionList []string
 	greetingList    []string
-	factionList     []string
 
 	movedlink chan component.GOiD
 
@@ -52,7 +51,7 @@ func (cm *CharacterManager) Tick(delta float64) {
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
 		Health, Mana, Strength, Intelligence, RangeOfSight float32
-		Description, Greeting, Faction                     string
+		Description, Greeting                              string
 	}
 	err := json.Unmarshal(data, &comp)
 	if err != nil {
@@ -69,7 +68,6 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 		},
 		comp.Description,
 		comp.Greeting,
-		comp.Faction,
 	}
 
 	return cm.CreateComponent(index, ca)
@@ -83,7 +81,6 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 
 	cm.descriptionList[index] = ca.Description
 	cm.greetingList[index] = ca.Greeting
-	cm.factionList[index] = ca.Faction
 
 	return nil
 }
@@ -111,13 +108,6 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 		cm.greetingList = make([]string, index+RESIZESTEP)
 		for i := range tmp {
 			cm.greetingList[i] = tmp[i]
-		}
-	}
-	if cap(cm.factionList)-1 < int(index) {
-		tmp := cm.factionList
-		cm.factionList = make([]string, index+RESIZESTEP)
-		for i := range tmp {
-			cm.factionList[i] = tmp[i]
 		}
 	}
 }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 
-	"smig/component"
 	"smig/common"
+	"smig/component"
 	"smig/event"
 )
 
@@ -32,7 +32,7 @@ func (cm *CharacterManager) HandleAttack(evt event.Event) {
 	attr2 := cm.GetCharacterAttributes(atevt.Char2)
 
 	if attr2.Attributes[HEALTH] <= 0 {
-		common.LogErr.Print(atevt.Char2, " has a health below 0 during an attack.")
+		common.LogErr.Print(atevt.Char2, " had a health below 0 when it was attacked.")
 		return
 	}
 	hit := (rand.Float32() / 4) * attr1.Attributes[STRENGTH]

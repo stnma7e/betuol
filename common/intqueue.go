@@ -4,11 +4,11 @@ import "fmt"
 
 type intQueueNode struct {
 	backward *intQueueNode
-	value int
+	value    int
 }
 type IntQueue struct {
 	head, tail *intQueueNode
-	Size  int
+	Size       int
 }
 
 func (stk *IntQueue) Queue(num int) {

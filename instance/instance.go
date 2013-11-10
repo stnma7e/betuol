@@ -1,13 +1,13 @@
 package instance
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"bufio"
-	"os"
 
 	"smig/common"
 	"smig/component"
@@ -72,8 +72,10 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
 	is.gof.Register("quest", is.qm, is.qm.JsonCreate)
 
-	is.am.RegisterComputer("enemy", is.am.EnemyDecide)
-	is.am.RegisterComputer("player", is.am.PlayerDecide)
+	//is.am.RegisterComputer("enemy", is.am.EnemyDecide)
+	//is.am.RegisterComputer("player", is.am.PlayerDecide)
+	is.am.RegisterComputer("player", is.am.PlayerAi)
+	is.am.RegisterComputer("enemy", is.am.EnemyAi)
 
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
@@ -82,7 +84,6 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.em.RegisterListener("kill", is.qm.HandleEvent)
 	is.em.RegisterListener("questComplete", is.qm.QuestComplete)
 	is.em.RegisterListener("chat", is.cm.HandleChat)
-	is.em.RegisterListener("playerCreated", is.am.HandlePlayerCreated)
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -102,14 +103,15 @@ func (is *Instance) Loop() {
 				common.LogErr.Println(err)
 			}
 			s := string(line)
-			if s[len(s)-1] == '\n' {
+			if len(s) > 0 && s[len(s)-1] == '\n' {
 				s = line[:len(s)-1]
 			}
-			if s[len(s)-1] == '\r' {
+			if len(s) > 0 && s[len(s)-1] == '\r' {
 				s = line[:len(s)-1]
 			}
 			if s != "" {
 				is.commandlink <- s
+				<-is.commandlink
 				s = ""
 			}
 		}
@@ -121,9 +123,9 @@ func (is *Instance) Loop() {
 
 	is.StartScript()
 
-	//is.am.SetUpdateAiNearPlayer(false)
+	is.am.SetUpdateAiNearPlayer(false)
 
-	for numTicks := 0; ; {
+	for numTicks := 0; ; numTicks++ {
 		<-ticks.C
 
 		newTime := time.Since(oldTime)
@@ -140,8 +142,9 @@ func (is *Instance) Loop() {
 
 		is.ParseSysConsole()
 
-		if numTicks%10 == 0 {
+		if numTicks > 60 {
 			is.am.Tick(secs)
+			numTicks = 0
 		}
 
 		is.em.Tick(secs)
@@ -168,11 +171,23 @@ func (is *Instance) ParseSysConsole() {
 		case "exit":
 			is.returnlink <- true
 		case "loadmap":
+			if !(len(args) >= 2) {
+				common.LogErr.Print("not enough arguments to 'loadmap'")
+				break
+			}
 			is.CreateFromMap(args[1])
 		case "loadobj":
-			is.CreateObject(args[1], args[2])
+			if !(len(args) >= 3) {
+				common.LogErr.Print("not enough arguments to 'loadobj'")
+				break
+			}
 			//is.CreateObject(breed, location)
+			is.CreateObject(args[1], args[2])
 		case "runai":
+			if !(len(args) >= 2) {
+				common.LogErr.Print("not enough arguments to 'runai'")
+				break
+			}
 			arg, err := strconv.Atoi(args[1])
 			if err != nil {
 				common.LogErr.Println(err)
@@ -183,6 +198,7 @@ func (is *Instance) ParseSysConsole() {
 		default:
 			fmt.Println("\tInvalid command. Type \"help\" for choices.")
 		}
+		is.commandlink <- ""
 	default:
 	}
 
@@ -217,7 +233,7 @@ func (is *Instance) CreateObject(objName, location string) component.GOiD {
 		common.LogErr.Print(err)
 	}
 	// is.pm.AddForce(id, math.Vec3{0,0.5,0})
-	fmt.Println("\tid:", id)
+	common.LogInfo.Println("entity created, id:", id)
 
 	return id
 }

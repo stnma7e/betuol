@@ -19,8 +19,8 @@ const (
 type Interaction func(id1 component.GOiD, id2 component.GOiD)
 
 type CharacterAttributes struct {
-	Attributes                     [NUM_ATTRIBUTES]float32
-	Description, Greeting, Faction string
+	Attributes            [NUM_ATTRIBUTES]float32
+	Description, Greeting string
 }
 
 func (ca *CharacterAttributes) Greet() string {

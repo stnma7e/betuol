@@ -5,13 +5,10 @@ TODO
 ----------
 
 - Character system
-	- Interaction through discrete events: each character has a list of events invovled with and chooses one to interact with. AI chooses at random/decision tree for best outcome, and the players choose at will? Will this remove capability for advanced interactions later? I can always change later if it doesn't work out.
-
 	- Type of interaction:
 		- Attack
 		- Run: removes interaction after certain distance.
 
-- Convert character system to Erlang-style goroutine based actors. Each actor is responsible for listening to events that it is interested in/responding to character interactions. Since goroutines are supposed to be lightweight, and you can have multiple Instances (potentially across many computers) there shouldn't be too much overhead. This will help with the Quest/AI/Chat systems a lot.
 
 - Fix 4x4 matrix inverse
 

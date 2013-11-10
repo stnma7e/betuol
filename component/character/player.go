@@ -9,11 +9,8 @@ import (
 	"smig/event"
 )
 
-const (
-	INTERACTING = 1 << iota
-)
-
 func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {
+	fmt.Println(command)
 	switch command {
 	case "look":
 		PlayerLook(id, chars)
@@ -35,7 +32,7 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 		}
 		PlayerAttack(id, component.GOiD(enemy), chars)
 	default:
-		fmt.Println("\tInvalid command. Type \"help\" for choices.")
+		fmt.Printf("\tInvalid player command, '%s'.\n", command)
 	}
 }
 

@@ -74,10 +74,12 @@ func (tm *TransformManager) GetTransform4m(index component.GOiD) math.Mat4x4 {
 }
 func (tm *TransformManager) GetTransformMatrix(index component.GOiD) math.Mat4x4 {
 	if int(index) >= len(tm.matList) {
-		common.LogErr.Printf("invalid component.GOiD %v: not in list", index)
+		common.LogErr.Printf("invalid component.GOiD, %v: not in list", index)
+		return math.Mat4x4{}
 	}
 	if tm.matList[index].IsEmpty() {
-		common.LogErr.Printf("invalid component.GOiD: %v: empty matrix", index)
+		common.LogErr.Printf("invalid component.GOiD, %v: empty matrix", index)
+		return math.Mat4x4{}
 	}
 	return tm.matList[index]
 }
@@ -93,6 +95,9 @@ func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange 
 	stk := common.IntQueue{}
 
 	for i := range tm.matList {
+		if tm.matList[i].IsEmpty() || i == 0 {
+			continue
+		}
 		loc2 := math.Mult4m3v(tm.matList[i], math.Vec3{0, 0, 0})
 		sp2 := math.Sphere{
 			loc2, 1,

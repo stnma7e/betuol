@@ -134,9 +134,17 @@ func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneMan
 	//fmt.Println(camera.LookAtMatrix(), camera.Projection())
 
 	for k, v := range gm.renderTypeMap {
-		models := gm.renderMap[k].Array()
-		for i := range models {
-			id := models[i].(component.GOiD)
+		modelsOfRenderer := gm.renderMap[k].Array()
+		for i := range modelsOfRenderer {
+			id, ok := modelsOfRenderer[i].(component.GOiD)
+			// get first component.GOiD in the list
+			if !ok || gm.models[int(id)] == nil {
+				// if modelsOfRenderer[i] is nil (and cannot be type asserted)
+				// or if the manager's modelList's space is nil
+				// then the component was destroyed and it can be erased from the renderer's list
+				gm.renderMap[k].Erase(i)
+				continue
+			}
 			transMat := tm.GetTransform4m(id)
 			//gm.window.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())
 			v.Render(*gm.models[int(id)], transMat, camera.LookAtMatrix(), camera.Projection())

@@ -13,20 +13,22 @@ type Event interface {
 }
 type EventMessage struct {
 	time time.Time
-	evt Event
+	evt  Event
 }
 
 type EventManager struct {
-	eventlink   chan EventMessage
-	listenerMap map[string]*common.Queue
-	eventList   [2]*common.Vector
-	changeQueue bool
+	eventlink         chan EventMessage
+	listenerMap       map[string]*common.Vector
+	listeningChannels map[string]*common.Vector
+	eventList         [2]*common.Vector
+	changeQueue       bool
 }
 
 func MakeEventManager() *EventManager {
 	em := &EventManager{
 		make(chan EventMessage),
-		make(map[string]*common.Queue),
+		make(map[string]*common.Vector),
+		make(map[string]*common.Vector),
 		[2]*common.Vector{common.MakeVector(), common.MakeVector()},
 		false,
 	}
@@ -61,12 +63,22 @@ func (em *EventManager) Tick(delta float64) {
 		evt := events[i].(Event)
 		listeners, ok := em.listenerMap[evt.GetEventType()]
 		if !ok {
-			common.LogErr.Printf("no listener registered for %s", evt.GetEventType())
-			break
+			common.LogWarn.Printf("no listener registered for %s", evt.GetEventType())
+		} else {
+			listenersArray := listeners.Array()
+			for j := range listenersArray {
+				listenersArray[j].(EventListener)(evt)
+			}
 		}
-		listenersArray := listeners.Array()
-		for i := range listenersArray {
-			listenersArray[i].(EventListener)(evt)
+
+		channels, ok := em.listeningChannels[evt.GetEventType()]
+		if !ok {
+			//common.LogWarn.Printf("no channel registered for %s", evt.GetEventType())
+		} else {
+			channelsArray := channels.Array()
+			for j := range channelsArray {
+				channelsArray[j].(chan Event) <- evt
+			}
 		}
 	}
 }
@@ -74,12 +86,23 @@ func (em *EventManager) Tick(delta float64) {
 func (em *EventManager) RegisterListener(eventType string, listener EventListener) {
 	_, ok := em.listenerMap[eventType]
 	if !ok {
-		em.listenerMap[eventType] = &common.Queue{}
+		em.listenerMap[eventType] = common.MakeVector()
 	}
 	if em.listenerMap[eventType] == nil {
-		em.listenerMap[eventType] = &common.Queue{}
+		em.listenerMap[eventType] = common.MakeVector()
 	}
-	em.listenerMap[eventType].Queue(listener)
+	em.listenerMap[eventType].Insert(listener)
+}
+
+func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {
+	_, ok := em.listeningChannels[eventType]
+	if !ok {
+		em.listeningChannels[eventType] = common.MakeVector()
+	}
+	if em.listeningChannels[eventType] == nil {
+		em.listeningChannels[eventType] = common.MakeVector()
+	}
+	em.listeningChannels[eventType].Insert(eventlink)
 }
 
 func (em *EventManager) Send(evt Event) {

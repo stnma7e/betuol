@@ -89,13 +89,13 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 	for k, v := range compList {
 		mang, ok := gof.EventManagers[k]
 		if !ok {
-			common.LogWarn.Print("unregistered component.ComponentManager (%s) in compList", k)
+			common.LogWarn.Print("unregistered component type (%s) in compList", k)
 		}
 
 		err := mang.create(id, v)
 		if err != nil {
 			gof.Delete(id)
-			fmt.Println(err)
+			common.LogErr.Println(err)
 			return component.NULLINDEX, err
 		}
 	}
@@ -133,6 +133,6 @@ func (gof *GameObjectFactory) getNewGOiD() component.GOiD {
 
 func (gof *GameObjectFactory) HandleDeath(evt event.Event) {
 	devt := evt.(event.DeathEvent)
-	fmt.Printf("%v died.\n", devt.Id)
 	gof.Delete(devt.Id)
+	fmt.Printf("%v died.\n", devt.Id)
 }

@@ -221,7 +221,7 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	if ok {
 		return modelPtr
 	} else {
-		common.LogInfo.Println("mesh not yet loaded: ", comp.Mesh)
+		common.LogInfo.Println("mesh not yet loaded:", comp.Mesh)
 	}
 
 	var vertsVector, indiciesVector, normsVector, uvVector *common.Vector
@@ -322,7 +322,7 @@ func (glg *GlGraphicsManager) LoadFont() {
 func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {
 	const sample = "0 1 2 3 4 5 6 7 8 9 A B C D E F"
 	if glg.loadedFont == nil {
-		common.LogWarn.Print("font not yet loaded.")
+		common.LogWarn.Print("font not yet loaded")
 		glg.LoadFont()
 	}
 	_, h := glg.loadedFont.GlyphBounds()

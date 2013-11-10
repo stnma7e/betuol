@@ -11,17 +11,10 @@ import (
 	"smig/event"
 )
 
-const (
-	IDLE_STATE   = iota
-	RUN_STATE    = iota
-	ATTACK_STATE = iota
-)
-
 type AiManager struct {
-	computerMap     map[component.GOiD]AiComputer
 	computerTypeMap map[string]AiComputer
-
-	players *common.Vector
+	compList []chan event.Event
+	players         *common.Vector
 
 	cm *character.CharacterManager
 	tm *scenemanager.TransformManager
@@ -31,13 +24,16 @@ type AiManager struct {
 }
 
 func MakeAiManager(tm *scenemanager.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {
-	am := AiManager{}
-	am.computerMap = make(map[component.GOiD]AiComputer)
-	am.computerTypeMap = make(map[string]AiComputer)
-	am.players = common.MakeVector()
-	am.cm = cm
-	am.tm = tm
-	am.em = em
+	am := AiManager{
+		make(map[string]AiComputer),
+		nil,
+		common.MakeVector(),
+		cm,
+		tm,
+		em,
+		nil,
+	}
+
 	am.aiTicker = am.UpdateAiNearPlayer
 	return &am
 }
@@ -48,10 +44,10 @@ func (am *AiManager) Tick(delta float64) {
 
 func (am *AiManager) UpdateAi(delta float64) {
 	players := am.players.Array()
-	for k,_ := range am.computerMap {
+	for i := range am.compList {
 		if func() bool {
-			for i := range players {
-				if k == players[i].(component.GOiD) {
+			for j := range players {
+				if i == int(players[j].(component.GOiD)) || am.compList[i] == nil {
 					return true
 				}
 			}
@@ -59,7 +55,7 @@ func (am *AiManager) UpdateAi(delta float64) {
 		}() { //end func
 			continue
 		} else {
-			am.RunAi(component.GOiD(k))
+			am.RunAi(component.GOiD(i))
 		}
 	}
 }
@@ -73,7 +69,7 @@ func (am *AiManager) UpdateAiNearPlayer(delta float64) {
 		for j := 0; j < len(chars); j++ {
 			if func() bool {
 				for k := range players {
-					if chars[j] == int(players[k].(component.GOiD)) {
+					if chars[j] == int(players[k].(component.GOiD)) || am.compList[chars[j]] == nil {
 						return true
 					}
 				}
@@ -88,25 +84,12 @@ func (am *AiManager) UpdateAiNearPlayer(delta float64) {
 }
 
 func (am *AiManager) RunAi(id component.GOiD) {
-	comp, ok := am.computerMap[id]
-	if !ok || comp == nil {
-		//common.LogWarn.Println("no computer for id:", id)
+	if len(am.compList) < int(id) || am.compList[id] == nil {
+		common.LogErr.Printf("no ai routine for id %v", id)
 		return
 	}
-	attr := am.cm.GetCharacterAttributes(id)
-	loc := am.tm.GetObjectLocation(id)
-	idQueue := am.tm.GetObjectsInLocationRadius(loc, attr.Attributes[character.RANGEOFSIGHT])
-	size := idQueue.Size
-	neighbors := make([]component.GOiD, size)
-	for i := 0; i < size; i++ {
-		val, err := idQueue.Dequeue()
-		if err != nil {
-			common.LogErr.Println("error: bad dequeue:", err)
-			continue
-		}
-		neighbors[i] = component.GOiD(val)
-	}
-	comp(id, neighbors, am.cm)
+	am.compList[id] <- event.RunAiEvent{}
+	<-am.compList[id]
 }
 
 func (am *AiManager) JsonCreate(id component.GOiD, data []byte) error {
@@ -118,12 +101,17 @@ func (am *AiManager) JsonCreate(id component.GOiD, data []byte) error {
 }
 
 func (am *AiManager) CreateComponent(id component.GOiD, computerType string) error {
+	am.resizeArray(id)
 	computer, ok := am.computerTypeMap[computerType]
 	if !ok {
-		return fmt.Errorf("bad ai type: %s", computerType)
+		return fmt.Errorf("unregistered ai type: %s", computerType)
 	}
-	am.computerMap[id] = computer
+
+	am.compList[id] = make(chan event.Event)
+	go computer(id, am.compList[id])
+
 	if computerType == "player" {
+		am.players.Insert(id)
 		am.em.Send(event.PlayerCreatedEvent{id})
 	}
 
@@ -131,9 +119,23 @@ func (am *AiManager) CreateComponent(id component.GOiD, computerType string) err
 }
 
 func (am *AiManager) DeleteComponent(id component.GOiD) {
-	_, ok := am.computerMap[id]
-	if ok {
-		am.computerMap[id] = nil
+	if len(am.compList) <= int(id) {
+		return
+	}
+	if am.compList[id] != nil {
+		am.compList[id] <- event.DeathEvent{ id }
+		am.compList[id] = nil
+	}
+}
+
+func (am *AiManager) resizeArray(index component.GOiD) {
+	const RESIZESTEP = 5
+	if cap(am.compList)-1 < int(index) {
+		newCompList := make([]chan event.Event, index+RESIZESTEP)
+		for i := range am.compList {
+			newCompList[i] = am.compList[i]
+		}
+		am.compList = newCompList
 	}
 }
 
@@ -147,12 +149,4 @@ func (am *AiManager) SetUpdateAiNearPlayer(yes bool) {
 	} else {
 		am.aiTicker = am.UpdateAi
 	}
-}
-
-func (am *AiManager) HandlePlayerCreated(evt event.Event) {
-	if evt.GetEventType() != "playerCreated" {
-		return
-	}
-	pcevt := evt.(event.PlayerCreatedEvent)
-	am.players.Insert(pcevt.PlayerID)
 }

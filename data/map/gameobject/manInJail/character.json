@@ -6,5 +6,5 @@
   "rangeOfSight": 1,
   "description": "A man in prison",
   "greeting": "Hey, what did you do to get in prison?",
-  "aiFunction": "merchant"
+  "aiFunction": "none"
 }
