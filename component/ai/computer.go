@@ -2,6 +2,7 @@ package ai
 
 import (
 	"fmt"
+	"math/rand"
 
 	"smig/common"
 	"smig/component"
@@ -54,6 +55,34 @@ func (am *AiManager) EnemyDecide(id component.GOiD) {
 	}
 }
 
+func (am *AiManager) WanderDecide(id component.GOiD) {
+	r := rand.Int31()
+	switch r%4 {
+	case 0:
+		loc := am.tm.GetObjectLocation(id)
+		newLoc := loc
+		newLoc[0] += 5
+		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+	case 1:
+		loc := am.tm.GetObjectLocation(id)
+		newLoc := loc
+		newLoc[0] += 5
+		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+	case 2:
+		loc := am.tm.GetObjectLocation(id)
+		newLoc := loc
+		newLoc[1] += 5
+		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+	case 3:
+		loc := am.tm.GetObjectLocation(id)
+		newLoc := loc
+		newLoc[2] += 5
+		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+	default:
+		common.LogErr.Print("this dont work shit")
+	}
+}
+
 func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {
 	am.em.RegisterListeningChannel("attack", eventlink)
 	for alive := true; alive; {
@@ -81,6 +110,19 @@ func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {
 			alive = false
 		case "runAi":
 			am.PlayerDecide(id)
+			eventlink <- event.RunAiEvent{}
+		}
+	}
+}
+
+func (am *AiManager) WanderAi(id component.GOiD, eventlink chan event.Event) {
+	for alive := true; alive; {
+		evt := <-eventlink
+		switch evt.GetEventType() {
+		case "death":
+			alive = false
+		case "runAi":
+			am.WanderDecide(id)
 			eventlink <- event.RunAiEvent{}
 		}
 	}

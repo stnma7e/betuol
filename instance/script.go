@@ -2,6 +2,7 @@ package instance
 
 import (
 	"smig/event"
+	"smig/math"
 )
 
 func (is *Instance) StartScript() {
@@ -13,4 +14,6 @@ func (is *Instance) StartScript() {
 	is.em.Send(event.ChatEvent{goList[0], is.player, "Type 'player south' to move backward."})
 	is.em.Send(event.ChatEvent{goList[0], is.player, "Type 'player east' to move right."})
 	is.em.Send(event.ChatEvent{goList[0], is.player, "Type 'player west' to move left."})
+
+	is.CreateObject("enemy", math.Vec3{10,10,10})
 }

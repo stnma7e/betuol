@@ -5,7 +5,6 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 Add3v3v	math/vec3.go	/^func Add3v3v(vec1, vec2 Vec3) Vec3 {$/;"	d
-AddForce	component/physics/manager.go	/^func (pm *PhysicsManager) AddForce(index component.GOiD, newForce math.Vec3) {$/;"	d
 AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	d
 AiComputer	component/ai/computer.go	/^\/\/type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager)$/;"	d
 AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, eventlink chan event.Event)$/;"	d
@@ -26,13 +25,12 @@ ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere)
 Create	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {$/;"	d
 CreateComponent	component/ai/manager.go	/^func (am *AiManager) CreateComponent(id component.GOiD, computerType string) error {$/;"	d
 CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {$/;"	d
-CreateComponent	component/physics/manager.go	/^func (pm *PhysicsManager) CreateComponent(index component.GOiD, mass, restitution float32) error {$/;"	d
 CreateComponent	component/quest/manager.go	/^func (qm *QuestManager) CreateComponent(id component.GOiD) error {$/;"	d
 CreateComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) CreateComponent(index component.GOiD) error {$/;"	d
 CreateComponent	graphics/manager.go	/^func (gm *GraphicsManager) CreateComponent(id component.GOiD, model *Model, renderer string) error {$/;"	d
 CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component.GOiD {$/;"	d
 CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) []component.GOiD {$/;"	d
-CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName, location string) component.GOiD {$/;"	d
+CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) component.GOiD {$/;"	d
 CreationFunction	component/gofactory/manager.go	/^type CreationFunction func(component.GOiD, []byte) error$/;"	d
 CreationManager	component/gofactory/manager.go	/^type CreationManager struct {$/;"	d
 Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	d
@@ -41,7 +39,6 @@ Delete	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Delete(ind
 Delete	graphics/model.go	/^func (mh *Model) Delete() {$/;"	d
 DeleteComponent	component/ai/manager.go	/^func (am *AiManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/character/manager.go	/^func (cm *CharacterManager) DeleteComponent(index component.GOiD) {$/;"	d
-DeleteComponent	component/physics/manager.go	/^func (pm *PhysicsManager) DeleteComponent(index component.GOiD) {$/;"	d
 DeleteComponent	component/quest/manager.go	/^func (qm *QuestManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) DeleteComponent(index component.GOiD) {$/;"	d
 DeleteComponent	graphics/manager.go	/^func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {$/;"	d
@@ -119,7 +116,6 @@ IsInside	math/plane.go	/^func (pl *Plane) IsInside(vec Vec3) bool {$/;"	d
 IsOnPlane	math/plane.go	/^func (pl *Plane) IsOnPlane(vec Vec3) bool {$/;"	d
 JsonCreate	component/ai/manager.go	/^func (am *AiManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 JsonCreate	component/character/manager.go	/^func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {$/;"	d
-JsonCreate	component/physics/manager.go	/^func (pm *PhysicsManager) JsonCreate(index component.GOiD, compData []byte) error {$/;"	d
 JsonCreate	component/quest/manager.go	/^func (qm *QuestManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 JsonCreate	graphics/manager.go	/^func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {$/;"	d
 KillEvent	event/events.go	/^type KillEvent struct {$/;"	d
@@ -152,7 +148,6 @@ MakeInstance	instance/instance.go	/^func MakeInstance(returnlink chan bool, rm *
 MakeModel	graphics/model.go	/^func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2, textureList []gl.Texture) Model {$/;"	d
 MakeNetworkManager	net/manager.go	/^func MakeNetworkManager() *NetworkManager {$/;"	d
 MakePerspectiveMatrix	math/mat4x4.go	/^func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {$/;"	d
-MakePhysicsManager	component/physics/manager.go	/^func MakePhysicsManager(tm *scenemanager.TransformManager) *PhysicsManager {$/;"	d
 MakePlane3v	math/plane.go	/^func MakePlane3v(p1, p2, p3 Vec3) Plane {$/;"	d
 MakeQuestManager	component/quest/manager.go	/^func MakeQuestManager(em *event.EventManager) *QuestManager {$/;"	d
 MakeResourceManager	res/manager.go	/^func MakeResourceManager(fileDepot string) *ResourceManager {$/;"	d
@@ -165,6 +160,7 @@ Mat2x2	math/mat2x2.go	/^type Mat2x2 [4]float32$/;"	d
 Mat4x4	math/mat4x4.go	/^type Mat4x4 [16]float32$/;"	d
 Model	graphics/model.go	/^type Model struct {$/;"	d
 ModelTransfer	graphics/manager.go	/^type ModelTransfer struct {$/;"	d
+MoveObject	instance/instance.go	/^func (is *Instance) MoveObject(id component.GOiD, loc math.Vec3) {$/;"	d
 Mult	math/mat2x2.go	/^func (mat *Mat2x2) Mult(scalar float32) {$/;"	d
 Mult3vf	math/vec3.go	/^func Mult3vf(vec Vec3, scalar float32) Vec3 {$/;"	d
 Mult4m3v	math/vec3.go	/^func Mult4m3v(mat Mat4x4, vec Vec3) Vec3 {$/;"	d
@@ -179,7 +175,6 @@ ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(comma
 ParseSysConsole	instance/instance.go	/^func (is *Instance) ParseSysConsole() {$/;"	d
 Peek	common/intqueue.go	/^func (stk *IntQueue) Peek() int {$/;"	d
 Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	d
-PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
 Plane	math/plane.go	/^type Plane Vec4$/;"	d
 PlayerAi	component/ai/computer.go	/^func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
 PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	d
@@ -204,7 +199,6 @@ RegisterComputer	component/ai/manager.go	/^func (am *AiManager) RegisterComputer
 RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eventType string, listener EventListener) {$/;"	d
 RegisterListeningChannel	event/manager.go	/^func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {$/;"	d
 RegisterRenderer	graphics/manager.go	/^func (gm *GraphicsManager) RegisterRenderer(rendType string, rend Renderer) {$/;"	d
-RemoveForce	component/physics/manager.go	/^func (pm *PhysicsManager) RemoveForce(index component.GOiD, force math.Vec3) {$/;"	d
 Render	graphics/renderer.go	/^func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, projectMat math.Mat4x4) {$/;"	d
 RenderAll	graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneManager) {$/;"	d
 RenderModel	graphics/renderer.go	/^func (rd *renderer) RenderModel(mod Model) {$/;"	d
@@ -217,6 +211,7 @@ Send	event/manager.go	/^func (em *EventManager) Send(evt Event) {$/;"	d
 Send	net/manager.go	/^func (nm *NetworkManager) Send(evt event.Event) {$/;"	d
 SendBytes	net/manager.go	/^func (nm *NetworkManager) SendBytes(b []byte) {$/;"	d
 SetLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocation(index component.GOiD, newLocation math.Vec3) {$/;"	d
+SetLocationOverTime	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) {$/;"	d
 SetTransform	component/scenemanager/manager.go	/^func (tm *TransformManager) SetTransform(index component.GOiD, newLocalMat math.Mat4x4) {$/;"	d
 SetUpdateAiNearPlayer	component/ai/manager.go	/^func (am *AiManager) SetUpdateAiNearPlayer(yes bool) {$/;"	d
 ShouldClose	graphics/gl.go	/^func (glg *GlGraphicsManager) ShouldClose() {$/;"	d
@@ -237,7 +232,6 @@ Test_OverDequeue	common/queue_test.go	/^func Test_OverDequeue(t *testing.T) {$/;
 Test_WalkQueue	common/queue_test.go	/^func Test_WalkQueue(t *testing.T) {$/;"	d
 Tick	component/ai/manager.go	/^func (am *AiManager) Tick(delta float64) {$/;"	d
 Tick	component/character/manager.go	/^func (cm *CharacterManager) Tick(delta float64) {$/;"	d
-Tick	component/physics/manager.go	/^func (pm *PhysicsManager) Tick(delta float64) {$/;"	d
 Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
 Tick	component/scenemanager/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d
 Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
@@ -256,6 +250,8 @@ Vec4	math/vec4.go	/^type Vec4 [4]float32$/;"	d
 Vector	common/vector.go	/^type Vector struct {$/;"	d
 WalkQueue	common/intqueue.go	/^func (stk *IntQueue) WalkQueue() {$/;"	d
 WalkQueue	common/queue.go	/^func (stk *Queue) WalkQueue() {$/;"	d
+WanderAi	component/ai/computer.go	/^func (am *AiManager) WanderAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
+WanderDecide	component/ai/computer.go	/^func (am *AiManager) WanderDecide(id component.GOiD) {$/;"	d
 WindowManager	graphics/graphics.go	/^type WindowManager interface {$/;"	d
 Write	common/log.go	/^func (lw *logWriter) Write(p []byte) {$/;"	d
 arg	component/character/player.go	/^		var arg string$/;"	d
@@ -267,9 +263,9 @@ close	graphics/gl.go	/^func (glg *GlGraphicsManager) close() {$/;"	d
 cols	math/mat4x4.go	/^\/\/      var cols [4]Vec4$/;"	d
 command	component/ai/computer.go	/^	var command string$/;"	d
 comp	component/character/manager.go	/^	var comp struct {$/;"	d
+decodeVec3String	instance/instance.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	d
 dtime	graphics/gl.go	/^	\/\/var dtime float32 = 1$/;"	d
 events	event/manager.go	/^	var events []interface{}$/;"	d
-force	component/physics/manager.go	/^	\/\/var force math.Vec3$/;"	d
 frust	math/frustum.go	/^	var frust Frustum$/;"	d
 g_tex	graphics/gl.go	/^var g_tex gl.Texture \/\/= GlLoadTexture("\/home\/sam\/downloads\/tower\/tower_diffuse.png")$/;"	d
 getNewGOiD	component/gofactory/manager.go	/^func (gof *GameObjectFactory) getNewGOiD() component.GOiD {$/;"	d
@@ -282,12 +278,12 @@ lightingRenderer	graphics/renderer.go	/^type lightingRenderer struct {$/;"	d
 logWriter	common/log.go	/^type logWriter struct {$/;"	d
 main	smig.go	/^func main() {$/;"	d
 maxDistanceSqrd	res/manager.go	/^	var maxDistanceSqrd float32$/;"	d
+moveOverTime	component/scenemanager/manager.go	/^type moveOverTime struct {$/;"	d
 moveQuestTicker	component/quest/states.go	/^var moveQuestTicker int$/;"	d
 normArray	graphics/renderer.go	/^	var normArray [9]float32$/;"	d
 normDot	math/plane.go	/^	var normDot float32$/;"	d
 normal	math/plane.go	/^	var normal [4]float32$/;"	d
 obj	component/ai/manager.go	/^	var obj struct {$/;"	d
-obj	component/physics/manager.go	/^	var obj struct {$/;"	d
 obj	res/manager.go	/^	var obj []component.MapLocation$/;"	d
 obj	res/manager.go	/^	var obj struct {$/;"	d
 queueNode	common/queue.go	/^type queueNode struct {$/;"	d

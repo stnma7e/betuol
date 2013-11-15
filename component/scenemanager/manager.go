@@ -17,21 +17,36 @@ const (
 type TransformManager struct {
 	em *event.EventManager
 
-	matList    []math.Mat4x4
-	movedQueue common.IntQueue
-	returnlink chan int
+	matList		[]math.Mat4x4
+	moving		[]moveOverTime
+}
+
+type moveOverTime struct {
+	movementAxis math.Vec3
+	timeToMove float64
 }
 
 func MakeTransformManager(em *event.EventManager) *TransformManager {
-	tm := TransformManager{}
-	tm.em = em
-	tm.matList = make([]math.Mat4x4, 5)
+	tm := TransformManager {
+		em,
+		make([]math.Mat4x4, 5),
+		make([]moveOverTime, 5),
+	}
 	tm.matList[ROOTNODE].MakeIdentity()
-	tm.returnlink = make(chan int)
 	return &tm
 }
 
 func (tm *TransformManager) Tick(delta float64) {
+	for i := range tm.moving {
+		if tm.moving[i].timeToMove < 0 {
+			continue
+		}
+		split := math.Mult3vf(tm.moving[i].movementAxis, float32(delta))
+		tm.matList[i][3] += split[0]
+		tm.matList[i][7] += split[1]
+		tm.matList[i][11] += split[2]
+		tm.moving[i].timeToMove -= delta
+	}
 }
 
 func (tm *TransformManager) CreateComponent(index component.GOiD) error {
@@ -44,6 +59,7 @@ func (tm *TransformManager) CreateComponent(index component.GOiD) error {
 
 	return nil
 }
+
 func (tm *TransformManager) resizeArray(index component.GOiD) {
 	if cap(tm.matList)-1 < int(index) {
 		newCompList := make([]math.Mat4x4, index+RESIZESTEP)
@@ -51,6 +67,13 @@ func (tm *TransformManager) resizeArray(index component.GOiD) {
 			newCompList[i] = tm.matList[i]
 		}
 		tm.matList = newCompList
+	}
+	if cap(tm.moving)-1 < int(index) {
+		newMoveList := make([]moveOverTime, index+RESIZESTEP)
+		for i := range tm.moving {
+			newMoveList[i] = tm.moving[i]
+		}
+		tm.moving = newMoveList
 	}
 }
 
@@ -63,15 +86,27 @@ func (tm *TransformManager) SetTransform(index component.GOiD, newLocalMat math.
 	newLocation := math.Vec3{newLocalMat[3], newLocalMat[7], newLocalMat[11]}
 	tm.em.Send(event.CharacterMoveEvent{index, newLocation})
 }
+
 func (tm *TransformManager) SetLocation(index component.GOiD, newLocation math.Vec3) {
 	tm.matList[index][3] = newLocation[0]
 	tm.matList[index][7] = newLocation[1]
 	tm.matList[index][11] = newLocation[2]
 	tm.em.Send(event.CharacterMoveEvent{index, newLocation})
 }
+
+func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) {
+	if len(tm.moving)-1 < int(id) {
+		common.LogErr.Printf("invalid id, %v", id)
+	}
+	originalLocation := tm.GetObjectLocation(id)
+	mot := moveOverTime{ math.Mult3vf(math.Sub3v3v(newLocation, originalLocation), float32(1/timeToMove)), timeToMove }
+	tm.moving[id] = mot
+}
+
 func (tm *TransformManager) GetTransform4m(index component.GOiD) math.Mat4x4 {
 	return tm.GetTransformMatrix(index)
 }
+
 func (tm *TransformManager) GetTransformMatrix(index component.GOiD) math.Mat4x4 {
 	if int(index) >= len(tm.matList) {
 		common.LogErr.Printf("invalid component.GOiD, %v: not in list", index)
@@ -83,6 +118,7 @@ func (tm *TransformManager) GetTransformMatrix(index component.GOiD) math.Mat4x4
 	}
 	return tm.matList[index]
 }
+
 func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {
 	locMat := tm.matList[index]
 	return math.Mult4m3v(locMat, math.Vec3{})

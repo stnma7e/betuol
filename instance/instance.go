@@ -14,7 +14,6 @@ import (
 	"smig/component/ai"
 	"smig/component/character"
 	"smig/component/gofactory"
-	"smig/component/physics"
 	"smig/component/quest"
 	"smig/component/scenemanager"
 	"smig/event"
@@ -27,7 +26,6 @@ import (
 type Instance struct {
 	gof *gofactory.GameObjectFactory
 	tm  *scenemanager.TransformManager
-	pm  *physics.PhysicsManager
 	cm  *character.CharacterManager
 	rm  *res.ResourceManager
 	em  *event.EventManager
@@ -52,7 +50,6 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is := &Instance{
 		gof,
 		tm,
-		physics.MakePhysicsManager(tm),
 		cm,
 		rm,
 		em,
@@ -66,7 +63,6 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 		0,
 	}
 
-	is.gof.Register("physics", is.pm, is.pm.JsonCreate)
 	is.gof.Register("character", is.cm, is.cm.JsonCreate)
 	is.gof.Register("ai", is.am, is.am.JsonCreate)
 	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
@@ -75,7 +71,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	//is.am.RegisterComputer("enemy", is.am.EnemyDecide)
 	//is.am.RegisterComputer("player", is.am.PlayerDecide)
 	is.am.RegisterComputer("player", is.am.PlayerAi)
-	is.am.RegisterComputer("enemy", is.am.EnemyAi)
+	is.am.RegisterComputer("enemy", is.am.WanderAi)
 
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
@@ -117,9 +113,10 @@ func (is *Instance) Loop() {
 		}
 	}()
 
-	is.player = is.CreateObject("player", "0,0,0")
+	is.player = is.CreateObject("player", math.Vec3{0,0,0})
 	is.qm.AddQuest(is.player, is.qm.FirstQuest)
 	is.tm.SetLocation(is.player, math.Vec3{3, 0, 0})
+	is.tm.SetLocationOverTime(is.player, math.Vec3{10,0,0}, 1.5)
 
 	is.StartScript()
 
@@ -182,7 +179,7 @@ func (is *Instance) ParseSysConsole() {
 				break
 			}
 			//is.CreateObject(breed, location)
-			is.CreateObject(args[1], args[2])
+			is.CreateObject(args[1], decodeVec3String(args[2]))
 		case "runai":
 			if !(len(args) >= 2) {
 				common.LogErr.Print("not enough arguments to 'runai'")
@@ -219,16 +216,9 @@ func (is *Instance) CreateFromMap(mapName string) []component.GOiD {
 	return is.gof.CreateFromMap(&jmap)
 }
 
-func (is *Instance) CreateObject(objName, location string) component.GOiD {
+func (is *Instance) CreateObject(objName string, loc math.Vec3) component.GOiD {
 	components := is.rm.LoadGameObject(objName)
-	strLoc := strings.Split(location, ",")
-	f1, err := strconv.ParseFloat(strLoc[0], 32)
-	f2, err := strconv.ParseFloat(strLoc[1], 32)
-	f3, err := strconv.ParseFloat(strLoc[2], 32)
-	if err != nil {
-		fmt.Println(err)
-	}
-	id, err := is.gof.Create(components, math.Vec3{float32(f1), float32(f2), float32(f3)})
+	id, err := is.gof.Create(components, loc)
 	if err != nil {
 		common.LogErr.Print(err)
 	}
@@ -236,6 +226,10 @@ func (is *Instance) CreateObject(objName, location string) component.GOiD {
 	common.LogInfo.Println("entity created, id:", id)
 
 	return id
+}
+
+func (is *Instance) MoveObject(id component.GOiD, loc math.Vec3) {
+
 }
 
 func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {
@@ -246,4 +240,16 @@ func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {
 
 func (is *Instance) GetEventManager() *event.EventManager {
 	return is.em
+}
+
+func decodeVec3String(vec3 string) math.Vec3 {
+	strLoc := strings.Split(vec3, ",")
+	f1, err := strconv.ParseFloat(strLoc[0], 32)
+	f2, err := strconv.ParseFloat(strLoc[1], 32)
+	f3, err := strconv.ParseFloat(strLoc[2], 32)
+	if err != nil {
+		common.LogErr.Println(err)
+	}
+
+	return math.Vec3{float32(f1), float32(f2), float32(f3)}
 }
