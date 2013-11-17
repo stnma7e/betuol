@@ -29,12 +29,14 @@ func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance int) {
 	vc.array[vc.Length] = data
 }
 
-func (vc *Vector) Insert(data interface{}) {
+func (vc *Vector) Insert(data interface{}) int {
 	space, err := vc.emptyIndices.Dequeue()
 	if err != nil {
 		vc.Push_back(data, 1, 1)
+		return vc.Length - 1
 	} else {
 		vc.array[space] = data
+		return space
 	}
 }
 

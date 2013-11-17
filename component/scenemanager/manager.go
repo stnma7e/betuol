@@ -17,17 +17,17 @@ const (
 type TransformManager struct {
 	em *event.EventManager
 
-	matList		[]math.Mat4x4
-	moving		[]moveOverTime
+	matList []math.Mat4x4
+	moving  []moveOverTime
 }
 
 type moveOverTime struct {
 	movementAxis math.Vec3
-	timeToMove float64
+	timeToMove   float64
 }
 
 func MakeTransformManager(em *event.EventManager) *TransformManager {
-	tm := TransformManager {
+	tm := TransformManager{
 		em,
 		make([]math.Mat4x4, 5),
 		make([]moveOverTime, 5),
@@ -99,7 +99,7 @@ func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation m
 		common.LogErr.Printf("invalid id, %v", id)
 	}
 	originalLocation := tm.GetObjectLocation(id)
-	mot := moveOverTime{ math.Mult3vf(math.Sub3v3v(newLocation, originalLocation), float32(1/timeToMove)), timeToMove }
+	mot := moveOverTime{math.Mult3vf(math.Sub3v3v(newLocation, originalLocation), float32(1/timeToMove)), timeToMove}
 	tm.moving[id] = mot
 }
 

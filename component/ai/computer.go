@@ -57,7 +57,7 @@ func (am *AiManager) EnemyDecide(id component.GOiD) {
 
 func (am *AiManager) WanderDecide(id component.GOiD) {
 	r := rand.Int31()
-	switch r%4 {
+	switch r % 4 {
 	case 0:
 		loc := am.tm.GetObjectLocation(id)
 		newLoc := loc

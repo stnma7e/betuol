@@ -19,7 +19,6 @@ import (
 	"smig/event"
 	"smig/graphics"
 	"smig/math"
-	"smig/net"
 	"smig/res"
 )
 
@@ -32,7 +31,6 @@ type Instance struct {
 	am  *ai.AiManager
 	qm  *quest.QuestManager
 	gm  *graphics.GraphicsManager
-	nm  *net.NetworkManager
 
 	tmSnapshot scenemanager.TransformManager
 
@@ -42,7 +40,7 @@ type Instance struct {
 	player component.GOiD
 }
 
-func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager, nm *net.NetworkManager) *Instance {
+func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
 	gof := gofactory.MakeGameObjectFactory(tm)
@@ -56,7 +54,6 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 		ai.MakeAiManager(tm, cm, em),
 		quest.MakeQuestManager(em),
 		gm,
-		nm,
 		*tm,
 		returnlink,
 		make(chan string),
@@ -68,6 +65,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
 	is.gof.Register("quest", is.qm, is.qm.JsonCreate)
 
+	is.am.SetUpdateAiNearPlayer(false)
 	//is.am.RegisterComputer("enemy", is.am.EnemyDecide)
 	//is.am.RegisterComputer("player", is.am.PlayerDecide)
 	is.am.RegisterComputer("player", is.am.PlayerAi)
@@ -91,6 +89,12 @@ func (is *Instance) Loop() {
 	oldTime := time.Now()
 	ticks := time.NewTicker(time.Second / 60)
 
+	is.player = is.CreateObject("player", math.Vec3{0, 0, 0})
+	is.qm.AddQuest(is.player, is.qm.FirstQuest)
+	is.tm.SetLocationOverTime(is.player, math.Vec3{3, 0, 0}, 1.5)
+
+	is.StartScript()
+
 	go func() {
 		r := bufio.NewReaderSize(os.Stdin, 4*1024)
 		for {
@@ -113,15 +117,6 @@ func (is *Instance) Loop() {
 		}
 	}()
 
-	is.player = is.CreateObject("player", math.Vec3{0,0,0})
-	is.qm.AddQuest(is.player, is.qm.FirstQuest)
-	is.tm.SetLocation(is.player, math.Vec3{3, 0, 0})
-	is.tm.SetLocationOverTime(is.player, math.Vec3{10,0,0}, 1.5)
-
-	is.StartScript()
-
-	is.am.SetUpdateAiNearPlayer(false)
-
 	for numTicks := 0; ; numTicks++ {
 		<-ticks.C
 
@@ -131,10 +126,10 @@ func (is *Instance) Loop() {
 
 		// fmt.Println(newTime)
 
-		_, err := is.nm.RecieveBytes(100, 5)
-		if err != nil {
-			//common.LogWarn.Print(err)
-		}
+		//_, err := is.nm.RecieveBytes(100, 5)
+		//if err != nil {
+		//common.LogWarn.Print(err)
+		//}
 		//fmt.Println(data)
 
 		is.ParseSysConsole()

@@ -36,11 +36,9 @@ const (
 )
 
 type Model struct {
-	buffers     [NUMBUFFERS]gl.Buffer
-	uniforms    [NUMUNIFORMS]gl.UniformLocation
-	attribArray [NUMATTR]gl.AttribLocation
-	vao         gl.VertexArray
-	tex         gl.Texture
+	buffers [NUMBUFFERS]gl.Buffer
+	vao     gl.VertexArray
+	tex     gl.Texture
 }
 
 func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2, textureList []gl.Texture) Model {

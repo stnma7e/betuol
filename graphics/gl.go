@@ -11,6 +11,7 @@ import (
 	"github.com/go-gl/gltext"
 
 	"smig/common"
+	"smig/component"
 	"smig/math"
 	"smig/res"
 )
@@ -21,11 +22,18 @@ const NOVAO gl.VertexArray = 0
 var g_tex gl.Texture //= GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
 
 type GlGraphicsManager struct {
+	rm *res.ResourceManager
+
 	window   *glfw.Window
 	modelMap map[string]*Model
 
 	loadedFont *gltext.Font
 	program    gl.Program
+
+	modelList []*Model
+
+	renderMap   map[component.GOiD]Renderer
+	renderTypes map[string]Renderer
 }
 
 func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {
@@ -60,15 +68,21 @@ func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphic
 
 	g_tex = GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
 
+	glg.renderMap = make(map[component.GOiD]Renderer)
+	glg.renderTypes = make(map[string]Renderer)
+	glg.renderTypes["fragmentLighting"] = MakeFragmentPointLightingRenderer(rm, &glg)
+
 	return &glg
 }
 
-func (glg *GlGraphicsManager) Tick() {
+func (glg *GlGraphicsManager) Tick() bool {
 	glg.SwapBuffers()
 	glfw.PollEvents()
 
 	x, y := glg.window.GetSize()
 	gl.Viewport(0, 0, x, y)
+
+	return !glg.Closing()
 }
 
 func (glg *GlGraphicsManager) SwapBuffers() {
@@ -97,67 +111,11 @@ func GlfwKeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glf
 	}
 }
 
-// func (glg *GlGraphicsManager) HandleInputs(eye math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
-//      mouse_x, mouse_y   := glg.window.GetCursorPosition()
-//      window_x, window_y := glg.window.GetSize()
-//      const mouseSpeed = 0.001
+func (glg *GlGraphicsManager) HandleInputs() Inputs {
+	return Inputs{}
+}
 
-//      horizontalAngle := 3.14 + mouseSpeed * float64(window_x / 2) - mouse_x
-//      verticalAngle   := mouseSpeed  * float64(window_y / 2) - mouse_y
-
-//      direction := math.Vec3{
-//              float32(gomath.Cos(verticalAngle) * gomath.Sin(horizontalAngle)),
-//              float32(gomath.Sin(verticalAngle)),
-//              float32(gomath.Cos(verticalAngle) * gomath.Cos(horizontalAngle)),
-//      }
-//      right := math.Vec3 {
-//              float32(gomath.Sin(horizontalAngle - 3.14 / 2.0)),
-//              0,
-//              float32(gomath.Cos(horizontalAngle - 3.14 / 2.0)),
-//      }
-//      up := math.Cross3v3v(right, direction)
-
-//      if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-//              eye = math.Add3v3v(eye, math.Mult3vf(direction, 0.1))
-//      }
-//      if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-//              eye = math.Sub3v3v(eye, math.Mult3vf(direction, 0.1))
-//      }
-//      if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
-//              eye = math.Add3v3v(eye, math.Mult3vf(right, 0.1))
-//      }
-//      if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
-//              eye = math.Sub3v3v(eye, math.Mult3vf(right, 0.1))
-//      }
-//      return eye, direction, up
-// }
-
-//func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
-//if glg.window.GetKey(glfw.KeyLeftShift) == glfw.Press {
-//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-//eye = math.Add3v3v(eye, math.Vec3{0,0.1,0})
-//}
-//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-//eye = math.Sub3v3v(eye, math.Vec3{0,0.1,0})
-//}
-//} else {
-//if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-//eye = math.Add3v3v(eye, math.Vec3{0.1,0,0})
-//}
-//if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-//eye = math.Sub3v3v(eye, math.Vec3{0.1,0,0})
-//}
-//if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
-//eye = math.Add3v3v(eye, math.Vec3{0,0,0.1})
-//}
-//if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
-//eye = math.Sub3v3v(eye, math.Vec3{0,0,0.1})
-//}
-//}
-//return eye, math.Vec3{}, math.Vec3{}
-//}
-
-func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
+func (glg *GlGraphicsManager) HandleInputs0(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
 	const STEPSIZE = 0.1
 	const MOUSESPEED = 0.0001
 	mouse_x, mouse_y := glg.window.GetCursorPosition()
@@ -176,11 +134,10 @@ func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3
 		float32(gomath.Cos(horizontalAngle - (3.14159 / 2.0))),
 	}
 	up = math.Cross3v3v(right, direction)
-	//var dtime float32 = 1
 
 	left := math.Cross3v3v(target, up)
 	left = math.Mult3vf(math.Normalize3v(left), STEPSIZE)
-	//forward := math.Mult3vf(target, STEPSIZE)
+
 	if glg.window.GetKey(glfw.KeyLeftShift) == glfw.Press {
 		if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
 			eye = math.Add3v3v(eye, math.Vec3{0, 0.1, 0})
@@ -190,36 +147,45 @@ func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3
 		}
 	} else {
 		if glg.window.GetKey(glfw.KeyUp) == glfw.Press {
-			//eye = math.Add3v3v(eye, math.Mult3vf(direction, dtime * STEPSIZE))
 			eye = math.Add3v3v(eye, math.Vec3{0, 0, 0.1})
 		}
 		if glg.window.GetKey(glfw.KeyDown) == glfw.Press {
-			//eye = math.Sub3v3v(eye, math.Mult3vf(direction, dtime * STEPSIZE))
 			eye = math.Sub3v3v(eye, math.Vec3{0, 0, 0.1})
 		}
 		if glg.window.GetKey(glfw.KeyLeft) == glfw.Press {
-			//eye = math.Add3v3v(eye, math.Mult3vf(right, dtime * STEPSIZE))
 			eye = math.Add3v3v(eye, math.Vec3{0.1, 0, 0})
 		}
 		if glg.window.GetKey(glfw.KeyRight) == glfw.Press {
-			//eye = math.Sub3v3v(eye, math.Mult3vf(right, dtime * STEPSIZE))
 			eye = math.Sub3v3v(eye, math.Vec3{0.1, 0, 0})
 		}
 	}
-	//return eye, math.Add3v3v(eye, direction), up
 	return eye, target, up
+}
+
+func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {
+	const RESIZESTEP = 1
+	if cap(glg.modelList)-1 < int(id) {
+		newCompList := make([]*Model, id+RESIZESTEP)
+		for i := range glg.modelList {
+			newCompList[i] = glg.modelList[i]
+		}
+		glg.modelList = newCompList
+	}
 }
 
 //*****************************
 // TOOLS
 //*****************************
 
-func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.ResourceManager) *Model {
+func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponent) error {
 	oldTime := time.Now()
+	glg.resizeArrays(id)
 
 	modelPtr, ok := glg.modelMap[comp.ModelName]
 	if ok {
-		return modelPtr
+		glg.modelList[id] = modelPtr
+		glg.renderMap[id] = glg.renderTypes[comp.Renderer]
+		return nil
 	} else {
 		common.LogInfo.Println("mesh not yet loaded:", comp.Mesh)
 	}
@@ -228,7 +194,7 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	//var boundingRadius float32
 	switch comp.MeshType {
 	case "wavefront":
-		vertsVector, indiciesVector, normsVector, uvVector /*boundingRadius*/, _ = rm.LoadModelWavefront(comp.Mesh)
+		vertsVector, indiciesVector, normsVector, uvVector /*boundingRadius*/, _ = glg.rm.LoadModelWavefront(comp.Mesh)
 	}
 	//fmt.Println(boundingRadius)
 
@@ -263,8 +229,20 @@ func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.Resourc
 	model := MakeModel(verts, indicies, norms, uvs, tex)
 	glg.modelMap[comp.ModelName] = &model
 
+	glg.modelList[id] = &model
+	glg.renderMap[id] = glg.renderTypes[comp.Renderer]
+
 	common.LogInfo.Println("model loaded", time.Since(oldTime))
-	return &model
+	return nil
+}
+
+func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {
+	comps := ids.Array()
+	for i := range comps {
+		id := comps[i].(component.GOiD)
+		loc := sm.GetTransform4m(id)
+		glg.renderMap[id].Render(*glg.modelList[id], loc, cam.LookAtMatrix(), cam.Projection())
+	}
 }
 
 func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
@@ -275,8 +253,7 @@ func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
 	if shader.Get(gl.COMPILE_STATUS) < 1 {
 		infoLog := shader.GetInfoLog()
 		shader.Delete()
-		common.LogErr.Printf("failed to compile shader type: %e\n\t%s", shadType, infoLog)
-		panic("")
+		common.LogErr.Fatalf("failed to compile shader type: %e\n\t%s", shadType, infoLog)
 	}
 
 	return shader

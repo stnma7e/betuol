@@ -26,6 +26,11 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 	}
 }
 
+func GetFileContents(fileName string) []byte {
+	rm := MakeResourceManager("/home/sam/go/src/smig/data/")
+	return rm.GetFileContents(fileName)
+}
+
 func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	file, err := os.Open(rm.fileDepot + fileName)
 	if err != nil {
@@ -83,7 +88,8 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 }
 
 func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {
-	modelStr := rm.GetFileContents("graphics/mesh/" + modelName + ".obj")
+	common.LogInfo.Println(modelName)
+	modelStr := GetFileContents("graphics/mesh/" + modelName + ".obj")
 	verts := common.MakeVector()
 	norms := common.MakeVector()
 	texes := common.MakeVector()

@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 
-	"smig/event"
 	"smig/graphics"
 	"smig/instance"
 	"smig/math"
-	"smig/net"
 	"smig/res"
 
 	glfw "github.com/go-gl/glfw3"
@@ -29,20 +28,12 @@ func main() {
 	//graphics.Trace(15,15, mat.Inverse())
 	//return
 
-	nm := net.MakeNetworkManager()
-	err := nm.Connect("localhost:13572")
-	if err != nil {
-		fmt.Println(err)
-	}
-	nm.SendBytes([]byte("hello, world"))
-	nm.Send(event.AttackEvent{1, 1})
-
 	glg := graphics.GlStart(X, Y, "smig", rm)
 	gm := graphics.MakeGraphicsManager(glg, rm)
-
-	in := instance.MakeInstance(returnlink, rm, gm, nm)
+	in := instance.MakeInstance(returnlink, rm, gm)
 	go in.Loop()
 
+	runtime.LockOSThread()
 	oldtime := time.Now()
 	for i := true; i; {
 		secs := time.Since(oldtime).Seconds()
@@ -54,7 +45,6 @@ func main() {
 		cam := math.MakeFrustum(0.1, 100, 60, float32(y)/float32(x))
 
 		for j := 0; j < 100 && i; j++ {
-			//nm.Tick()
 			eye, target, up = gm.HandleInputs(eye, target, up)
 			cam.LookAt(target, eye, up)
 

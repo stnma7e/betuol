@@ -7,10 +7,10 @@ import (
 	"smig/common"
 	"smig/component"
 	"smig/event"
+	"smig/math"
 )
 
 func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {
-	fmt.Println(command)
 	switch command {
 	case "look":
 		PlayerLook(id, chars)
@@ -63,13 +63,13 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 
 	switch direction {
 	case "north":
-		transMat[11]++
+		chars.sm.SetLocationOverTime(id, math.Vec3{transMat[3], transMat[7], transMat[11] + 1}, 3)
 	case "south":
-		transMat[11]--
+		chars.sm.SetLocationOverTime(id, math.Vec3{transMat[3], transMat[7], transMat[11] - 1}, 3)
 	case "east":
-		transMat[3]++
+		chars.sm.SetLocationOverTime(id, math.Vec3{transMat[3] + 1, transMat[7], transMat[11]}, 3)
 	case "west":
-		transMat[3]--
+		chars.sm.SetLocationOverTime(id, math.Vec3{transMat[3] - 1, transMat[7], transMat[11]}, 3)
 	}
 	chars.sm.SetTransform(id, transMat)
 }

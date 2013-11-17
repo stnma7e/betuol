@@ -13,7 +13,7 @@ import (
 
 type AiManager struct {
 	computerTypeMap map[string]AiComputer
-	compList []chan event.Event
+	compList        []chan event.Event
 	players         *common.Vector
 
 	cm *character.CharacterManager
@@ -123,7 +123,7 @@ func (am *AiManager) DeleteComponent(id component.GOiD) {
 		return
 	}
 	if am.compList[id] != nil {
-		am.compList[id] <- event.DeathEvent{ id }
+		am.compList[id] <- event.DeathEvent{id}
 		am.compList[id] = nil
 	}
 }

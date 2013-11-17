@@ -1,6 +1,8 @@
 package graphics
 
 import (
+	"smig/common"
+	"smig/component"
 	"smig/math"
 	"smig/res"
 )
@@ -17,4 +19,16 @@ type WindowManager interface {
 	DrawString(x, y float32, text string)
 	GetSize() (int, int)
 	SwapBuffers()
+}
+
+type Inputs struct {
+}
+
+type GraphicsHandler interface {
+	Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum)
+	LoadModel(id component.GOiD, gc GraphicsComponent) error
+	Tick() bool
+	HandleInputs() Inputs
+	DrawString(x, y float32, text string)
+	GetSize() (int, int)
 }
