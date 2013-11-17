@@ -1,12 +1,17 @@
 package instance
 
 import (
+	"smig/common"
 	"smig/event"
 	"smig/math"
 )
 
 func (is *Instance) StartScript() {
-	goList := is.CreateFromMap("map1")
+	goList, err := is.CreateFromMap("map1")
+	if err != nil {
+		common.LogErr.Println(err)
+		return
+	}
 	is.em.Send(event.ChatEvent{goList[0], is.player, "Good god! You're finnally awake. I've been sitting here for hours. I thought you'd never wake up."})
 	is.em.Send(event.ChatEvent{goList[0], is.player, "Let's see if you can get up."})
 	is.qm.AddQuest(is.player, is.qm.FirstMoveQuest)

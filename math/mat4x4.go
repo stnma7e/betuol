@@ -39,6 +39,15 @@ func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {
 //return mat2
 //}
 
+func Equals4m4m(mat, mat2 Mat4x4) bool {
+	for i := range mat {
+		if mat[i] != mat2[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func (mat Mat4x4) Inverse() Mat4x4 {
 	var segs [4]Mat2x2 // four corner 2x2 matrices
 	segs[0] = Mat2x2{mat[0], mat[1], mat[4], mat[5]}

@@ -11,7 +11,8 @@ type ComponentManager interface {
 }
 
 type SceneManager interface {
-	GetTransform4m(index GOiD) math.Mat4x4
+	GetTransform4m(index GOiD) (math.Mat4x4, error)
+	GetObjectLocation(index GOiD) math.Vec3
 }
 
 type GameObject map[string][]byte

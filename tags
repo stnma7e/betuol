@@ -17,9 +17,8 @@ CharacterAttributes	component/character/character.go	/^type CharacterAttributes 
 CharacterManager	component/character/manager.go	/^type CharacterManager struct {$/;"	d
 CharacterMoveEvent	event/events.go	/^type CharacterMoveEvent struct {$/;"	d
 ChatEvent	event/events.go	/^type ChatEvent struct {$/;"	d
-Closing	graphics/gl.go	/^func (glg *GlGraphicsManager) Closing() bool {$/;"	d
+Close	graphics/gl.go	/^func (glg *GlGraphicsManager) Close() {$/;"	d
 ComponentManager	component/component.go	/^type ComponentManager interface {$/;"	d
-Connect	net/manager.go	/^func (nm *NetworkManager) Connect(address string) error {$/;"	d
 ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bool {$/;"	d
 ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere) int {$/;"	d
 Create	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {$/;"	d
@@ -27,10 +26,10 @@ CreateComponent	component/ai/manager.go	/^func (am *AiManager) CreateComponent(i
 CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {$/;"	d
 CreateComponent	component/quest/manager.go	/^func (qm *QuestManager) CreateComponent(id component.GOiD) error {$/;"	d
 CreateComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) CreateComponent(index component.GOiD) error {$/;"	d
-CreateComponent	graphics/manager.go	/^func (gm *GraphicsManager) CreateComponent(id component.GOiD, model *Model, renderer string) error {$/;"	d
-CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component.GOiD {$/;"	d
-CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) []component.GOiD {$/;"	d
-CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) component.GOiD {$/;"	d
+CreateComponent	graphics/manager.go	/^func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc GraphicsComponent) error {$/;"	d
+CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]component.GOiD, error) {$/;"	d
+CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {$/;"	d
+CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {$/;"	d
 CreationFunction	component/gofactory/manager.go	/^type CreationFunction func(component.GOiD, []byte) error$/;"	d
 CreationManager	component/gofactory/manager.go	/^type CreationManager struct {$/;"	d
 Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	d
@@ -44,16 +43,19 @@ DeleteComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) 
 DeleteComponent	graphics/manager.go	/^func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {$/;"	d
 Dequeue	common/intqueue.go	/^func (stk *IntQueue) Dequeue() (int, error) {$/;"	d
 Dequeue	common/queue.go	/^func (stk *Queue) Dequeue() (interface{}, error) {$/;"	d
+Difference	common/vector.go	/^func (vec1 *Vector) Difference(vec2 *Vector) *Vector {$/;"	d
 Dist3v3v	math/vec3.go	/^func Dist3v3v(vec1, vec2 Vec3) float32 {$/;"	d
 DistSqrd3v3v	math/vec3.go	/^func DistSqrd3v3v(vec1, vec2 Vec3) float32 {$/;"	d
 Distance	math/plane.go	/^func (pl *Plane) Distance(vec Vec3) float32 {$/;"	d
 Dot3v3v	math/vec3.go	/^func Dot3v3v(vec1, vec2 Vec3) float32 {$/;"	d
 DrawString	graphics/gl.go	/^func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {$/;"	d
 DrawString	graphics/manager.go	/^func (gm *GraphicsManager) DrawString(x, y float32, text string) {$/;"	d
+DrawString	graphics/text.go	/^func (tgh *TextGraphicsHandler) DrawString(x, y float32, text string) {$/;"	d
 Empty	common/vector.go	/^func (vc *Vector) Empty() {$/;"	d
 EnemyAi	component/ai/computer.go	/^func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
 EnemyDecide	component/ai/computer.go	/^func (am *AiManager) EnemyDecide(id component.GOiD) {$/;"	d
 Equal3v3v	math/vec3.go	/^func Equal3v3v(vec1, vec2 Vec3) bool {$/;"	d
+Equals4m4m	math/mat4x4.go	/^func Equals4m4m(mat, mat2 Mat4x4) bool {$/;"	d
 Erase	common/vector.go	/^func (vc *Vector) Erase(index int) {$/;"	d
 Event	event/manager.go	/^type Event interface {$/;"	d
 EventListener	event/manager.go	/^type EventListener func(evt Event)$/;"	d
@@ -77,29 +79,32 @@ GetEventType	event/events.go	/^func (ke KillEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (qt QuestComplete) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (rae RunAiEvent) GetEventType() string {$/;"	d
 GetFileContents	res/manager.go	/^func (rm *ResourceManager) GetFileContents(fileName string) []byte {$/;"	d
+GetFileContents	res/manager.go	/^func GetFileContents(fileName string) []byte {$/;"	d
 GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {$/;"	d
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.IntQueue {$/;"	d
 GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
 GetSize	graphics/gl.go	/^func (glg *GlGraphicsManager) GetSize() (int, int) {$/;"	d
 GetSize	graphics/manager.go	/^func (gm *GraphicsManager) GetSize() (int, int) {$/;"	d
+GetSize	graphics/text.go	/^func (tgh *TextGraphicsHandler) GetSize() (int, int) {$/;"	d
 GetTransform4m	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransform4m(index component.GOiD) math.Mat4x4 {$/;"	d
 GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index component.GOiD) math.Mat4x4 {$/;"	d
 GlGraphicsManager	graphics/gl.go	/^type GlGraphicsManager struct {$/;"	d
 GlLoadTexture	graphics/image.go	/^func GlLoadTexture(filename string) gl.Texture {$/;"	d
 GlStart	graphics/gl.go	/^func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {$/;"	d
-GlfwKeyCallback	graphics/gl.go	/^func GlfwKeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {$/;"	d
 GraphicsComponent	graphics/manager.go	/^type GraphicsComponent struct {$/;"	d
+GraphicsHandler	graphics/graphics.go	/^type GraphicsHandler interface {$/;"	d
 GraphicsManager	graphics/manager.go	/^type GraphicsManager struct {$/;"	d
 Greet	component/character/character.go	/^func (ca *CharacterAttributes) Greet() string {$/;"	d
 HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) HandleAttack(evt event.Event) {$/;"	d
 HandleChat	component/character/delegates.go	/^func (cm *CharacterManager) HandleChat(evt event.Event) {$/;"	d
 HandleDeath	component/gofactory/manager.go	/^func (gof *GameObjectFactory) HandleDeath(evt event.Event) {$/;"	d
 HandleEvent	component/quest/manager.go	/^func (qm *QuestManager) HandleEvent(evt event.Event) {$/;"	d
-HandleInputs	graphics/gl.go	/^\/\/ func (glg *GlGraphicsManager) HandleInputs(eye math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
-HandleInputs	graphics/gl.go	/^\/\/func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
-HandleInputs	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+HandleInputs	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs() Inputs {$/;"	d
 HandleInputs	graphics/manager.go	/^func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
-Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) {$/;"	d
+HandleInputs	graphics/text.go	/^func (tgh *TextGraphicsHandler) HandleInputs() Inputs {$/;"	d
+HandleInputs0	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs0(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
+Inputs	graphics/graphics.go	/^type Inputs struct {$/;"	d
+Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) int {$/;"	d
 Instance	instance/instance.go	/^type Instance struct {$/;"	d
 IntQueue	common/intqueue.go	/^type IntQueue struct {$/;"	d
 Interaction	component/character/character.go	/^type Interaction func(id1 component.GOiD, id2 component.GOiD)$/;"	d
@@ -107,6 +112,7 @@ Intersects	math/sphere.go	/^func (sp *Sphere) Intersects(sp2 Sphere) bool {$/;"	
 Inverse	math/mat4x4.go	/^\/\/func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
 Inverse	math/mat4x4.go	/^func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
 Invert	math/mat2x2.go	/^func (mat *Mat2x2) Invert() {$/;"	d
+IsClosing	graphics/gl.go	/^func (glg *GlGraphicsManager) IsClosing() bool {$/;"	d
 IsEmpty	common/intqueue.go	/^func (stk *IntQueue) IsEmpty() bool {$/;"	d
 IsEmpty	common/queue.go	/^func (stk *Queue) IsEmpty() bool {$/;"	d
 IsEmpty	common/stack.go	/^func (stk *Stack) IsEmpty() bool {$/;"	d
@@ -124,7 +130,8 @@ LinkProgram	graphics/gl.go	/^func LinkProgram(program gl.Program, shaderList []g
 LoadFont	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadFont() {$/;"	d
 LoadGameObject	res/manager.go	/^func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {$/;"	d
 LoadJsonMap	res/manager.go	/^func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {$/;"	d
-LoadModel	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadModel(comp *GraphicsComponent, rm *res.ResourceManager) *Model {$/;"	d
+LoadModel	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponent) error {$/;"	d
+LoadModel	graphics/text.go	/^func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc GraphicsComponent) error {$/;"	d
 LoadModelWavefront	res/manager.go	/^func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {$/;"	d
 LoadShader	graphics/gl.go	/^func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {$/;"	d
 LogErr	common/log.go	/^var LogErr, LogWarn, LogInfo *log.Logger$/;"	d
@@ -144,13 +151,13 @@ MakeFrustum	math/frustum.go	/^func MakeFrustum(nearDist, farDist, fov, aspect fl
 MakeGameObjectFactory	component/gofactory/manager.go	/^func MakeGameObjectFactory(tm *scenemanager.TransformManager) *GameObjectFactory {$/;"	d
 MakeGraphicsManager	graphics/manager.go	/^func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {$/;"	d
 MakeIdentity	math/mat4x4.go	/^func (m *Mat4x4) MakeIdentity() {$/;"	d
-MakeInstance	instance/instance.go	/^func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager, nm *net.NetworkManager) *Instance {$/;"	d
+MakeInstance	instance/instance.go	/^func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {$/;"	d
 MakeModel	graphics/model.go	/^func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2, textureList []gl.Texture) Model {$/;"	d
-MakeNetworkManager	net/manager.go	/^func MakeNetworkManager() *NetworkManager {$/;"	d
 MakePerspectiveMatrix	math/mat4x4.go	/^func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {$/;"	d
 MakePlane3v	math/plane.go	/^func MakePlane3v(p1, p2, p3 Vec3) Plane {$/;"	d
 MakeQuestManager	component/quest/manager.go	/^func MakeQuestManager(em *event.EventManager) *QuestManager {$/;"	d
 MakeResourceManager	res/manager.go	/^func MakeResourceManager(fileDepot string) *ResourceManager {$/;"	d
+MakeTextGraphicsHandler	graphics/text.go	/^func MakeTextGraphicsHandler() *TextGraphicsHandler {$/;"	d
 MakeTransformManager	component/scenemanager/manager.go	/^func MakeTransformManager(em *event.EventManager) *TransformManager {$/;"	d
 MakeVector	common/vector.go	/^func MakeVector() *Vector {$/;"	d
 Map	component/component.go	/^type Map []MapLocation$/;"	d
@@ -168,7 +175,6 @@ Mult4m4m	math/mat4x4.go	/^func Mult4m4m(mat1, mat2 Mat4x4) Mat4x4 {$/;"	d
 Mult4m4mj	math/mat4x4.go	/^\/\/ func Mult4m4mj(mat1, mat2 Mat4x4) (ret Mat4x4) {$/;"	d
 Mult4m4v	math/vec4.go	/^func Mult4m4v(mat Mat4x4, vec Vec4) Vec4 {$/;"	d
 Mult4v4v	math/vec4.go	/^func Mult4v4v(vec1, vec2 Vec4) (ret Vec4) {$/;"	d
-NetworkManager	net/manager.go	/^type NetworkManager struct {$/;"	d
 Normalize	math/plane.go	/^func (pl *Plane) Normalize() {$/;"	d
 Normalize3v	math/vec3.go	/^func Normalize3v(vec Vec3) Vec3 {$/;"	d
 ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {$/;"	d
@@ -193,14 +199,15 @@ QuestState	component/quest/states.go	/^type QuestState func(id component.GOiD, e
 Queue	common/intqueue.go	/^func (stk *IntQueue) Queue(num int) {$/;"	d
 Queue	common/queue.go	/^func (stk *Queue) Queue(a interface{}) {$/;"	d
 Queue	common/queue.go	/^type Queue struct {$/;"	d
-RecieveBytes	net/manager.go	/^func (nm *NetworkManager) RecieveBytes(size int, timeout float32) ([]byte, error) {$/;"	d
 Register	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Register(compType string, mang component.ComponentManager, creationFunc CreationFunction) error {$/;"	d
 RegisterComputer	component/ai/manager.go	/^func (am *AiManager) RegisterComputer(aiType string, computer AiComputer) {$/;"	d
+RegisterGraphicsHandler	graphics/manager.go	/^func (gm *GraphicsManager) RegisterGraphicsHandler(handler GraphicsHandler) {$/;"	d
 RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eventType string, listener EventListener) {$/;"	d
 RegisterListeningChannel	event/manager.go	/^func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {$/;"	d
-RegisterRenderer	graphics/manager.go	/^func (gm *GraphicsManager) RegisterRenderer(rendType string, rend Renderer) {$/;"	d
+Render	graphics/gl.go	/^func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	d
 Render	graphics/renderer.go	/^func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, projectMat math.Mat4x4) {$/;"	d
-RenderAll	graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(camera *math.Frustum, tm component.SceneManager) {$/;"	d
+Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	d
+RenderAll	graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(camera *math.Frustum, sm component.SceneManager) {$/;"	d
 RenderModel	graphics/renderer.go	/^func (rd *renderer) RenderModel(mod Model) {$/;"	d
 Renderer	graphics/renderer.go	/^type Renderer interface {$/;"	d
 ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	d
@@ -208,13 +215,10 @@ RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$
 RunAiEvent	event/events.go	/^type RunAiEvent struct {$/;"	d
 SceneManager	component/component.go	/^type SceneManager interface {$/;"	d
 Send	event/manager.go	/^func (em *EventManager) Send(evt Event) {$/;"	d
-Send	net/manager.go	/^func (nm *NetworkManager) Send(evt event.Event) {$/;"	d
-SendBytes	net/manager.go	/^func (nm *NetworkManager) SendBytes(b []byte) {$/;"	d
 SetLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocation(index component.GOiD, newLocation math.Vec3) {$/;"	d
 SetLocationOverTime	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) {$/;"	d
 SetTransform	component/scenemanager/manager.go	/^func (tm *TransformManager) SetTransform(index component.GOiD, newLocalMat math.Mat4x4) {$/;"	d
 SetUpdateAiNearPlayer	component/ai/manager.go	/^func (am *AiManager) SetUpdateAiNearPlayer(yes bool) {$/;"	d
-ShouldClose	graphics/gl.go	/^func (glg *GlGraphicsManager) ShouldClose() {$/;"	d
 Shutdown	instance/instance.go	/^func (is *Instance) Shutdown() {$/;"	d
 Sort	event/manager.go	/^func (em *EventManager) Sort() {$/;"	d
 Sphere	math/sphere.go	/^type Sphere struct {$/;"	d
@@ -230,14 +234,15 @@ Test_DeQueueWithNoItems	common/queue_test.go	/^func Test_DeQueueWithNoItems(t *t
 Test_IsEmpty	common/queue_test.go	/^func Test_IsEmpty(t *testing.T) {$/;"	d
 Test_OverDequeue	common/queue_test.go	/^func Test_OverDequeue(t *testing.T) {$/;"	d
 Test_WalkQueue	common/queue_test.go	/^func Test_WalkQueue(t *testing.T) {$/;"	d
+TextGraphicsHandler	graphics/text.go	/^type TextGraphicsHandler struct {$/;"	d
 Tick	component/ai/manager.go	/^func (am *AiManager) Tick(delta float64) {$/;"	d
 Tick	component/character/manager.go	/^func (cm *CharacterManager) Tick(delta float64) {$/;"	d
 Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
 Tick	component/scenemanager/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d
 Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
-Tick	graphics/gl.go	/^func (glg *GlGraphicsManager) Tick() {$/;"	d
-Tick	graphics/manager.go	/^func (gm *GraphicsManager) Tick() bool {$/;"	d
-Tick	net/manager.go	/^func (nm *NetworkManager) Tick() {$/;"	d
+Tick	graphics/gl.go	/^func (glg *GlGraphicsManager) Tick() bool {$/;"	d
+Tick	graphics/manager.go	/^func (gm *GraphicsManager) Tick() (ret bool) {$/;"	d
+Tick	graphics/text.go	/^func (tgh *TextGraphicsHandler) Tick() bool {$/;"	d
 ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	d
 Top	common/stack.go	/^func (stk *Stack) Top() interface{} {$/;"	d
 TransformManager	component/scenemanager/manager.go	/^type TransformManager struct {$/;"	d
@@ -255,7 +260,6 @@ WanderDecide	component/ai/computer.go	/^func (am *AiManager) WanderDecide(id com
 WindowManager	graphics/graphics.go	/^type WindowManager interface {$/;"	d
 Write	common/log.go	/^func (lw *logWriter) Write(p []byte) {$/;"	d
 arg	component/character/player.go	/^		var arg string$/;"	d
-asserted	graphics/manager.go	/^				\/\/ if modelsOfRenderer[i] is nil (and cannot be type asserted)$/;"	d
 attr	component/ai/computer.go	/^	var attr *character.CharacterAttributes$/;"	d
 boundingRadius	graphics/gl.go	/^	\/\/var boundingRadius float32$/;"	d
 chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string) {$/;"	d
@@ -264,7 +268,7 @@ cols	math/mat4x4.go	/^\/\/      var cols [4]Vec4$/;"	d
 command	component/ai/computer.go	/^	var command string$/;"	d
 comp	component/character/manager.go	/^	var comp struct {$/;"	d
 decodeVec3String	instance/instance.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	d
-dtime	graphics/gl.go	/^	\/\/var dtime float32 = 1$/;"	d
+err	instance/instance.go	/^	var err error$/;"	d
 events	event/manager.go	/^	var events []interface{}$/;"	d
 frust	math/frustum.go	/^	var frust Frustum$/;"	d
 g_tex	graphics/gl.go	/^var g_tex gl.Texture \/\/= GlLoadTexture("\/home\/sam\/downloads\/tower\/tower_diffuse.png")$/;"	d
@@ -290,7 +294,8 @@ queueNode	common/queue.go	/^type queueNode struct {$/;"	d
 renderer	graphics/renderer.go	/^type renderer struct {$/;"	d
 resizeArray	component/ai/manager.go	/^func (am *AiManager) resizeArray(index component.GOiD) {$/;"	d
 resizeArray	component/scenemanager/manager.go	/^func (tm *TransformManager) resizeArray(index component.GOiD) {$/;"	d
-resizeArrays	graphics/manager.go	/^func (gm *GraphicsManager) resizeArrays(id component.GOiD) {$/;"	d
+resizeArrays	graphics/gl.go	/^func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {$/;"	d
+resizeArrays	graphics/text.go	/^func (tgh *TextGraphicsHandler) resizeArrays(id component.GOiD) {$/;"	d
 resizeLists	component/character/manager.go	/^func (cm *CharacterManager) resizeLists(index component.GOiD) {$/;"	d
 row1	math/vec3.go	/^	var row1, row2, row3 float32$/;"	d
 row1	math/vec4.go	/^	var row1, row2, row3, row4 float32$/;"	d

@@ -20,7 +20,7 @@ func main() {
 	rm := res.MakeResourceManager("/home/sam/go/src/smig/data/")
 
 	target, eye, up := math.Vec3{0, 0, 0}, math.Vec3{0, 6, -12}, math.Vec3{0, 1, 0}
-	cam := math.MakeFrustum(0.1, 100, 60, 1/1)
+	cam := math.MakeFrustum(0.1, 100, 90, 1/1)
 	cam.LookAt(target, eye, up)
 	//mat := math.Mult4m4m(cam.LookAtMatrix(), cam.Projection())
 	//fmt.Println(mat)
@@ -42,7 +42,7 @@ func main() {
 		spfStr := fmt.Sprintf("%f", secs/100)
 
 		x, y := gm.GetSize()
-		cam := math.MakeFrustum(0.1, 100, 60, float32(y)/float32(x))
+		cam := math.MakeFrustum(0.1, 100, 90, float32(y)/float32(x))
 
 		for j := 0; j < 100 && i; j++ {
 			eye, target, up = gm.HandleInputs(eye, target, up)

@@ -20,13 +20,13 @@ func (vc *Vector) Array() []interface{} {
 func (vc *Vector) Push_back(data interface{}, resizeStep, checkDistance int) {
 	if cap(vc.array) <= vc.Length+checkDistance {
 		tmp := vc.array
-		vc.Length = len(tmp)
 		vc.array = make([]interface{}, vc.Length+resizeStep)
 		for i := range tmp {
 			vc.array[i] = tmp[i]
 		}
 	}
 	vc.array[vc.Length] = data
+	vc.Length++
 }
 
 func (vc *Vector) Insert(data interface{}) int {
@@ -40,9 +40,29 @@ func (vc *Vector) Insert(data interface{}) int {
 	}
 }
 
+func (vec1 *Vector) Difference(vec2 *Vector) *Vector {
+	ret := MakeVector()
+	list1 := vec1.Array()
+	list2 := vec2.Array()
+	for i := range list2 {
+		if func() bool {
+			for j := range list1 {
+				if list2[i] == list1[j] {
+					return false
+				}
+			}
+			return true
+		}() {
+			ret.Insert(i)
+		}
+	}
+	return ret
+}
+
 func (vc *Vector) Erase(index int) {
 	vc.array[index] = nil
 	vc.emptyIndices.Queue(index)
+	vc.Length--
 }
 
 func (vc *Vector) Empty() {
@@ -51,5 +71,5 @@ func (vc *Vector) Empty() {
 }
 
 func (vc *Vector) IsEmpty() bool {
-	return vc.Length == 0
+	return vc.Length < 1
 }

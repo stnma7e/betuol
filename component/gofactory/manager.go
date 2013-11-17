@@ -44,7 +44,7 @@ func (gof *GameObjectFactory) Register(compType string, mang component.Component
 	return nil
 }
 
-func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component.GOiD {
+func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]component.GOiD, error) {
 	var idQueue common.IntQueue
 	smap := *sceneMap
 	for i := range smap {
@@ -52,7 +52,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component
 			for k := 0; k < smap[i].Entities[j].Quantity; k++ {
 				id, err := gof.Create(smap[i].Entities[j].CompList, smap[i].Location)
 				if err != nil {
-					common.LogErr.Print(err)
+					return []component.GOiD{}, err
 				} else {
 					idQueue.Queue(int(id))
 				}
@@ -70,7 +70,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) []component
 		idList[i] = component.GOiD(num)
 	}
 
-	return idList
+	return idList, nil
 }
 func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {
 	id := gof.getNewGOiD()
@@ -95,7 +95,6 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 		err := mang.create(id, v)
 		if err != nil {
 			gof.Delete(id)
-			common.LogErr.Println(err)
 			return component.NULLINDEX, err
 		}
 	}

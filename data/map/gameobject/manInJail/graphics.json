@@ -2,5 +2,6 @@
   "modelName": "manInJail",
   "mesh": "cube",
   "meshType": "wavefront",
-  "renderer": "fragmentLighting"
+  "renderer": "fragmentLighting",
+  "textDescription": "A man is in jail. He looks raggety from years of incarceration."
 }

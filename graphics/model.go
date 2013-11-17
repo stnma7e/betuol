@@ -38,18 +38,14 @@ const (
 type Model struct {
 	buffers [NUMBUFFERS]gl.Buffer
 	vao     gl.VertexArray
-	tex     gl.Texture
 }
 
-func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2, textureList []gl.Texture) Model {
+func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2) Model {
 	model := Model{}
 
 	vao := gl.GenVertexArray()
 	vao.Bind()
 	model.vao = vao
-
-	//model.tex = GlLoadTexture("/home/sam/downloads/tower/tower_diffuse.png")
-	model.tex = textureList[0]
 
 	vertBuffer := gl.GenBuffer()
 	vertBuffer.Bind(gl.ARRAY_BUFFER)

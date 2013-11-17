@@ -59,7 +59,10 @@ func PlayerLook(id component.GOiD, chars *CharacterManager) {
 }
 
 func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
-	transMat := chars.sm.GetTransformMatrix(id)
+	transMat, err := chars.sm.GetTransformMatrix(id)
+	if err != nil {
+		common.LogErr.Println(err)
+	}
 
 	switch direction {
 	case "north":

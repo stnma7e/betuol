@@ -43,4 +43,4 @@ TODO
 
 - Three (or more) warring factions. When in a state of peace, trade is allowed and players can interact, when in a state of war, player can interact but only "underground", in secret, away from the NPCs of the factions. 1984-esque
 
-
+- Abilities are aquired through quests and loots. Spells can be learned from scroll drops/rewards.

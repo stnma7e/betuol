@@ -88,7 +88,6 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 }
 
 func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {
-	common.LogInfo.Println(modelName)
 	modelStr := GetFileContents("graphics/mesh/" + modelName + ".obj")
 	verts := common.MakeVector()
 	norms := common.MakeVector()

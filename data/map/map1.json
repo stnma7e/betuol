@@ -7,14 +7,5 @@
           "quantity": 1
         }
     ]
-  },
-  {
-    "location": [0,0,1],
-    "entities": [
-        {
-          "breed": "room",
-          "quantity": 1
-        }
-    ]
   }
 ]

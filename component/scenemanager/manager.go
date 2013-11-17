@@ -103,20 +103,18 @@ func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation m
 	tm.moving[id] = mot
 }
 
-func (tm *TransformManager) GetTransform4m(index component.GOiD) math.Mat4x4 {
+func (tm *TransformManager) GetTransform4m(index component.GOiD) (math.Mat4x4, error) {
 	return tm.GetTransformMatrix(index)
 }
 
-func (tm *TransformManager) GetTransformMatrix(index component.GOiD) math.Mat4x4 {
+func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {
 	if int(index) >= len(tm.matList) {
-		common.LogErr.Printf("invalid component.GOiD, %v: not in list", index)
-		return math.Mat4x4{}
+		return math.Mat4x4{}, fmt.Errorf("invalid component.GOiD, %v: not in list")
 	}
 	if tm.matList[index].IsEmpty() {
-		common.LogErr.Printf("invalid component.GOiD, %v: empty matrix", index)
-		return math.Mat4x4{}
+		return math.Mat4x4{}, fmt.Errorf("invalid component.GOiD, %v: empty matrix", index)
 	}
-	return tm.matList[index]
+	return tm.matList[index], nil
 }
 
 func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {
@@ -145,3 +143,149 @@ func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange 
 
 	return &stk
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

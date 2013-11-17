@@ -89,10 +89,14 @@ func (is *Instance) Loop() {
 	oldTime := time.Now()
 	ticks := time.NewTicker(time.Second / 60)
 
-	is.player = is.CreateObject("player", math.Vec3{0, 0, 0})
-	is.qm.AddQuest(is.player, is.qm.FirstQuest)
+	var err error
+	is.player, err = is.CreateObject("player", math.Vec3{0, 0, 0})
+	if err != nil {
+		common.LogErr.Println(err)
+	}
 	is.tm.SetLocationOverTime(is.player, math.Vec3{3, 0, 0}, 1.5)
 
+	is.qm.AddQuest(is.player, is.qm.FirstQuest)
 	is.StartScript()
 
 	go func() {
@@ -206,21 +210,18 @@ func (is *Instance) Shutdown() {
 *
 *****************************************/
 
-func (is *Instance) CreateFromMap(mapName string) []component.GOiD {
+func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {
 	jmap := is.rm.LoadJsonMap(mapName)
 	return is.gof.CreateFromMap(&jmap)
 }
 
-func (is *Instance) CreateObject(objName string, loc math.Vec3) component.GOiD {
+func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {
 	components := is.rm.LoadGameObject(objName)
 	id, err := is.gof.Create(components, loc)
-	if err != nil {
-		common.LogErr.Print(err)
-	}
 	// is.pm.AddForce(id, math.Vec3{0,0.5,0})
 	common.LogInfo.Println("entity created, id:", id)
 
-	return id
+	return id, err
 }
 
 func (is *Instance) MoveObject(id component.GOiD, loc math.Vec3) {

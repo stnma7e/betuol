@@ -12,10 +12,6 @@ import (
 	"github.com/go-gl/gl"
 )
 
-const (
-	RESIZESTEP = 1
-)
-
 type GraphicsManager struct {
 	rm *res.ResourceManager
 
@@ -31,7 +27,7 @@ type ModelTransfer struct {
 	gc GraphicsComponent
 }
 type GraphicsComponent struct {
-	ModelName, Mesh, MeshType, Renderer string
+	ModelName, Mesh, MeshType, Renderer, TextDescription string
 }
 
 func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {
@@ -44,6 +40,7 @@ func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *Gr
 	}
 
 	gm.graphicsHandlers.Insert(window)
+	gm.graphicsHandlers.Insert(MakeTextGraphicsHandler())
 
 	return gm
 }
@@ -77,13 +74,19 @@ func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc GraphicsCompone
 }
 
 func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {
+	comps := gm.compList.Array()
+	graphicsHandlers := gm.graphicsHandlers.Array()
+	for i := range comps {
+		if comps[i] == id {
+			gm.compList.Erase(i)
+		}
+	}
+	for j := range graphicsHandlers {
+		graphicsHandlers[j].(GraphicsHandler).DeleteModel(id)
+	}
 }
 
 func (gm *GraphicsManager) Tick() (ret bool) {
-	graphicsHandlers := gm.graphicsHandlers.Array()
-	for i := range graphicsHandlers {
-		ret = graphicsHandlers[i].(GraphicsHandler).Tick()
-	}
 	for i := true; i; {
 		select {
 		case modelTrans := <-gm.modellink:
@@ -93,13 +96,33 @@ func (gm *GraphicsManager) Tick() (ret bool) {
 		}
 	}
 
+	graphicsHandlers := gm.graphicsHandlers.Array()
+	for i := range graphicsHandlers {
+		ret = graphicsHandlers[i].(GraphicsHandler).Tick()
+		if ret != true {
+			common.LogInfo.Println("tick returning false from:", graphicsHandlers[i].(GraphicsHandler))
+			return
+		}
+	}
+
 	return
 }
 
 func (gm *GraphicsManager) RenderAll(camera *math.Frustum, sm component.SceneManager) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
+	compsToSend := common.MakeVector()
+	comps := gm.compList.Array()
 	graphicsHandlers := gm.graphicsHandlers.Array()
+	for i := range comps {
+		if comps[i] == nil {
+			continue
+		}
+		loc := sm.GetObjectLocation(comps[i].(component.GOiD))
+		if camera.ContainsPoint(loc) {
+			compsToSend.Insert(comps[i].(component.GOiD))
+		}
+	}
 	for i := range graphicsHandlers {
 		graphicsHandlers[i].(GraphicsHandler).Render(gm.compList, sm, camera)
 		// only send id's who will be visible

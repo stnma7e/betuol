@@ -2,5 +2,6 @@
   "modelName": "player",
   "mesh": "tower",
   "meshType": "wavefront",
-  "renderer": "fragmentLighting"
+  "renderer": "fragmentLighting",
+  "textDescription": "A player sits nearby."
 }

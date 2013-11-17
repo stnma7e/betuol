@@ -37,10 +37,11 @@ func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {
 	if cevt.CharID != id {
 		return
 	}
-	if moveQuestTicker < 2 {
+	if moveQuestTicker < 1 {
 		// the location of the player is changed once during gameobject creation and once during instance startup
 		moveQuestTicker++
 		return
 	}
 	qm.em.Send(event.QuestComplete{cevt.CharID, "FirstMoveQuest"})
+	qm.quests[id] = nil
 }
