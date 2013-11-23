@@ -3,12 +3,12 @@ package character
 import (
 	"encoding/json"
 
-	"betuol/common"
 	"betuol/component"
 	"betuol/component/scenemanager"
 	"betuol/event"
 )
 
+// CharacterManager is the character component manager that handles the creation, deletion, and updating of character components.
 type CharacterManager struct {
 	attributeList   [NUM_ATTRIBUTES][]float32
 	descriptionList []string
@@ -20,6 +20,7 @@ type CharacterManager struct {
 	em *event.EventManager
 }
 
+// MakeCharacterManager returns a pointer to a CharacterManager.
 func MakeCharacterManager(tm *scenemanager.TransformManager, em *event.EventManager) *CharacterManager {
 	cm := CharacterManager{}
 	cm.movedlink = make(chan component.GOiD)
@@ -29,25 +30,11 @@ func MakeCharacterManager(tm *scenemanager.TransformManager, em *event.EventMana
 	return &cm
 }
 
+// Tick updates character components based on elapsed time passed as an argument, delta.
 func (cm *CharacterManager) Tick(delta float64) {
-	select {
-	case id := <-cm.movedlink:
-		loc := cm.sm.GetObjectLocation(id)
-		stk := cm.sm.GetObjectsInLocationRadius(loc, cm.attributeList[RANGEOFSIGHT][id]+20)
-		numObj := stk.Size
-		for i := 0; i < numObj; i++ {
-			charId, err := stk.Dequeue()
-			if err != nil {
-				common.LogWarn.Print(err)
-			}
-			if charId == int(id) || id == 0 {
-				continue
-			}
-		}
-	default:
-	}
 }
 
+// JsonCreate extracts creation data from a byte array of json text to pass to CreateComponent.
 func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {
 	var comp struct {
 		Health, Mana, Strength, Intelligence, RangeOfSight float32
@@ -73,8 +60,9 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 	return cm.CreateComponent(index, ca)
 }
 
+// Uses extracted data from higher level component creation functions and initializes a character component based on the id passed through.
 func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {
-	cm.resizeLists(index)
+	cm.resizeArrays(index)
 	for i := range ca.Attributes {
 		cm.attributeList[i][index] = ca.Attributes[i]
 	}
@@ -85,7 +73,9 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 	return nil
 }
 
-func (cm *CharacterManager) resizeLists(index component.GOiD) {
+// resizeArray is a helper function to resize the array of components to accomodate a new component.
+// If the GOiD of the new component is larger than the size of the array, then resizeArrays will grow the array and copy data over in order to fit the new component.
+func (cm *CharacterManager) resizeArrays(index component.GOiD) {
 	for i := range cm.attributeList {
 		if cap(cm.attributeList[i])-1 < int(index) {
 			tmp := cm.attributeList[i]
@@ -103,6 +93,7 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 			cm.descriptionList[i] = tmp[i]
 		}
 	}
+
 	if cap(cm.greetingList)-1 < int(index) {
 		tmp := cm.greetingList
 		cm.greetingList = make([]string, index+RESIZESTEP)
@@ -112,6 +103,7 @@ func (cm *CharacterManager) resizeLists(index component.GOiD) {
 	}
 }
 
+// DeleteComponent implements the component.ComponentManager interface and deletes character component data from the manager.
 func (cm *CharacterManager) DeleteComponent(index component.GOiD) {
 	for i := range cm.attributeList {
 		cm.attributeList[i][index] = -1
@@ -120,6 +112,7 @@ func (cm *CharacterManager) DeleteComponent(index component.GOiD) {
 	cm.greetingList[index] = ""
 }
 
+// GetCharacterAttributes is a helper function that will compile attribute data of a character component and return a pointer to a structure with the desired information.
 func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {
 	ca := &CharacterAttributes{}
 	if index == 0 {
@@ -135,6 +128,7 @@ func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *Charac
 	return ca
 }
 
+// UpdateId updates a character component's attribute information based on the data in the CharacterAttributes structure passed in as an argument.
 func (cm *CharacterManager) UpdateId(id component.GOiD, ca *CharacterAttributes) {
 	if id == 0 {
 		return

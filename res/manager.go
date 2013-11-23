@@ -1,3 +1,4 @@
+// Package res implements functions to handle file system and resource management.
 package res
 
 import (
@@ -14,11 +15,13 @@ import (
 	"betuol/math"
 )
 
+// ResourceManager is a struct to handle resource management and to prevent multiple identical resources being loaded in memory simultaneously.
 type ResourceManager struct {
 	fileDepot string
 	resMap    map[string][]byte
 }
 
+// MakeResourceManager returns a pointer to a ResourceManager.
 func MakeResourceManager(fileDepot string) *ResourceManager {
 	return &ResourceManager{
 		fileDepot,
@@ -26,11 +29,13 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 	}
 }
 
+// GetFileContents is a static wrapper for ResourceManager.GetFileContents.
 func GetFileContents(fileName string) []byte {
 	rm := MakeResourceManager("/home/sam/go/src/betuol/data/")
 	return rm.GetFileContents(fileName)
 }
 
+// GetFileContents is a function to retreive the contols of a file returned as a byte array.
 func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	file, err := os.Open(rm.fileDepot + fileName)
 	if err != nil {
@@ -46,6 +51,7 @@ func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	return buf
 }
 
+// LoadJsonMap will return a component.Map used by the GameObjectFactory to create a list of GameObjects organized by location.
 func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
 	mapJson := rm.GetFileContents("map/" + mapName + ".json")
 	var obj []component.MapLocation
@@ -65,6 +71,7 @@ func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
 	return obj
 }
 
+// LoadGameObject is used to retrieve and compile the creation data for making a GameObject with a GameObjectFactory.
 func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 	objJson := rm.GetFileContents("map/gameobject/" + objType + "/" + "obj.json")
 	var obj struct {
@@ -87,6 +94,9 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 	return gameobj
 }
 
+// LoadModelWavefront is a function to load a Wavefront (.obj) style 3D mesh.
+// This function is used to load models created using blender or another 3d mdoeling program outside the game engine.
+// The function parses a text file and extracts a list of vertices, indices, normal vectors, and texture coordinates.
 func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {
 	modelStr := GetFileContents("graphics/mesh/" + modelName + ".obj")
 	verts := common.MakeVector()

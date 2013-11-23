@@ -17,7 +17,7 @@ const X, Y = 640, 480
 
 func main() {
 	returnlink := make(chan bool)
-	rm := res.MakeResourceManager("/home/sam/go/src/betuol/data/")
+	rm := res.MakeResourceManager("./data/")
 
 	target, eye, up := math.Vec3{0, 0, 0}, math.Vec3{0, 6, -12}, math.Vec3{0, 1, 0}
 	cam := math.MakeFrustum(0.1, 100, 90, 1/1)
@@ -28,12 +28,12 @@ func main() {
 	//graphics.Trace(15,15, mat.Inverse())
 	//return
 
-	glg := graphics.GlStart(X, Y, "betuol", rm)
+	runtime.LockOSThread()
+	glg := graphics.MakeGlGraphicsManager(X, Y, "betuol", rm)
 	gm := graphics.MakeGraphicsManager(glg, rm)
 	in := instance.MakeInstance(returnlink, rm, gm)
 	go in.Loop()
 
-	runtime.LockOSThread()
 	oldtime := time.Now()
 	for i := true; i; {
 		secs := time.Since(oldtime).Seconds()

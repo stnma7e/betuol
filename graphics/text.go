@@ -6,11 +6,13 @@ import (
 	"betuol/math"
 )
 
+// TextGraphicsHandler implements the GraphicsHandler interface, but instead of rendering to a graphics context, TextGraphicsHandler instead outputs textual descriptions of each model.
 type TextGraphicsHandler struct {
 	compList   []string
 	lastIdList common.Vector
 }
 
+// MakeTextGraphicsHandler returns a pointer to a TextGraphicsHandler.
 func MakeTextGraphicsHandler() *TextGraphicsHandler {
 	tgh := &TextGraphicsHandler{
 		make([]string, 0),
@@ -19,10 +21,13 @@ func MakeTextGraphicsHandler() *TextGraphicsHandler {
 	return tgh
 }
 
+// Tick returns the status of the text window.
 func (tgh *TextGraphicsHandler) Tick() bool {
 	return true
 }
 
+// Render implements the Renderer interface and outputs text based on the GOiD's in the list passed as an argument.
+// The function will only output a new text description if the model has newly come into the scene.
 func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {
 	diff := tgh.lastIdList.Difference(ids)
 
@@ -43,13 +48,15 @@ func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneMan
 	tgh.lastIdList = *ids
 }
 
-func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc GraphicsComponent) error {
+// LoadModel implements the GraphicsHandler interface and adds data used to render the components later.
+func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc graphicsComponent) error {
 	tgh.resizeArrays(id)
 	tgh.compList[id] = gc.TextDescription
 
 	return nil
 }
 
+// DeleteModel implements the GraphicsHandler interface and deletes the data used for rendering.
 func (tgh *TextGraphicsHandler) DeleteModel(id component.GOiD) {
 	tgh.compList[id] = ""
 }
@@ -65,14 +72,18 @@ func (tgh *TextGraphicsHandler) resizeArrays(id component.GOiD) {
 	}
 }
 
+// HandleInputs implements the GraphicsHandler interface and returns the inputs recieved since the last query.
 func (tgh *TextGraphicsHandler) HandleInputs() Inputs {
 	return Inputs{}
 }
 
+// DrawString implements the GraphicsHandler interface and outputs a the string passed in as an arguement.
+// The x, y coordinates are ignored.
 func (tgh *TextGraphicsHandler) DrawString(x, y float32, text string) {
 
 }
 
+// GetSize implements the GraphicsHandler interface, but returns 0, 0 always because the text window has no size.
 func (tgh *TextGraphicsHandler) GetSize() (int, int) {
 	return 0, 0
 }

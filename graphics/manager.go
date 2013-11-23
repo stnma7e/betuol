@@ -12,28 +12,31 @@ import (
 	"github.com/go-gl/gl"
 )
 
+type modelTransfer struct {
+	id component.GOiD
+	gc graphicsComponent
+}
+type graphicsComponent struct {
+	ModelName, Mesh, MeshType, Renderer, TextDescription string
+}
+
+// GraphicsManager is a component manager used to visualize the game onscreen.
+// It uses multiple GraphicsHandlers to render the world in a variety of ways.
 type GraphicsManager struct {
 	rm *res.ResourceManager
 
-	modellink chan ModelTransfer
+	modellink chan modelTransfer
 	errorlink chan error
 
 	compList         *common.Vector
 	graphicsHandlers *common.Vector
 }
 
-type ModelTransfer struct {
-	id component.GOiD
-	gc GraphicsComponent
-}
-type GraphicsComponent struct {
-	ModelName, Mesh, MeshType, Renderer, TextDescription string
-}
-
+// MakeGraphicsManager returns a pointer to a GraphicsManager
 func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *GraphicsManager {
 	gm := &GraphicsManager{
 		rm,
-		make(chan ModelTransfer),
+		make(chan modelTransfer),
 		make(chan error),
 		common.MakeVector(),
 		common.MakeVector(),
@@ -45,8 +48,9 @@ func MakeGraphicsManager(window *GlGraphicsManager, rm *res.ResourceManager) *Gr
 	return gm
 }
 
+// JsonCreate extracts creation data from a byte array of json text to pass to CreateComponent.
 func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {
-	obj := GraphicsComponent{}
+	obj := graphicsComponent{}
 	err := json.Unmarshal(compData, &obj)
 	if err != nil {
 		common.LogErr.Println(err)
@@ -55,12 +59,14 @@ func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error 
 	// you can send a goroutine to load the non-GL information,
 	// then use the main thread to do all the OpenGL related stuff
 
-	gm.modellink <- ModelTransfer{id, obj}
+	gm.modellink <- modelTransfer{id, obj}
 
 	return <-gm.errorlink
 }
 
-func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc GraphicsComponent) error {
+// Uses extracted data from higher level component creation functions and initializes a graphics component based on the id passed through.
+// The function calls the LoadModel function of each GraphicsHandler in the manager's list.
+func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc graphicsComponent) error {
 	graphicsHandlers := gm.graphicsHandlers.Array()
 	for i := range graphicsHandlers {
 		if err := graphicsHandlers[i].(GraphicsHandler).LoadModel(id, gc); err != nil {
@@ -73,6 +79,8 @@ func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc GraphicsCompone
 	return nil
 }
 
+// DeleteComponent implements the component.ComponentManager interface and deletes graphics component data from the manager.
+// The function calls the DeleteModel function of each GraphicsHandler in the manager's list.
 func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {
 	comps := gm.compList.Array()
 	graphicsHandlers := gm.graphicsHandlers.Array()
@@ -86,6 +94,8 @@ func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {
 	}
 }
 
+// Tick calls the Tick function of each GraphicsHandler in the manager's list.
+// If any Tick functions return false, then GraphicsManager.Tick returns false.
 func (gm *GraphicsManager) Tick() (ret bool) {
 	for i := true; i; {
 		select {
@@ -108,6 +118,7 @@ func (gm *GraphicsManager) Tick() (ret bool) {
 	return
 }
 
+// RenderAll determines which objects are within view of the camera, and sends a list of those to each GraphicsHandler.
 func (gm *GraphicsManager) RenderAll(camera *math.Frustum, sm component.SceneManager) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -129,6 +140,7 @@ func (gm *GraphicsManager) RenderAll(camera *math.Frustum, sm component.SceneMan
 	}
 }
 
+// HandleInputs calls the HandleInputs function of each GraphicsHandler in the manager's list.
 func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
 	graphicsHandlers := gm.graphicsHandlers.Array()
 	for i := range graphicsHandlers {
@@ -140,6 +152,7 @@ func (gm *GraphicsManager) HandleInputs(eye, target, up math.Vec3) (math.Vec3, m
 	//hack to keep the camera movement
 }
 
+// DrawString calls the DrawString function of each GraphicsHandler in the manager's list.
 func (gm *GraphicsManager) DrawString(x, y float32, text string) {
 	graphicsHandlers := gm.graphicsHandlers.Array()
 	for i := range graphicsHandlers {
@@ -147,6 +160,7 @@ func (gm *GraphicsManager) DrawString(x, y float32, text string) {
 	}
 }
 
+// DrawString calls the DrawString function of each GraphicsHandler in the manager's list.
 func (gm *GraphicsManager) GetSize() (int, int) {
 	graphicsHandlers := gm.graphicsHandlers.Array()
 	for i := range graphicsHandlers {
@@ -156,6 +170,7 @@ func (gm *GraphicsManager) GetSize() (int, int) {
 	return 0, 0
 }
 
+// RegisterGraphicsHandler addeds a GraphicsHandler to the manager's list to be included on all subsequent render and query function calls.
 func (gm *GraphicsManager) RegisterGraphicsHandler(handler GraphicsHandler) {
 	gm.graphicsHandlers.Insert(handler)
 }

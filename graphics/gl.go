@@ -19,6 +19,7 @@ import (
 const NOPROGRAM gl.Program = 0
 const NOVAO gl.VertexArray = 0
 
+// GlGraphicsManager is a rendering manager that utilizes OpenGL for graphics.
 type GlGraphicsManager struct {
 	rm *res.ResourceManager
 
@@ -34,7 +35,9 @@ type GlGraphicsManager struct {
 	renderTypes map[string]Renderer
 }
 
-func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {
+// MakeGlGraphicsManager returns a pointer to a GlGraphicsManager.
+// It initializes an OpenGL context and some basic values.
+func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {
 	if !glfw.Init() {
 		common.LogErr.Fatal("GLFW init failed.")
 	}
@@ -47,7 +50,7 @@ func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphic
 		common.LogErr.Fatal(err)
 	}
 	glg.window = window
-	glg.MakeContextCurrent()
+	glg.window.MakeContextCurrent()
 
 	gl.Enable(gl.CULL_FACE)
 	gl.CullFace(gl.BACK)
@@ -70,8 +73,10 @@ func GlStart(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphic
 	return &glg
 }
 
+// Tick checks window events, swaps the graphics buffer, and updates the viewing space based on the size of the window.
+// The function returns false if a closing window event (pressing the close button) has been processed.
 func (glg *GlGraphicsManager) Tick() bool {
-	glg.SwapBuffers()
+	glg.window.SwapBuffers()
 	glfw.PollEvents()
 
 	x, y := glg.window.GetSize()
@@ -80,30 +85,27 @@ func (glg *GlGraphicsManager) Tick() bool {
 	return !glg.IsClosing()
 }
 
-func (glg *GlGraphicsManager) SwapBuffers() {
-	glg.window.SwapBuffers()
-}
-
+// Close sets a window flag to close the window.
 func (glg *GlGraphicsManager) Close() {
 	glg.window.SetShouldClose(true)
 }
+
+// IsClosing returns true if the window is closing.
 func (glg *GlGraphicsManager) IsClosing() bool {
 	return glg.window.ShouldClose()
 }
-func (glg *GlGraphicsManager) close() {
-	glg.window.Destroy()
-}
-func (glg *GlGraphicsManager) MakeContextCurrent() {
-	glg.window.MakeContextCurrent()
-}
+
+// GetSize returns the size in pixels (x, y) of the graphics window.
 func (glg *GlGraphicsManager) GetSize() (int, int) {
 	return glg.window.GetSize()
 }
 
+// HandleInputs implements the GraphicsHandler interface and returns the current inputs of the frame.
 func (glg *GlGraphicsManager) HandleInputs() Inputs {
 	return Inputs{}
 }
 
+// HandleInputs0 is used as a helper function to move the camera and viewing angle.
 func (glg *GlGraphicsManager) HandleInputs0(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {
 	if glg.window.GetKey(glfw.KeyEscape) == glfw.Press {
 		glg.Close()
@@ -144,11 +146,8 @@ func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {
 	}
 }
 
-//*****************************
-// TOOLS
-//*****************************
-
-func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponent) error {
+// LoadModel implements the GraphicsHandler interface and adds a component with a graphics model to the manager.
+func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp graphicsComponent) error {
 	oldTime := time.Now()
 	glg.resizeArrays(id)
 
@@ -208,11 +207,13 @@ func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponen
 	return nil
 }
 
+// DeleteModel implements the GraphicsHandler interface and removes a model and other data from the manager based on the id passed as an argument.
 func (glg *GlGraphicsManager) DeleteModel(id component.GOiD) {
 	glg.modelList[id] = nil
 	glg.renderMap[id] = nil
 }
 
+// Render is called by a GraphicsManager structure and uses information of the GlGraphicsManager to render each id passed in the list as an argument.
 func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {
 	comps := ids.Array()
 	for i := range comps {
@@ -228,6 +229,7 @@ func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManag
 	}
 }
 
+// LoadShader loads an OpenGL shader object of a string of characters passed in as an argument.
 func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
 	gl.Init()
 	shader := gl.CreateShader(shadType)
@@ -242,6 +244,7 @@ func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
 	return shader
 }
 
+// LinkProgram takes a list of shader objects and links them together into a program object.
 func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribLocation {
 	for i := range shaderList {
 		program.AttachShader(shaderList[i])
@@ -266,6 +269,7 @@ func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribL
 	return attribArray
 }
 
+// LoadFont loads a font for use with the text rendering function, DrawString.
 func (glg *GlGraphicsManager) LoadFont() {
 	fd, err := os.Open("/home/sam/go/src/betuol/data/AkashiMF.ttf")
 	if err != nil {
@@ -279,6 +283,7 @@ func (glg *GlGraphicsManager) LoadFont() {
 	}
 }
 
+// Uses a font loaded by LoadFont to put a string on the screen.
 func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {
 	const sample = "0 1 2 3 4 5 6 7 8 9 A B C D E F"
 	if glg.loadedFont == nil {

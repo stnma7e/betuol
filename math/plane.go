@@ -2,16 +2,19 @@ package math
 
 import "math"
 
+// Represents the sides of a plane according to mathematical styles.
 const (
-	A = 0
-	B = 1
-	C = 2
-	D = 3
+	A = iota
+	B = iota
+	C = iota
+	D = iota
 )
 
+// Plane is a wrapper for a 4 dimensional vector that is used to represent a plane in 3 dimensional space.
 type Plane Vec4
 
-func MakePlane3v(p1, p2, p3 Vec3) Plane {
+// MakePlane returns a plane based on three inputs of 3D vectors.
+func MakePlane(p1, p2, p3 Vec3) Plane {
 	planeVec1 := Sub3v3v(p1, p2)
 	planeVec2 := Sub3v3v(p1, p3)
 	var normal [4]float32
@@ -23,6 +26,7 @@ func MakePlane3v(p1, p2, p3 Vec3) Plane {
 	return plane
 }
 
+// Normalize sets all dimensions of the plane to a value between 0 and 1.
 func (pl *Plane) Normalize() {
 	mag := float32((math.Sqrt(float64(pl[A]*pl[A] + pl[B]*pl[B] + pl[C]*pl[C]))))
 	if mag != 0 {
@@ -31,9 +35,13 @@ func (pl *Plane) Normalize() {
 		}
 	}
 }
+
+// IsInside returns true if a point is on the side of the plane with a normal facing it.
 func (pl *Plane) IsInside(vec Vec3) bool {
 	return pl.Distance(vec) > 0.0
 }
+
+// IsOnPlane returns true if a point lies within a plane.
 func (pl *Plane) IsOnPlane(vec Vec3) bool {
 	var normDot float32
 	for i := range vec {
@@ -44,6 +52,8 @@ func (pl *Plane) IsOnPlane(vec Vec3) bool {
 	}
 	return false
 }
+
+// Distance returns the shortest distance from the plane to a point in 3D space.
 func (pl *Plane) Distance(vec Vec3) float32 {
 	normal := Vec3{pl[A], pl[B], pl[C]}
 	d := pl[D] / float32(math.Sqrt(float64((pl[A]*pl[A] + pl[B]*pl[B] + pl[C]*pl[C]))))

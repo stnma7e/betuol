@@ -5,19 +5,22 @@ import (
 	"betuol/event"
 )
 
+// QuestState is a function template that represents a function that will update according to event inputs.
 type QuestState func(id component.GOiD, evt event.Event)
 
 var moveQuestTicker int
 
-func (qm *QuestManager) FirstQuest(id component.GOiD, evt event.Event) {
+// AttackQuest is an example quest that completes upon attacking another character.
+func (qm *QuestManager) AttackQuest(id component.GOiD, evt event.Event) {
 	if evt.GetEventType() != "attack" {
 		return
 	}
 	aevt := evt.(event.AttackEvent)
 	qm.AddQuest(aevt.Char1, qm.KillQuest)
-	qm.em.Send(event.QuestComplete{aevt.Char1, "FirstQuest"})
+	qm.em.Send(event.QuestComplete{aevt.Char1, "AttackQuest"})
 }
 
+// KillQuest is an example quest that completes upon killing another character.
 func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {
 	if evt.GetEventType() != "kill" {
 		return
@@ -29,6 +32,7 @@ func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {
 	qm.em.Send(event.QuestComplete{kevt.Killer, "KillQuest"})
 }
 
+// FirstMoveQuest is an example quest that completes upon moving your character for the first time.
 func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {
 	if evt.GetEventType() != "characterMoved" {
 		return

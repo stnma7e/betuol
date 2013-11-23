@@ -10,6 +10,8 @@ import (
 	"betuol/math"
 )
 
+// ParsePlayerCommand is called by the ai component manager to parse a command input into the ai manager.
+// This function parses the command and responds accordingly.
 func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {
 	switch command {
 	case "look":
@@ -36,6 +38,7 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 	}
 }
 
+// PlayerLook prints a list of the surrounding character components within a specified proximity.
 func PlayerLook(id component.GOiD, chars *CharacterManager) {
 	loc := chars.sm.GetObjectLocation(id)
 	ros := chars.attributeList[RANGEOFSIGHT][id]
@@ -51,13 +54,14 @@ func PlayerLook(id component.GOiD, chars *CharacterManager) {
 			continue
 		}
 
-		ca := chars.GetCharacterAttributes(component.GOiD(charId))
+		ca := chars.GetCharacterAttributes(charId.(component.GOiD))
 		if ca.Description != "" {
 			fmt.Println("\t", ca.Greet())
 		}
 	}
 }
 
+// PlayerMove moves the player in one of four cardinal directions within the game.
 func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 	transMat, err := chars.sm.GetTransformMatrix(id)
 	if err != nil {
@@ -77,6 +81,7 @@ func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {
 	chars.sm.SetTransform(id, transMat)
 }
 
+// PlayerAttack sends an attack event that will be parsed by the charater manager to afflict damage to another character component.
 func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {
 	chars.em.Send(event.AttackEvent{player, enemy})
 }

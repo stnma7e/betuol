@@ -10,9 +10,11 @@ import (
 	"betuol/event"
 )
 
-//type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager)
+// Each ai component is tied to a AiComputer that manages the AI for the component.
 type AiComputer func(id component.GOiD, eventlink chan event.Event)
 
+// AI function for the player.
+// It allows players to be treated as normal characters, but they have a special AI function that checks for input.
 func (am *AiManager) PlayerDecide(id component.GOiD) {
 	ca := am.cm.GetCharacterAttributes(id)
 	loc := am.tm.GetObjectLocation(id)
@@ -24,6 +26,8 @@ func (am *AiManager) PlayerDecide(id component.GOiD) {
 	character.ParsePlayerCommand(command, id, am.cm)
 }
 
+// AI function for a potential enemy.
+// EnemyDecide looks for entities in close proximity and checks the health of these entities. If the health of the entity is lower than the health of the ai component, then the component initiates an attack with the character system.
 func (am *AiManager) EnemyDecide(id component.GOiD) {
 	this := am.cm.GetCharacterAttributes(id)
 	loc := am.tm.GetObjectLocation(id)
@@ -36,7 +40,7 @@ func (am *AiManager) EnemyDecide(id component.GOiD) {
 			common.LogErr.Println("error: bad dequeue:", err)
 			continue
 		}
-		neighbors[i] = component.GOiD(val)
+		neighbors[i] = val.(component.GOiD)
 	}
 	var attr *character.CharacterAttributes
 	for i := 0; i < len(neighbors); i++ {
@@ -55,6 +59,8 @@ func (am *AiManager) EnemyDecide(id component.GOiD) {
 	}
 }
 
+// AI function for random movement.
+// WanderDecide wanders in random directions each time called.
 func (am *AiManager) WanderDecide(id component.GOiD) {
 	r := rand.Int31()
 	switch r % 4 {
@@ -83,6 +89,8 @@ func (am *AiManager) WanderDecide(id component.GOiD) {
 	}
 }
 
+// EnemyAi implements the AiComputer function template.
+// It handles the event response and registers for events to respond to.
 func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {
 	am.em.RegisterListeningChannel("attack", eventlink)
 	for alive := true; alive; {
@@ -102,6 +110,8 @@ func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {
 	}
 }
 
+// PlayerAi implements the AiComputer function template.
+// It handles the event response and registers for events to respond to.
 func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {
 	for alive := true; alive; {
 		evt := <-eventlink
@@ -115,6 +125,8 @@ func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {
 	}
 }
 
+// WanderAi implements the AiComputer function template.
+// It handles the event response and registers for events to respond to.
 func (am *AiManager) WanderAi(id component.GOiD, eventlink chan event.Event) {
 	for alive := true; alive; {
 		evt := <-eventlink

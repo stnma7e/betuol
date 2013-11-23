@@ -35,11 +35,13 @@ const (
 	NUMUNIFORMS = iota
 )
 
+// Model contains data used by GlGraphicsManager to render and display a type of mesh.
 type Model struct {
 	buffers [NUMBUFFERS]gl.Buffer
 	vao     gl.VertexArray
 }
 
+// MakeModel takes a slew of arrays to initialize a model with the necessary information to render.
 func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2) Model {
 	model := Model{}
 
@@ -75,6 +77,7 @@ func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec
 	return model
 }
 
+// Delete iterates through the OpenGL buffers and deletes each one and then it delete the VAO of the model.
 func (mh *Model) Delete() {
 	for i := range mh.buffers {
 		mh.buffers[i].Delete()

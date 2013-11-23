@@ -17,6 +17,8 @@ TODO
 <u>_Long-term_</u>
 ---------
 
+- Add to documentation. The docs are pretty much bare bones, so they need to be improved.
+
 - Collision/physics system.
 
 <u>_Story_</u>

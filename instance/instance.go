@@ -1,3 +1,4 @@
+// Package instance implements a standalone structure that is capable of running a game.
 package instance
 
 import (
@@ -22,6 +23,10 @@ import (
 	"betuol/res"
 )
 
+// The instance struct is used as an individual structure that is used to encapsulate the game state.
+// Each instance has its own separate state from all other instances.
+// It is the core piece of the game, and it represents one self-suficient portion of a game.
+// Multiple instances could be bound together in a game to represent various levels or zones.
 type Instance struct {
 	gof *gofactory.GameObjectFactory
 	tm  *scenemanager.TransformManager
@@ -40,6 +45,7 @@ type Instance struct {
 	player component.GOiD
 }
 
+// MakeInstance returns a pointer to an Instance.
 func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
@@ -84,8 +90,11 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	return is
 }
 
+// Loop is launched as a goroutine and updates on its own.
+// This function does some initialization, but then jumps into an infinite loop.
+// When the loop breaks, a bool will be sent along the returnlink that the instance was created with.
+// This returnlink is expected to be periodically checked for activity because this indicates an exit of the main loop of the instance.
 func (is *Instance) Loop() {
-	defer is.Shutdown()
 	oldTime := time.Now()
 	ticks := time.NewTicker(time.Second / 60)
 
@@ -96,7 +105,7 @@ func (is *Instance) Loop() {
 	}
 	is.tm.SetLocationOverTime(is.player, math.Vec3{3, 0, 0}, 1.5)
 
-	is.qm.AddQuest(is.player, is.qm.FirstQuest)
+	is.qm.AddQuest(is.player, is.qm.AttackQuest)
 	is.StartScript()
 
 	go func() {
@@ -152,6 +161,8 @@ func (is *Instance) Loop() {
 	}
 }
 
+// ParseSysConsole is used to parse the commands input into the console.
+// These commands can be used to control the internal state of the instance.
 func (is *Instance) ParseSysConsole() {
 	select {
 	case command := <-is.commandlink:
@@ -200,21 +211,19 @@ func (is *Instance) ParseSysConsole() {
 
 }
 
-func (is *Instance) Shutdown() {
-
-}
-
 /*****************************************
 *
 * Component
 *
 *****************************************/
 
+// CreateFromMap is a helper function to create a map from a filename string.
 func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {
 	jmap := is.rm.LoadJsonMap(mapName)
 	return is.gof.CreateFromMap(&jmap)
 }
 
+// CreateObject is a helper function to create a GameObject with a starting location.
 func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {
 	components := is.rm.LoadGameObject(objName)
 	id, err := is.gof.Create(components, loc)
@@ -224,20 +233,19 @@ func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD,
 	return id, err
 }
 
-func (is *Instance) MoveObject(id component.GOiD, loc math.Vec3) {
-
-}
-
+// GetSceneManagerSnapshot is used by the graphics manager to request a snapshot of the location data during the current frame. The graphics manager uses this to depict the scene for the current frame without data corruption.
 func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {
 	snap := is.tmSnapshot
 	// prevents the snapshot from changing during the rendering process
 	return &snap
 }
 
+// GetEventManager returns a pointer to the instance's event manager.
 func (is *Instance) GetEventManager() *event.EventManager {
 	return is.em
 }
 
+// decodeVec3String is a helper function to extract a 3 dimensional vector from a string
 func decodeVec3String(vec3 string) math.Vec3 {
 	strLoc := strings.Split(vec3, ",")
 	f1, err := strconv.ParseFloat(strLoc[0], 32)

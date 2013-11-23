@@ -10,6 +10,7 @@ import (
 	"betuol/res"
 )
 
+// Renderer represents an interface for GlGraphicsManager to utilize to render a Model based on the program being used.
 type Renderer interface {
 	Render(mod Model, transMat, camMat, projectMat math.Mat4x4)
 }
@@ -24,6 +25,7 @@ type lightingRenderer struct {
 	ambientIntensity math.Vec4
 }
 
+// FragmentPointLightingRenderer uses a program which lights a scene based on a Fragment shader based Point Lighting scheme.
 type FragmentPointLightingRenderer struct {
 	renderer
 	lightingRenderer
@@ -32,6 +34,7 @@ type FragmentPointLightingRenderer struct {
 	lightPosition math.Vec3
 }
 
+// MakeFragmentPointLightingRenderer returns a pointer to a FragmentPointLightingRenderer.
 func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsManager) Renderer {
 	fplr := FragmentPointLightingRenderer{}
 	vertStr := string(rm.GetFileContents("graphics/shader/FragmentLighting.vert"))
@@ -52,6 +55,7 @@ func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsM
 	return &fplr
 }
 
+// Render implements the Renderer interface and can be used by GlGraphicsManager to render a Momdel without any extra specification of data.
 func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, projectMat math.Mat4x4) {
 	mod.vao.Bind()
 	defer NOVAO.Bind()
@@ -91,10 +95,10 @@ func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, p
 	mod.buffers[NORM].Unbind(gl.ARRAY_BUFFER)
 	defer fplr.attribArray[NORM].DisableArray()
 
-	fplr.RenderModel(mod)
+	fplr.renderModel(mod)
 }
 
-func (rd *renderer) RenderModel(mod Model) {
+func (rd *renderer) renderModel(mod Model) {
 	mod.buffers[INDEX].Bind(gl.ELEMENT_ARRAY_BUFFER)
 	defer mod.buffers[INDEX].Unbind(gl.ELEMENT_ARRAY_BUFFER)
 

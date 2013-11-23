@@ -1,3 +1,4 @@
+// Package event implements an event management system.
 package event
 
 import (
@@ -8,14 +9,18 @@ import (
 
 type EventListener func(evt Event)
 
+// Event is an interface to allow many different structs to be used as events as long as they specify their type.
 type Event interface {
 	GetEventType() string
 }
+
+// EventMessage is a helper struct for keeping track of the time that an event was added to the queue.
 type EventMessage struct {
 	time time.Time
 	evt  Event
 }
 
+// EventManager handles incoming events and stores them until they are dispersed according to registered listeners.
 type EventManager struct {
 	eventlink         chan EventMessage
 	listenerMap       map[string]*common.Vector
@@ -24,6 +29,7 @@ type EventManager struct {
 	changeQueue       bool
 }
 
+// MakeEventManager returns a pointer to an EventManager.
 func MakeEventManager() *EventManager {
 	em := &EventManager{
 		make(chan EventMessage),
@@ -36,6 +42,7 @@ func MakeEventManager() *EventManager {
 	return em
 }
 
+// Sort will recieve events and sort them based on time of arrival.
 func (em *EventManager) Sort() {
 	// need to implement some sorting scheme to order events by the time that they were created
 	for {
@@ -48,6 +55,8 @@ func (em *EventManager) Sort() {
 	}
 }
 
+// Tick is used to dispatch events to listeners that registered to an event type.
+// Events are dispatched to both function listeners and to channels during the same tick.
 func (em *EventManager) Tick(delta float64) {
 	var events []interface{}
 	if em.changeQueue {
@@ -83,6 +92,7 @@ func (em *EventManager) Tick(delta float64) {
 	}
 }
 
+// RegisterListener registers a listening function to be called every time an event of type eventType is processed.
 func (em *EventManager) RegisterListener(eventType string, listener EventListener) {
 	_, ok := em.listenerMap[eventType]
 	if !ok {
@@ -94,6 +104,7 @@ func (em *EventManager) RegisterListener(eventType string, listener EventListene
 	em.listenerMap[eventType].Insert(listener)
 }
 
+// RegisterListeningChannel registers a listening channel to be sent the event every time an event of type eventType is processed.
 func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {
 	_, ok := em.listeningChannels[eventType]
 	if !ok {
@@ -105,6 +116,7 @@ func (em *EventManager) RegisterListeningChannel(eventType string, eventlink cha
 	em.listeningChannels[eventType].Insert(eventlink)
 }
 
+// Send will add an event passed as an argument to the event queue to be processed.
 func (em *EventManager) Send(evt Event) {
 	go func() {
 		em.eventlink <- EventMessage{time.Now(), evt}

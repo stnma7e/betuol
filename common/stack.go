@@ -1,21 +1,24 @@
 package common
 
-type StackNode struct {
-	forward *StackNode
+type stackNode struct {
+	forward *stackNode
 	value   interface{}
 }
 
+// Stack implements a LIFO stack similar to C++ std::stack
 type Stack struct {
-	head, tail *StackNode
+	head, tail *stackNode
 	Size       int
 }
 
+// Top returns the value at the top of the stack without removing it from the stack.
 func (stk *Stack) Top() interface{} {
 	return stk.tail.value
 }
 
+// Push adds a data structure to the top of the stack.
 func (stk *Stack) Push(val interface{}) {
-	sn := StackNode{
+	sn := stackNode{
 		stk.tail,
 		val,
 	}
@@ -26,6 +29,7 @@ func (stk *Stack) Push(val interface{}) {
 	stk.Size++
 }
 
+// Pop removes and returns the top data structure of the stack.
 func (stk *Stack) Pop() interface{} {
 	if stk.tail == nil {
 		return nil
@@ -36,6 +40,8 @@ func (stk *Stack) Pop() interface{} {
 	return tmp.value
 }
 
+// IsEmpty returns true if there are no data structures in the stack.
+// If the same number of data structures have been pushed as poped, then IsEmpty will return true.
 func (stk *Stack) IsEmpty() bool {
 	return stk.tail == nil || stk.head == nil
 }

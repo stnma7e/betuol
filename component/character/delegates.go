@@ -16,6 +16,8 @@ func chat(r, s component.GOiD, m string) {
 		fmt.Printf("%v says to %v: %s\n", s, r, m)
 	}
 }
+
+// HandleChat responds to event.ChatEvents's and prints a message based on the data in the event.
 func (cm *CharacterManager) HandleChat(evt event.Event) {
 	cevt := evt.(event.ChatEvent)
 	switch cevt.Reciever {
@@ -26,6 +28,7 @@ func (cm *CharacterManager) HandleChat(evt event.Event) {
 	}
 }
 
+// HandleAttack responds to event.AttackEvents that are launched by other component manager systems and updates character data based on outcomes of random hits.
 func (cm *CharacterManager) HandleAttack(evt event.Event) {
 	atevt := evt.(event.AttackEvent)
 	attr1 := cm.GetCharacterAttributes(atevt.Char1)

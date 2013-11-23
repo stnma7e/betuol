@@ -1,3 +1,7 @@
+// Package math implements math functions and tools to be used in the game engine.
+// The static functions of the package (those bound to no type) follow a pattern of the purpose of the function, followed by the arguments passed.
+// For example Add3v3v. This function adds 2 arguments of 3D vectors.
+// This format is due to the lack of function overloading in Go, so this allows the programmer to have a standard function interface for the different types that is easy to follow.
 package math
 
 import (

@@ -1,3 +1,4 @@
+// Pacakge gofactory is used for the craetion and deletion of GameObjects as a whole entity.
 package gofactory
 
 import (
@@ -12,31 +13,43 @@ import (
 
 const SceneType = "scene"
 
-type CreationFunction func(component.GOiD, []byte) error
+// creationFunction is a function template that is used to create components based on data retrieved from the file system.
+type creationFunction func(component.GOiD, []byte) error
 
-type CreationManager struct {
+// creationManager is a helper struct to pair a component.ComponentManager with a creationFunction.
+type creationManager struct {
 	mang   component.ComponentManager
-	create CreationFunction
+	create creationFunction
 }
 
+// GameObjectFactory is used to keep track of component managers and GOiD's in use.
+// The GameObjectFactory is used to create and delete GameObjects and will facilitate the reuse of GOiD's without overlap.
 type GameObjectFactory struct {
 	topIndex      component.GOiD
-	EventManagers map[string]CreationManager
-	vacantIndices common.IntQueue
+	EventManagers map[string]creationManager
+	vacantIndices common.Queue
 	tm            *scenemanager.TransformManager
 }
 
+// MakeGameObjectFactory returns a pointer to a GameObjectFactory.
 func MakeGameObjectFactory(tm *scenemanager.TransformManager) *GameObjectFactory {
-	gof := GameObjectFactory{1, make(map[string]CreationManager), common.IntQueue{}, tm}
+	gof := GameObjectFactory{
+		1,
+		make(map[string]creationManager),
+		common.Queue{},
+		tm,
+	}
 	return &gof
 }
 
-func (gof *GameObjectFactory) Register(compType string, mang component.ComponentManager, creationFunc CreationFunction) error {
+// Register registers a component.ComponentManager to the GameObjectFactory to be used for component creation.
+// The compType string passed as an argument is used to assosiate a component type with the component manager.
+func (gof *GameObjectFactory) Register(compType string, mang component.ComponentManager, creationFunc creationFunction) error {
 	_, isthere := gof.EventManagers[compType]
 	if isthere {
 		return fmt.Errorf("attempt to register manager (%s) failed; space already filled", compType)
 	} else { // manager does not already exist
-		gof.EventManagers[compType] = CreationManager{
+		gof.EventManagers[compType] = creationManager{
 			mang,
 			creationFunc,
 		}
@@ -44,8 +57,9 @@ func (gof *GameObjectFactory) Register(compType string, mang component.Component
 	return nil
 }
 
+// CreateFromMap is used to create a list of GameObjects based on a map format defined in component.
 func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]component.GOiD, error) {
-	var idQueue common.IntQueue
+	var idQueue common.Queue
 	smap := *sceneMap
 	for i := range smap {
 		for j := range smap[i].Entities {
@@ -67,11 +81,13 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]componen
 		if err != nil {
 			common.LogErr.Print(err)
 		}
-		idList[i] = component.GOiD(num)
+		idList[i] = component.GOiD(num.(int))
 	}
 
 	return idList, nil
 }
+
+// Create will return the GOiD of a GameObject after creating it. It will use the map of creation data to create various components.
 func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {
 	id := gof.getNewGOiD()
 	if id < 1 {
@@ -101,6 +117,8 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 
 	return id, nil
 }
+
+// Delete will call the DeleteComponent function of each registered component manager to remove the GOiD from use in the system.
 func (gof *GameObjectFactory) Delete(index component.GOiD) {
 	if index == 0 {
 		return
@@ -112,6 +130,7 @@ func (gof *GameObjectFactory) Delete(index component.GOiD) {
 	gof.vacantIndices.Queue(int(index))
 }
 
+// getNewGOiD is a helper function to facilitate the reuse of GOiD's without overlap.
 func (gof *GameObjectFactory) getNewGOiD() component.GOiD {
 	var idToUse component.GOiD
 	if !(gof.vacantIndices.IsEmpty()) { // there are availiable pre-owned IDs
@@ -119,7 +138,7 @@ func (gof *GameObjectFactory) getNewGOiD() component.GOiD {
 		if err != nil {
 			fmt.Println(err)
 		}
-		idToUse = component.GOiD(id)
+		idToUse = component.GOiD(id.(int))
 		// if an error is received, then the paired ID will be 0
 		// 0 will be rejected by all of the component managers
 	} else {

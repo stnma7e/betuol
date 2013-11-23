@@ -1,32 +1,19 @@
+// Package graphics handles the visualization of a game world in various techniques.
 package graphics
 
 import (
 	"betuol/common"
 	"betuol/component"
 	"betuol/math"
-	"betuol/res"
 )
-
-type WindowManager interface {
-	Closing() bool
-	ShouldClose()
-	close()
-	Tick()
-	MakeContextCurrent()
-	Render(mh Model, transMat, camMat, projectMat math.Mat4x4)
-	LoadModel(comp *GraphicsComponent, rm *res.ResourceManager) *Model
-	HandleInputs(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3)
-	DrawString(x, y float32, text string)
-	GetSize() (int, int)
-	SwapBuffers()
-}
 
 type Inputs struct {
 }
 
+// GraphicsHandler represents an interface that is used to render the game world regardless of output media.
 type GraphicsHandler interface {
 	Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum)
-	LoadModel(id component.GOiD, gc GraphicsComponent) error
+	LoadModel(id component.GOiD, gc graphicsComponent) error
 	DeleteModel(id component.GOiD)
 	Tick() bool
 	HandleInputs() Inputs
