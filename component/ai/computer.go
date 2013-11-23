@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"smig/common"
-	"smig/component"
-	"smig/component/character"
-	"smig/event"
+	"betuol/common"
+	"betuol/component"
+	"betuol/component/character"
+	"betuol/event"
 )
 
 //type AiComputer func(id component.GOiD, neighbors []component.GOiD, chars *character.CharacterManager)

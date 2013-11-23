@@ -1,9 +1,9 @@
 package instance
 
 import (
-	"smig/common"
-	"smig/event"
-	"smig/math"
+	"betuol/common"
+	"betuol/event"
+	"betuol/math"
 )
 
 func (is *Instance) StartScript() {

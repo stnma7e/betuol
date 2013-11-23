@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-gl/gl"
 
-	"smig/math"
-	"smig/res"
+	"betuol/math"
+	"betuol/res"
 )
 
 type Renderer interface {

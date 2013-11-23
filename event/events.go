@@ -1,8 +1,8 @@
 package event
 
 import (
-	"smig/component"
-	"smig/math"
+	"betuol/component"
+	"betuol/math"
 )
 
 type AttackEvent struct {

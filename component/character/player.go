@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"smig/common"
-	"smig/component"
-	"smig/event"
-	"smig/math"
+	"betuol/common"
+	"betuol/component"
+	"betuol/event"
+	"betuol/math"
 )
 
 func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {

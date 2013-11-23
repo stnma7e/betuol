@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"smig/common"
-	"smig/component"
-	"smig/component/character"
-	"smig/component/scenemanager"
-	"smig/event"
+	"betuol/common"
+	"betuol/component"
+	"betuol/component/character"
+	"betuol/component/scenemanager"
+	"betuol/event"
 )
 
 type AiManager struct {

@@ -1,9 +1,9 @@
 package graphics
 
 import (
-	"smig/common"
-	"smig/component"
-	"smig/math"
+	"betuol/common"
+	"betuol/component"
+	"betuol/math"
 )
 
 type TextGraphicsHandler struct {

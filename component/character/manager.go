@@ -3,10 +3,10 @@ package character
 import (
 	"encoding/json"
 
-	"smig/common"
-	"smig/component"
-	"smig/component/scenemanager"
-	"smig/event"
+	"betuol/common"
+	"betuol/component"
+	"betuol/component/scenemanager"
+	"betuol/event"
 )
 
 type CharacterManager struct {

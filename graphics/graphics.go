@@ -1,10 +1,10 @@
 package graphics
 
 import (
-	"smig/common"
-	"smig/component"
-	"smig/math"
-	"smig/res"
+	"betuol/common"
+	"betuol/component"
+	"betuol/math"
+	"betuol/res"
 )
 
 type WindowManager interface {

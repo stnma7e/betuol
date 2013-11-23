@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	//"fmt"
 
-	"smig/common"
-	"smig/component"
-	"smig/math"
-	"smig/res"
+	"betuol/common"
+	"betuol/component"
+	"betuol/math"
+	"betuol/res"
 
 	"github.com/go-gl/gl"
 )

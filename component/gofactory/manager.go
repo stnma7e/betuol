@@ -3,11 +3,11 @@ package gofactory
 import (
 	"fmt"
 
-	"smig/common"
-	"smig/component"
-	"smig/component/scenemanager"
-	"smig/event"
-	"smig/math"
+	"betuol/common"
+	"betuol/component"
+	"betuol/component/scenemanager"
+	"betuol/event"
+	"betuol/math"
 )
 
 const SceneType = "scene"

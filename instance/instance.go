@@ -9,17 +9,17 @@ import (
 	"strings"
 	"time"
 
-	"smig/common"
-	"smig/component"
-	"smig/component/ai"
-	"smig/component/character"
-	"smig/component/gofactory"
-	"smig/component/quest"
-	"smig/component/scenemanager"
-	"smig/event"
-	"smig/graphics"
-	"smig/math"
-	"smig/res"
+	"betuol/common"
+	"betuol/component"
+	"betuol/component/ai"
+	"betuol/component/character"
+	"betuol/component/gofactory"
+	"betuol/component/quest"
+	"betuol/component/scenemanager"
+	"betuol/event"
+	"betuol/graphics"
+	"betuol/math"
+	"betuol/res"
 )
 
 type Instance struct {

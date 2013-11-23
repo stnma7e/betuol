@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"smig/common"
-	"smig/component"
-	"smig/event"
+	"betuol/common"
+	"betuol/component"
+	"betuol/event"
 )
 
 func chat(r, s component.GOiD, m string) {

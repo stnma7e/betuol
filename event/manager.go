@@ -3,7 +3,7 @@ package event
 import (
 	"time"
 
-	"smig/common"
+	"betuol/common"
 )
 
 type EventListener func(evt Event)

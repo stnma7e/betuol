@@ -1,9 +1,9 @@
 package quest
 
 import (
-	"smig/common"
-	"smig/component"
-	"smig/event"
+	"betuol/common"
+	"betuol/component"
+	"betuol/event"
 )
 
 type QuestManager struct {

@@ -1,7 +1,7 @@
 package character
 
 import (
-	"smig/component"
+	"betuol/component"
 )
 
 const (

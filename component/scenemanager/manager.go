@@ -3,10 +3,10 @@ package scenemanager
 import (
 	"fmt"
 
-	"smig/common"
-	"smig/component"
-	"smig/event"
-	"smig/math"
+	"betuol/common"
+	"betuol/component"
+	"betuol/event"
+	"betuol/math"
 )
 
 const (

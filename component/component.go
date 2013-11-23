@@ -1,6 +1,6 @@
 package component
 
-import "smig/math"
+import "betuol/math"
 
 type GOiD uint32
 

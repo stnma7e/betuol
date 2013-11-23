@@ -280,7 +280,7 @@ init	math/frustum.go	/^func (frust *Frustum) init() {$/;"	d
 intQueueNode	common/intqueue.go	/^type intQueueNode struct {$/;"	d
 lightingRenderer	graphics/renderer.go	/^type lightingRenderer struct {$/;"	d
 logWriter	common/log.go	/^type logWriter struct {$/;"	d
-main	smig.go	/^func main() {$/;"	d
+main	betuol.go	/^func main() {$/;"	d
 maxDistanceSqrd	res/manager.go	/^	var maxDistanceSqrd float32$/;"	d
 moveOverTime	component/scenemanager/manager.go	/^type moveOverTime struct {$/;"	d
 moveQuestTicker	component/quest/states.go	/^var moveQuestTicker int$/;"	d

@@ -1,8 +1,8 @@
 package quest
 
 import (
-	"smig/component"
-	"smig/event"
+	"betuol/component"
+	"betuol/event"
 )
 
 type QuestState func(id component.GOiD, evt event.Event)

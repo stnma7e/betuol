@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/gl"
 	"unsafe"
 
-	"smig/math"
+	"betuol/math"
 )
 
 const (

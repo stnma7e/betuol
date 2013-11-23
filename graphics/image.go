@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-gl/gl"
 
-	"smig/common"
+	"betuol/common"
 )
 
 func GlLoadTexture(filename string) gl.Texture {

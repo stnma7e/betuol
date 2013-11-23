@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"smig/common"
-	"smig/component"
-	"smig/math"
+	"betuol/common"
+	"betuol/component"
+	"betuol/math"
 )
 
 type ResourceManager struct {
@@ -27,7 +27,7 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 }
 
 func GetFileContents(fileName string) []byte {
-	rm := MakeResourceManager("/home/sam/go/src/smig/data/")
+	rm := MakeResourceManager("/home/sam/go/src/betuol/data/")
 	return rm.GetFileContents(fileName)
 }
 
