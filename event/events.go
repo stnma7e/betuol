@@ -1,8 +1,8 @@
 package event
 
 import (
-	"betuol/component"
-	"betuol/math"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
 )
 
 type AttackEvent struct {

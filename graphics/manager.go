@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	//"fmt"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
-	"betuol/res"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
+	"github.com/stnma7e/betuol/res"
 
 	"github.com/go-gl/gl"
 )

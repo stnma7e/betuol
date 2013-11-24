@@ -4,7 +4,7 @@ package event
 import (
 	"time"
 
-	"betuol/common"
+	"github.com/stnma7e/betuol/common"
 )
 
 type EventListener func(evt Event)

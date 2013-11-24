@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/component/character"
-	"betuol/event"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/component/character"
+	"github.com/stnma7e/betuol/event"
 )
 
 // Each ai component is tied to a AiComputer that manages the AI for the component.

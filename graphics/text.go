@@ -1,9 +1,9 @@
 package graphics
 
 import (
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
 )
 
 // TextGraphicsHandler implements the GraphicsHandler interface, but instead of rendering to a graphics context, TextGraphicsHandler instead outputs textual descriptions of each model.

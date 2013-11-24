@@ -19,6 +19,8 @@ TODO
 
 - Add to documentation. The docs are pretty much bare bones, so they need to be improved.
 
+- Get the project to work with Travis CI.
+
 - Collision/physics system.
 
 <u>_Story_</u>

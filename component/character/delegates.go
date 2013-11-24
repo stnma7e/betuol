@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/event"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
 )
 
 func chat(r, s component.GOiD, m string) {

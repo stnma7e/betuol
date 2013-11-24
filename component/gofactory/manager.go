@@ -4,11 +4,11 @@ package gofactory
 import (
 	"fmt"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/component/scenemanager"
-	"betuol/event"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/component/scenemanager"
+	"github.com/stnma7e/betuol/event"
+	"github.com/stnma7e/betuol/math"
 )
 
 const SceneType = "scene"

@@ -2,7 +2,7 @@
 // This package only includes types relevant to all of the component managers (GOiD).
 package component
 
-import "betuol/math"
+import "github.com/stnma7e/betuol/math"
 
 // GOiD stands for GameObject ID. It is the type used by all component managers to represent a specific GameObject.
 type GOiD uint32

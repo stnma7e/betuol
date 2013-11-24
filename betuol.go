@@ -5,10 +5,10 @@ import (
 	"runtime"
 	"time"
 
-	"betuol/graphics"
-	"betuol/instance"
-	"betuol/math"
-	"betuol/res"
+	"github.com/stnma7e/betuol/graphics"
+	"github.com/stnma7e/betuol/instance"
+	"github.com/stnma7e/betuol/math"
+	"github.com/stnma7e/betuol/res"
 
 	glfw "github.com/go-gl/glfw3"
 )

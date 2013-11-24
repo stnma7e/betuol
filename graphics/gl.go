@@ -10,10 +10,10 @@ import (
 	glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/gltext"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
-	"betuol/res"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
+	"github.com/stnma7e/betuol/res"
 )
 
 const NOPROGRAM gl.Program = 0
@@ -271,7 +271,7 @@ func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribL
 
 // LoadFont loads a font for use with the text rendering function, DrawString.
 func (glg *GlGraphicsManager) LoadFont() {
-	fd, err := os.Open("/home/sam/go/src/betuol/data/AkashiMF.ttf")
+	fd, err := os.Open("/home/sam/go/src/github.com/stnma7e/betuol/data/AkashiMF.ttf")
 	if err != nil {
 		common.LogErr.Print(err)
 	}

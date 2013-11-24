@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/event"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
+	"github.com/stnma7e/betuol/math"
 )
 
 // ParsePlayerCommand is called by the ai component manager to parse a command input into the ai manager.

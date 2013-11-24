@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/gl"
 	"unsafe"
 
-	"betuol/math"
+	"github.com/stnma7e/betuol/math"
 )
 
 const (

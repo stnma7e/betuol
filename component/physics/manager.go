@@ -4,9 +4,9 @@ package physics
 import (
 	"encoding/json"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
 )
 
 // PhysicsManager implements a basic physics manager that handles collision detection and resolution.

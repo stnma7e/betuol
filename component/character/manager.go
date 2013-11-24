@@ -3,9 +3,9 @@ package character
 import (
 	"encoding/json"
 
-	"betuol/component"
-	"betuol/component/scenemanager"
-	"betuol/event"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/component/scenemanager"
+	"github.com/stnma7e/betuol/event"
 )
 
 // CharacterManager is the character component manager that handles the creation, deletion, and updating of character components.

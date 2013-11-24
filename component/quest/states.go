@@ -1,8 +1,8 @@
 package quest
 
 import (
-	"betuol/component"
-	"betuol/event"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
 )
 
 // QuestState is a function template that represents a function that will update according to event inputs.

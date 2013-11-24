@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
 )
 
 // ResourceManager is a struct to handle resource management and to prevent multiple identical resources being loaded in memory simultaneously.
@@ -31,7 +31,7 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 
 // GetFileContents is a static wrapper for ResourceManager.GetFileContents.
 func GetFileContents(fileName string) []byte {
-	rm := MakeResourceManager("/home/sam/go/src/betuol/data/")
+	rm := MakeResourceManager("./data/")
 	return rm.GetFileContents(fileName)
 }
 

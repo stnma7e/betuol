@@ -4,10 +4,10 @@ package scenemanager
 import (
 	"fmt"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/event"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
+	"github.com/stnma7e/betuol/math"
 )
 
 // TransformManager implements a basic location manager that satisfies the component.SceneManager interface

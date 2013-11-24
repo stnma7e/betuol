@@ -3,9 +3,9 @@
 package quest
 
 import (
-	"betuol/common"
-	"betuol/component"
-	"betuol/event"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
 )
 
 // QuestManager is the quest component manager that handles the creation, deletion, and updating of quest components.

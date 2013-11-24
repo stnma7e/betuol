@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-gl/gl"
 
-	"betuol/math"
-	"betuol/res"
+	"github.com/stnma7e/betuol/math"
+	"github.com/stnma7e/betuol/res"
 )
 
 // Renderer represents an interface for GlGraphicsManager to utilize to render a Model based on the program being used.

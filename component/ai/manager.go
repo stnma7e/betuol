@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"betuol/common"
-	"betuol/component"
-	"betuol/component/character"
-	"betuol/component/scenemanager"
-	"betuol/event"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/component/character"
+	"github.com/stnma7e/betuol/component/scenemanager"
+	"github.com/stnma7e/betuol/event"
 )
 
 // AiManager is the ai component manager that handles the creation, deletion, and updating of ai components.

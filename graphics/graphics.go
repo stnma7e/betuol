@@ -2,9 +2,9 @@
 package graphics
 
 import (
-	"betuol/common"
-	"betuol/component"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/math"
 )
 
 type Inputs struct {

@@ -1,9 +1,9 @@
 package instance
 
 import (
-	"betuol/common"
-	"betuol/event"
-	"betuol/math"
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/event"
+	"github.com/stnma7e/betuol/math"
 )
 
 func (is *Instance) StartScript() {
