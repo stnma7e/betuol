@@ -10,11 +10,6 @@ import (
 	"betuol/math"
 )
 
-const (
-	ROOTNODE   = 0
-	RESIZESTEP = 1
-)
-
 // TransformManager implements a basic location manager that satisfies the component.SceneManager interface
 type TransformManager struct {
 	em *event.EventManager
@@ -35,21 +30,58 @@ func MakeTransformManager(em *event.EventManager) *TransformManager {
 		make([]math.Mat4x4, 5),
 		make([]moveOverTime, 5),
 	}
-	tm.matList[ROOTNODE].MakeIdentity()
+	tm.matList[0].MakeIdentity()
 	return &tm
 }
 
-// Tick is used to update the locations of components moving using the SetLocationOverTime function.
+// Tick is used to update the locations of components moving using the SetLocationOverTime function and execute a basic collision detection and resolution algorithm.
 func (tm *TransformManager) Tick(delta float64) {
 	for i := range tm.moving {
 		if tm.moving[i].timeToMove < 0 {
 			continue
 		}
 		split := math.Mult3vf(tm.moving[i].movementAxis, float32(delta))
-		tm.matList[i][3] += split[0]
-		tm.matList[i][7] += split[1]
-		tm.matList[i][11] += split[2]
+		trans := tm.matList[i]
+		trans[3] += split[0]
+		trans[7] += split[1]
+		trans[11] += split[2]
+		tm.SetTransform(component.GOiD(i), trans)
 		tm.moving[i].timeToMove -= delta
+	}
+
+	for i := range tm.matList {
+		if i == 0 {
+			continue
+		}
+		if tm.matList[i].IsEmpty() {
+			continue
+		}
+		loc1 := math.Mult4m3v(tm.matList[i], math.Vec3{})
+		sp1 := math.Sphere{loc1, 1.0}
+		for j := range tm.matList {
+			if i == j || j == 0 {
+				continue
+			}
+			if tm.matList[j].IsEmpty() {
+				continue
+			}
+			loc2 := math.Mult4m3v(tm.matList[j], math.Vec3{})
+			sp2 := math.Sphere{loc2, 1.0}
+			if sp1.Intersects(sp2) {
+				common.LogWarn.Printf("collision between %d and %d\n", i, j)
+				penetration := math.Sub3v3v(sp1.Center, sp2.Center)
+				pSqrd := math.MagSqrd3v(penetration)
+				if pSqrd-(sp1.Radius+sp2.Radius)*(sp1.Radius+sp2.Radius) > 0 {
+					common.LogErr.Println("math fucked up")
+				}
+				split := math.Normalize3v(penetration)
+				smallestDistanceToRemoveIntersection := math.Mult3vf(split, math.Mag3v(penetration))
+				trans := &tm.matList[j]
+				trans[3] -= smallestDistanceToRemoveIntersection[0]
+				trans[7] -= smallestDistanceToRemoveIntersection[1]
+				trans[11] -= smallestDistanceToRemoveIntersection[2]
+			}
+		}
 	}
 }
 
@@ -68,6 +100,7 @@ func (tm *TransformManager) CreateComponent(index component.GOiD) error {
 // resizeArray is a helper function to resize the array of components to accomodate a new component.
 // If the GOiD of the new component is larger than the size of the array, then resizeArrays will grow the array and copy data over in order to fit the new component.
 func (tm *TransformManager) resizeArray(index component.GOiD) {
+	const RESIZESTEP = 1
 	if cap(tm.matList)-1 < int(index) {
 		newCompList := make([]math.Mat4x4, index+RESIZESTEP)
 		for i := range tm.matList {

@@ -103,7 +103,8 @@ func (is *Instance) Loop() {
 	if err != nil {
 		common.LogErr.Println(err)
 	}
-	is.tm.SetLocationOverTime(is.player, math.Vec3{3, 0, 0}, 1.5)
+	//is.tm.SetLocationOverTime(is.player, math.Vec3{6, 0, 0}, 1.5)
+	is.tm.SetLocation(is.player, math.Vec3{1, 0, 0})
 
 	is.qm.AddQuest(is.player, is.qm.AttackQuest)
 	is.StartScript()

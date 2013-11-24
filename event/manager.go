@@ -118,7 +118,5 @@ func (em *EventManager) RegisterListeningChannel(eventType string, eventlink cha
 
 // Send will add an event passed as an argument to the event queue to be processed.
 func (em *EventManager) Send(evt Event) {
-	go func() {
-		em.eventlink <- EventMessage{time.Now(), evt}
-	}()
+	em.eventlink <- EventMessage{time.Now(), evt}
 }
