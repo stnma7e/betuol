@@ -1,0 +1,8 @@
+language: go
+
+go:
+  - 1.0
+  - 1.1
+  - tip
+
+script: go get -d -v ./... && CGO_CFLAGS=-ftrack-macro-expansion=0 go build -v ./...
