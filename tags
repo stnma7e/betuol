@@ -23,6 +23,7 @@ ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere)
 Create	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {$/;"	d
 CreateComponent	component/ai/manager.go	/^func (am *AiManager) CreateComponent(id component.GOiD, computerType string) error {$/;"	d
 CreateComponent	component/character/manager.go	/^func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAttributes) error {$/;"	d
+CreateComponent	component/physics/manager.go	/^func (pm *PhysicsManager) CreateComponent(id component.GOiD, radius float32) error {$/;"	d
 CreateComponent	component/quest/manager.go	/^func (qm *QuestManager) CreateComponent(id component.GOiD) error {$/;"	d
 CreateComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) CreateComponent(index component.GOiD) error {$/;"	d
 CreateComponent	graphics/manager.go	/^func (gm *GraphicsManager) CreateComponent(id component.GOiD, gc graphicsComponent) error {$/;"	d
@@ -35,6 +36,7 @@ Delete	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Delete(ind
 Delete	graphics/model.go	/^func (mh *Model) Delete() {$/;"	d
 DeleteComponent	component/ai/manager.go	/^func (am *AiManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/character/manager.go	/^func (cm *CharacterManager) DeleteComponent(index component.GOiD) {$/;"	d
+DeleteComponent	component/physics/manager.go	/^func (pm *PhysicsManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/quest/manager.go	/^func (qm *QuestManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) DeleteComponent(index component.GOiD) {$/;"	d
 DeleteComponent	graphics/manager.go	/^func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {$/;"	d
@@ -77,6 +79,7 @@ GetEventType	event/events.go	/^func (qt QuestComplete) GetEventType() string {$/
 GetEventType	event/events.go	/^func (rae RunAiEvent) GetEventType() string {$/;"	d
 GetFileContents	res/manager.go	/^func (rm *ResourceManager) GetFileContents(fileName string) []byte {$/;"	d
 GetFileContents	res/manager.go	/^func GetFileContents(fileName string) []byte {$/;"	d
+GetMatrixList	component/scenemanager/manager.go	/^func (tm *TransformManager) GetMatrixList() []math.Mat4x4 {$/;"	d
 GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {$/;"	d
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue {$/;"	d
 GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
@@ -114,6 +117,7 @@ IsInside	math/plane.go	/^func (pl *Plane) IsInside(vec Vec3) bool {$/;"	d
 IsOnPlane	math/plane.go	/^func (pl *Plane) IsOnPlane(vec Vec3) bool {$/;"	d
 JsonCreate	component/ai/manager.go	/^func (am *AiManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 JsonCreate	component/character/manager.go	/^func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error {$/;"	d
+JsonCreate	component/physics/manager.go	/^func (pm *PhysicsManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 JsonCreate	component/quest/manager.go	/^func (qm *QuestManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 JsonCreate	graphics/manager.go	/^func (gm *GraphicsManager) JsonCreate(id component.GOiD, compData []byte) error {$/;"	d
 KillEvent	event/events.go	/^type KillEvent struct {$/;"	d
@@ -146,6 +150,7 @@ MakeIdentity	math/mat4x4.go	/^func (m *Mat4x4) MakeIdentity() {$/;"	d
 MakeInstance	instance/instance.go	/^func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {$/;"	d
 MakeModel	graphics/model.go	/^func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2) Model {$/;"	d
 MakePerspectiveMatrix	math/mat4x4.go	/^func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {$/;"	d
+MakePhysicsManager	component/physics/manager.go	/^func MakePhysicsManager(sm component.SceneManager) *PhysicsManager {$/;"	d
 MakePlane	math/plane.go	/^func MakePlane(p1, p2, p3 Vec3) Plane {$/;"	d
 MakeQuestManager	component/quest/manager.go	/^func MakeQuestManager(em *event.EventManager) *QuestManager {$/;"	d
 MakeResourceManager	res/manager.go	/^func MakeResourceManager(fileDepot string) *ResourceManager {$/;"	d
@@ -170,6 +175,7 @@ Normalize3v	math/vec3.go	/^func Normalize3v(vec Vec3) Vec3 {$/;"	d
 ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {$/;"	d
 ParseSysConsole	instance/instance.go	/^func (is *Instance) ParseSysConsole() {$/;"	d
 Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	d
+PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
 Plane	math/plane.go	/^type Plane Vec4$/;"	d
 PlayerAi	component/ai/computer.go	/^func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
 PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	d
@@ -221,6 +227,7 @@ Test_WalkQueue	common/queue_test.go	/^func Test_WalkQueue(t *testing.T) {$/;"	d
 TextGraphicsHandler	graphics/text.go	/^type TextGraphicsHandler struct {$/;"	d
 Tick	component/ai/manager.go	/^func (am *AiManager) Tick(delta float64) {$/;"	d
 Tick	component/character/manager.go	/^func (cm *CharacterManager) Tick(delta float64) {$/;"	d
+Tick	component/physics/manager.go	/^func (pm *PhysicsManager) Tick(delta float64) {$/;"	d
 Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
 Tick	component/scenemanager/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d
 Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
@@ -272,6 +279,7 @@ normArray	graphics/renderer.go	/^	var normArray [9]float32$/;"	d
 normDot	math/plane.go	/^	var normDot float32$/;"	d
 normal	math/plane.go	/^	var normal [4]float32$/;"	d
 obj	component/ai/manager.go	/^	var obj struct {$/;"	d
+obj	component/physics/manager.go	/^	var obj struct {$/;"	d
 obj	res/manager.go	/^	var obj []component.MapLocation$/;"	d
 obj	res/manager.go	/^	var obj struct {$/;"	d
 of	component/ai/manager.go	/^\/\/ Higher level creation functions extract the type of ai computer to be used for the component from a data source and pass the low level information to CreateComponent in order to do the real work of initialization.$/;"	d
@@ -282,6 +290,7 @@ renderer	graphics/renderer.go	/^type renderer struct {$/;"	d
 resizeArray	component/ai/manager.go	/^func (am *AiManager) resizeArray(index component.GOiD) {$/;"	d
 resizeArray	component/scenemanager/manager.go	/^func (tm *TransformManager) resizeArray(index component.GOiD) {$/;"	d
 resizeArrays	component/character/manager.go	/^func (cm *CharacterManager) resizeArrays(index component.GOiD) {$/;"	d
+resizeArrays	component/physics/manager.go	/^func (pm *PhysicsManager) resizeArrays(index component.GOiD) {$/;"	d
 resizeArrays	graphics/gl.go	/^func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {$/;"	d
 resizeArrays	graphics/text.go	/^func (tgh *TextGraphicsHandler) resizeArrays(id component.GOiD) {$/;"	d
 row1	math/vec3.go	/^	var row1, row2, row3 float32$/;"	d

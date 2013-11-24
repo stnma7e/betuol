@@ -19,6 +19,8 @@ type ComponentManager interface {
 type SceneManager interface {
 	GetTransform4m(index GOiD) (math.Mat4x4, error)
 	GetObjectLocation(index GOiD) math.Vec3
+	SetTransform(id GOiD, newTransform math.Mat4x4)
+	GetMatrixList() []math.Mat4x4
 }
 
 // Type used by the GameObject Factory for handling creation data for various component types.

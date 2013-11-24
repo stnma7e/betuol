@@ -3,6 +3,7 @@
       "character",
       "ai",
       "graphics",
-      "quest"
+      "quest",
+      "physics"
     ]
 }

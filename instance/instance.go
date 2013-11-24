@@ -15,6 +15,7 @@ import (
 	"betuol/component/ai"
 	"betuol/component/character"
 	"betuol/component/gofactory"
+	"betuol/component/physics"
 	"betuol/component/quest"
 	"betuol/component/scenemanager"
 	"betuol/event"
@@ -30,6 +31,7 @@ import (
 type Instance struct {
 	gof *gofactory.GameObjectFactory
 	tm  *scenemanager.TransformManager
+	pm  *physics.PhysicsManager
 	cm  *character.CharacterManager
 	rm  *res.ResourceManager
 	em  *event.EventManager
@@ -54,6 +56,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is := &Instance{
 		gof,
 		tm,
+		physics.MakePhysicsManager(tm),
 		cm,
 		rm,
 		em,
@@ -70,6 +73,7 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 	is.gof.Register("ai", is.am, is.am.JsonCreate)
 	is.gof.Register("graphics", is.gm, is.gm.JsonCreate)
 	is.gof.Register("quest", is.qm, is.qm.JsonCreate)
+	is.gof.Register("physics", is.pm, is.pm.JsonCreate)
 
 	is.am.SetUpdateAiNearPlayer(false)
 	//is.am.RegisterComputer("enemy", is.am.EnemyDecide)
@@ -156,7 +160,7 @@ func (is *Instance) Loop() {
 		is.em.Tick(secs)
 		is.qm.Tick(secs)
 		is.cm.Tick(secs)
-		//is.pm.Tick(secs)
+		is.pm.Tick(secs)
 		is.tm.Tick(secs)
 		is.tmSnapshot = *is.tm
 	}

@@ -48,41 +48,6 @@ func (tm *TransformManager) Tick(delta float64) {
 		tm.SetTransform(component.GOiD(i), trans)
 		tm.moving[i].timeToMove -= delta
 	}
-
-	for i := range tm.matList {
-		if i == 0 {
-			continue
-		}
-		if tm.matList[i].IsEmpty() {
-			continue
-		}
-		loc1 := math.Mult4m3v(tm.matList[i], math.Vec3{})
-		sp1 := math.Sphere{loc1, 1.0}
-		for j := range tm.matList {
-			if i == j || j == 0 {
-				continue
-			}
-			if tm.matList[j].IsEmpty() {
-				continue
-			}
-			loc2 := math.Mult4m3v(tm.matList[j], math.Vec3{})
-			sp2 := math.Sphere{loc2, 1.0}
-			if sp1.Intersects(sp2) {
-				common.LogWarn.Printf("collision between %d and %d\n", i, j)
-				penetration := math.Sub3v3v(sp1.Center, sp2.Center)
-				pSqrd := math.MagSqrd3v(penetration)
-				if pSqrd-(sp1.Radius+sp2.Radius)*(sp1.Radius+sp2.Radius) > 0 {
-					common.LogErr.Println("math fucked up")
-				}
-				split := math.Normalize3v(penetration)
-				smallestDistanceToRemoveIntersection := math.Mult3vf(split, math.Mag3v(penetration))
-				trans := &tm.matList[j]
-				trans[3] -= smallestDistanceToRemoveIntersection[0]
-				trans[7] -= smallestDistanceToRemoveIntersection[1]
-				trans[11] -= smallestDistanceToRemoveIntersection[2]
-			}
-		}
-	}
 }
 
 // CreateComponent is used to initialize a matrix to store the location of a transform component.
@@ -191,4 +156,9 @@ func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange 
 	}
 
 	return &stk
+}
+
+// GetMatrixList returns the internal list of location matrices used by the TransformManager.
+func (tm *TransformManager) GetMatrixList() []math.Mat4x4 {
+	return tm.matList
 }
