@@ -55,7 +55,7 @@ func (tm *TransformManager) CreateComponent(index component.GOiD) error {
 	tm.resizeArray(index)
 
 	if !(tm.matList[index].IsEmpty()) {
-		return fmt.Errorf("attempt to reuse component.GOiD %d", index)
+		return fmt.Errorf("attempt to reuse component.GOiD %d before deleting it", index)
 	}
 	tm.matList[index].MakeIdentity()
 

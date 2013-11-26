@@ -80,6 +80,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]componen
 		num, err := idQueue.Dequeue()
 		if err != nil {
 			common.LogErr.Print(err)
+			return []component.GOiD{}, fmt.Errorf("map creation failed when loading gameobject #%d, error: %s", i, err.Error())
 		}
 		idList[i] = component.GOiD(num.(int))
 	}
@@ -97,7 +98,6 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 	err := gof.tm.CreateComponent(id)
 	if err != nil {
 		gof.Delete(id)
-		common.LogErr.Print(err)
 		return component.NULLINDEX, err
 	}
 	gof.tm.SetLocation(id, location)

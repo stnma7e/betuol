@@ -1,8 +1,8 @@
 package graphics
 
 import (
+	"fmt"
 	"unsafe"
-	//"fmt"
 
 	"github.com/go-gl/gl"
 
@@ -35,13 +35,31 @@ type FragmentPointLightingRenderer struct {
 }
 
 // MakeFragmentPointLightingRenderer returns a pointer to a FragmentPointLightingRenderer.
-func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsManager) Renderer {
+func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsManager) (Renderer, error) {
 	fplr := FragmentPointLightingRenderer{}
-	vertStr := string(rm.GetFileContents("graphics/shader/FragmentLighting.vert"))
-	fragStr := string(rm.GetFileContents("graphics/shader/FragmentLighting.frag"))
-	shaders := [2]gl.Shader{LoadShader(gl.VERTEX_SHADER, vertStr), LoadShader(gl.FRAGMENT_SHADER, fragStr)}
+	vert, err := rm.GetFileContents("graphics/shader/FragmentLighting.vert")
+	if err != nil {
+		return &FragmentPointLightingRenderer{}, fmt.Errorf("failed to open vertex shader, error: %s", err.Error())
+	}
+	frag, err := rm.GetFileContents("graphics/shader/FragmentLighting.frag")
+	if err != nil {
+		return &FragmentPointLightingRenderer{}, fmt.Errorf("failed to open fragment shader, error: %s", err.Error())
+	}
+	vertStr, fragStr := string(vert), string(frag)
+	shaders := [2]gl.Shader{}
+	shaders[0], err = LoadShader(gl.VERTEX_SHADER, vertStr)
+	if err != nil {
+		return &FragmentPointLightingRenderer{}, fmt.Errorf("failed to compile vertex shader, error: %s", err.Error())
+	}
+	shaders[1], err = LoadShader(gl.FRAGMENT_SHADER, fragStr)
+	if err != nil {
+		return &FragmentPointLightingRenderer{}, fmt.Errorf("failed to compile fragment shader, error: %s", err.Error())
+	}
 	fplr.program = gl.CreateProgram()
-	fplr.attribArray = LinkProgram(fplr.program, shaders[:])
+	fplr.attribArray, err = LinkProgram(fplr.program, shaders[:])
+	if err != nil {
+		return &FragmentPointLightingRenderer{}, fmt.Errorf("failed to link program, error: %s", err.Error())
+	}
 
 	fplr.lightIntensity = math.Vec4{0.8, 0.8, 0.8, 0.8}
 	fplr.ambientIntensity = math.Vec4{0.2, 0.2, 0.2, 0.2}
@@ -52,7 +70,7 @@ func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsM
 	fplr.uniforms[LINTENSE] = fplr.program.GetUniformLocation("lightIntensity")
 	fplr.uniforms[AMBINTENSE] = fplr.program.GetUniformLocation("ambientIntensity")
 
-	return &fplr
+	return &fplr, nil
 }
 
 // Render implements the Renderer interface and can be used by GlGraphicsManager to render a Momdel without any extra specification of data.

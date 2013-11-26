@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/graphics"
 	"github.com/stnma7e/betuol/instance"
 	"github.com/stnma7e/betuol/math"
@@ -29,10 +30,18 @@ func main() {
 	//return
 
 	runtime.LockOSThread()
-	glg := graphics.MakeGlGraphicsManager(X, Y, "betuol", rm)
+	glg, err := graphics.MakeGlGraphicsManager(X, Y, "betuol", rm)
+	if err != nil {
+		common.LogErr.Println(err)
+		return
+	}
 	gm := graphics.MakeGraphicsManager(glg, rm)
-	in := instance.MakeInstance(returnlink, rm, gm)
-	go in.Loop()
+	in := instance.MakeInstance(rm, gm)
+
+	go func() {
+		in.Loop()
+		returnlink <- true
+	}()
 
 	oldtime := time.Now()
 	for i := true; i; {

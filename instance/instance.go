@@ -39,16 +39,13 @@ type Instance struct {
 	qm  *quest.QuestManager
 	gm  *graphics.GraphicsManager
 
-	tmSnapshot scenemanager.TransformManager
-
-	returnlink  chan bool
+	tmSnapshot  scenemanager.TransformManager
 	commandlink chan string
-
-	player component.GOiD
+	player      component.GOiD
 }
 
 // MakeInstance returns a pointer to an Instance.
-func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
+func MakeInstance(rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
 	gof := gofactory.MakeGameObjectFactory(tm)
@@ -64,7 +61,6 @@ func MakeInstance(returnlink chan bool, rm *res.ResourceManager, gm *graphics.Gr
 		quest.MakeQuestManager(em),
 		gm,
 		*tm,
-		returnlink,
 		make(chan string),
 		0,
 	}
@@ -106,6 +102,7 @@ func (is *Instance) Loop() {
 	is.player, err = is.CreateObject("player", math.Vec3{0, 0, 0})
 	if err != nil {
 		common.LogErr.Println(err)
+		return
 	}
 	//is.tm.SetLocationOverTime(is.player, math.Vec3{6, 0, 0}, 1.5)
 	is.tm.SetLocation(is.player, math.Vec3{1, 0, 0})
@@ -150,7 +147,10 @@ func (is *Instance) Loop() {
 		//}
 		//fmt.Println(data)
 
-		is.ParseSysConsole()
+		exit := is.ParseSysConsole()
+		if exit == true {
+			return
+		}
 
 		if numTicks > 60 {
 			is.am.Tick(secs)
@@ -168,7 +168,7 @@ func (is *Instance) Loop() {
 
 // ParseSysConsole is used to parse the commands input into the console.
 // These commands can be used to control the internal state of the instance.
-func (is *Instance) ParseSysConsole() {
+func (is *Instance) ParseSysConsole() bool {
 	select {
 	case command := <-is.commandlink:
 		args := strings.SplitAfter(command, " ")
@@ -181,7 +181,7 @@ func (is *Instance) ParseSysConsole() {
 		fmt.Println(args)
 		switch args[0] {
 		case "exit":
-			is.returnlink <- true
+			return true
 		case "loadmap":
 			if !(len(args) >= 2) {
 				common.LogErr.Print("not enough arguments to 'loadmap'")
@@ -214,6 +214,7 @@ func (is *Instance) ParseSysConsole() {
 	default:
 	}
 
+	return false
 }
 
 /*****************************************
@@ -224,18 +225,28 @@ func (is *Instance) ParseSysConsole() {
 
 // CreateFromMap is a helper function to create a map from a filename string.
 func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {
-	jmap := is.rm.LoadJsonMap(mapName)
+	jmap, err := is.rm.LoadJsonMap(mapName)
+	if err != nil {
+		return []component.GOiD{}, err
+	}
 	return is.gof.CreateFromMap(&jmap)
 }
 
 // CreateObject is a helper function to create a GameObject with a starting location.
 func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {
-	components := is.rm.LoadGameObject(objName)
+	components, err := is.rm.LoadGameObject(objName)
+	if err != nil {
+		return 0, err
+	}
 	id, err := is.gof.Create(components, loc)
+	if err != nil {
+		return 0, fmt.Errorf("gameobject %s creation failed, error: %s", objName, err.Error())
+	}
+
 	// is.pm.AddForce(id, math.Vec3{0,0.5,0})
 	common.LogInfo.Println("entity created, id:", id)
 
-	return id, err
+	return id, nil
 }
 
 // GetSceneManagerSnapshot is used by the graphics manager to request a snapshot of the location data during the current frame. The graphics manager uses this to depict the scene for the current frame without data corruption.

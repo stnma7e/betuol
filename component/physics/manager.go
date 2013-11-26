@@ -3,6 +3,7 @@ package physics
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/component"
@@ -77,7 +78,7 @@ func (pm *PhysicsManager) JsonCreate(id component.GOiD, data []byte) error {
 		BoundingRadius float32
 	}
 	if err := json.Unmarshal(data, &obj); err != nil {
-		common.LogErr.Println(err)
+		return fmt.Errorf("failed to unmarshal physics component, error: %s", err.Error())
 	}
 
 	return pm.CreateComponent(id, obj.BoundingRadius)

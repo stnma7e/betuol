@@ -37,7 +37,7 @@ type GlGraphicsManager struct {
 
 // MakeGlGraphicsManager returns a pointer to a GlGraphicsManager.
 // It initializes an OpenGL context and some basic values.
-func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManager) *GlGraphicsManager {
+func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManager) (*GlGraphicsManager, error) {
 	if !glfw.Init() {
 		common.LogErr.Fatal("GLFW init failed.")
 	}
@@ -47,7 +47,7 @@ func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManag
 
 	window, err := glfw.CreateWindow(sizeX, sizeY, title, nil, nil)
 	if err != nil {
-		common.LogErr.Fatal(err)
+		return &GlGraphicsManager{}, err
 	}
 	glg.window = window
 	glg.window.MakeContextCurrent()
@@ -68,9 +68,13 @@ func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManag
 
 	glg.renderMap = make(map[component.GOiD]Renderer)
 	glg.renderTypes = make(map[string]Renderer)
-	glg.renderTypes["fragmentLighting"] = MakeFragmentPointLightingRenderer(rm, &glg)
+	glg.renderTypes["fragmentLighting"], err = MakeFragmentPointLightingRenderer(rm, &glg)
+	if err != nil {
+		glg.renderTypes["fragmentLighting"] = nil
+		common.LogErr.Println(err)
+	}
 
-	return &glg
+	return &glg, nil
 }
 
 // Tick checks window events, swaps the graphics buffer, and updates the viewing space based on the size of the window.
@@ -152,7 +156,7 @@ func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp graphicsComponen
 	glg.resizeArrays(id)
 
 	if _, ok := glg.renderTypes[comp.Renderer]; !ok {
-		return fmt.Errorf("invalid renderer in component string: %s", comp.Renderer)
+		return fmt.Errorf("invalid string for renderer in component: %s", comp.Renderer)
 	}
 
 	modelPtr, ok := glg.modelMap[comp.ModelName]
@@ -168,7 +172,11 @@ func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp graphicsComponen
 	//var boundingRadius float32
 	switch comp.MeshType {
 	case "wavefront":
-		vertsVector, indiciesVector, normsVector, uvVector /*boundingRadius*/, _ = glg.rm.LoadModelWavefront(comp.Mesh)
+		data, err := glg.rm.LoadModelWavefront(comp.Mesh)
+		if err != nil {
+			return fmt.Errorf("wavefront model not able to load, error: %s", err.Error())
+		}
+		vertsVector, indiciesVector, normsVector, uvVector = data.Vertices, data.Indices, data.Normals, data.Uvs
 	}
 	//fmt.Println(boundingRadius)
 
@@ -230,7 +238,7 @@ func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManag
 }
 
 // LoadShader loads an OpenGL shader object of a string of characters passed in as an argument.
-func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
+func LoadShader(shadType gl.GLenum, shadStr string) (gl.Shader, error) {
 	gl.Init()
 	shader := gl.CreateShader(shadType)
 	shader.Source(shadStr)
@@ -238,14 +246,14 @@ func LoadShader(shadType gl.GLenum, shadStr string) gl.Shader {
 	if shader.Get(gl.COMPILE_STATUS) < 1 {
 		infoLog := shader.GetInfoLog()
 		shader.Delete()
-		common.LogErr.Fatalf("failed to compile shader type: %e\n\t%s", shadType, infoLog)
+		return gl.Shader(0), fmt.Errorf("failed to compile shader type: %e\n\t%s", shadType, infoLog)
 	}
 
-	return shader
+	return shader, nil
 }
 
 // LinkProgram takes a list of shader objects and links them together into a program object.
-func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribLocation {
+func LinkProgram(program gl.Program, shaderList []gl.Shader) ([NUMATTR]gl.AttribLocation, error) {
 	for i := range shaderList {
 		program.AttachShader(shaderList[i])
 	}
@@ -259,14 +267,14 @@ func LinkProgram(program gl.Program, shaderList []gl.Shader) [NUMATTR]gl.AttribL
 
 	if program.Get(gl.LINK_STATUS) < 1 {
 		infoLog := program.GetInfoLog()
-		common.LogErr.Printf("failed to link program\n\t%v", infoLog)
+		return attribArray, fmt.Errorf("failed to link program\n\t%v", infoLog)
 	}
 	for i := range shaderList {
 		program.DetachShader(shaderList[i])
 		shaderList[i].Delete()
 	}
 
-	return attribArray
+	return attribArray, nil
 }
 
 // LoadFont loads a font for use with the text rendering function, DrawString.

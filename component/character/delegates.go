@@ -12,6 +12,8 @@ import (
 func chat(r, s component.GOiD, m string) {
 	if r == 0 {
 		fmt.Printf("%v says to WORLD: %s\n", s, m)
+	} else if s == 0 {
+		fmt.Printf("WORLD says to %v: %s\n", r, m)
 	} else {
 		fmt.Printf("%v says to %v: %s\n", s, r, m)
 	}

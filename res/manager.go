@@ -15,6 +15,12 @@ import (
 	"github.com/stnma7e/betuol/math"
 )
 
+// WavefrontData is a struct to contain the data extracted from a Wavefront .obj file. This is used by the ResourceManager to return to the graphics manager.
+type WavefrontData struct {
+	Vertices, Indices, Normals, Uvs *common.Vector
+	BoundingRadius                  float32
+}
+
 // ResourceManager is a struct to handle resource management and to prevent multiple identical resources being loaded in memory simultaneously.
 type ResourceManager struct {
 	fileDepot string
@@ -30,16 +36,16 @@ func MakeResourceManager(fileDepot string) *ResourceManager {
 }
 
 // GetFileContents is a static wrapper for ResourceManager.GetFileContents.
-func GetFileContents(fileName string) []byte {
+func GetFileContents(fileName string) ([]byte, error) {
 	rm := MakeResourceManager("./data/")
 	return rm.GetFileContents(fileName)
 }
 
 // GetFileContents is a function to retreive the contols of a file returned as a byte array.
-func (rm *ResourceManager) GetFileContents(fileName string) []byte {
+func (rm *ResourceManager) GetFileContents(fileName string) ([]byte, error) {
 	file, err := os.Open(rm.fileDepot + fileName)
 	if err != nil {
-		common.LogErr.Fatal(err)
+		return []byte{}, err
 	}
 	defer file.Close()
 	stats, err := file.Stat()
@@ -48,38 +54,47 @@ func (rm *ResourceManager) GetFileContents(fileName string) []byte {
 	if err != io.EOF && err != nil {
 		common.LogErr.Print(err)
 	}
-	return buf
+	return buf, nil
 }
 
 // LoadJsonMap will return a component.Map used by the GameObjectFactory to create a list of GameObjects organized by location.
-func (rm *ResourceManager) LoadJsonMap(mapName string) component.Map {
-	mapJson := rm.GetFileContents("map/" + mapName + ".json")
-	var obj []component.MapLocation
-	err := json.Unmarshal(mapJson, &obj)
+func (rm *ResourceManager) LoadJsonMap(mapName string) (component.Map, error) {
+	mapJson, err := rm.GetFileContents("game/" + mapName + ".json")
 	if err != nil {
-		common.LogErr.Print(err)
+		return component.Map{}, fmt.Errorf("failed to open map file, error: %s", err.Error())
+	}
+	var obj []component.MapLocation
+	err = json.Unmarshal(mapJson, &obj)
+	if err != nil {
+		return component.Map{}, err
 	}
 
 	for i := range obj {
 		for j := range obj[i].Entities {
 			for k := 0; k < obj[i].Entities[j].Quantity; k++ {
-				obj[i].Entities[j].CompList = rm.LoadGameObject(obj[i].Entities[j].Breed)
+				obj[i].Entities[j].CompList, err = rm.LoadGameObject(obj[i].Entities[j].Breed)
+				if err != nil {
+					return component.Map{}, err
+				}
 			}
 		}
 	}
 
-	return obj
+	return obj, nil
 }
 
 // LoadGameObject is used to retrieve and compile the creation data for making a GameObject with a GameObjectFactory.
-func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
-	objJson := rm.GetFileContents("map/gameobject/" + objType + "/" + "obj.json")
+func (rm *ResourceManager) LoadGameObject(objType string) (component.GameObject, error) {
+	objJson, err := rm.GetFileContents("game/gameobject/" + objType + "/" + "obj.json")
+	if err != nil {
+		return component.GameObject{}, fmt.Errorf("failed to open gameobject file, error: %s", err.Error())
+	}
 	var obj struct {
 		Component []string
 	}
-	err := json.Unmarshal(objJson, &obj)
+	err = json.Unmarshal(objJson, &obj)
 	if err != nil {
-		common.LogErr.Print(err)
+		return component.GameObject{}, fmt.Errorf("json failure when loading gameobject, error: %s", err.Error())
 	}
 
 	gameobj := make(map[string][]byte)
@@ -88,17 +103,23 @@ func (rm *ResourceManager) LoadGameObject(objType string) component.GameObject {
 	}
 
 	for k, _ := range gameobj {
-		gameobj[k] = rm.GetFileContents("map/gameobject/" + objType + "/" + k + ".json")
+		gameobj[k], err = rm.GetFileContents("game/gameobject/" + objType + "/" + k + ".json")
+		if err != nil {
+			return component.GameObject{}, fmt.Errorf("failed to load gameobject file, error: %s", err.Error())
+		}
 	}
 
-	return gameobj
+	return gameobj, nil
 }
 
 // LoadModelWavefront is a function to load a Wavefront (.obj) style 3D mesh.
 // This function is used to load models created using blender or another 3d mdoeling program outside the game engine.
 // The function parses a text file and extracts a list of vertices, indices, normal vectors, and texture coordinates.
-func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector, *common.Vector, *common.Vector, *common.Vector, float32) {
-	modelStr := GetFileContents("graphics/mesh/" + modelName + ".obj")
+func (rm *ResourceManager) LoadModelWavefront(modelName string) (WavefrontData, error) {
+	modelStr, err := GetFileContents("graphics/mesh/" + modelName + ".obj")
+	if err != nil {
+		return WavefrontData{}, fmt.Errorf("failed to open wavefront .obj file, error: %s", err.Error())
+	}
 	verts := common.MakeVector()
 	norms := common.MakeVector()
 	texes := common.MakeVector()
@@ -114,10 +135,16 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 		switch words[0] {
 		case "v":
 			x, err := strconv.ParseFloat(words[1], 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex x coordinate, error: %s", err.Error())
+			}
 			y, err := strconv.ParseFloat(words[2], 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex z coordinate, error: %s", err.Error())
+			}
 			z, err := strconv.ParseFloat(words[3], 32)
 			if err != nil {
-				fmt.Println(err)
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex z coordinate, error: %s", err.Error())
 			}
 			vec := math.Vec3{float32(x), float32(y), float32(z)}
 			verts.Push_back(vec, 1, 1)
@@ -129,17 +156,26 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 			}
 		case "vn":
 			x, err := strconv.ParseFloat(words[1], 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex normal x coordinate, error: %s", err.Error())
+			}
 			y, err := strconv.ParseFloat(words[2], 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex normal y coordinate, error: %s", err.Error())
+			}
 			z, err := strconv.ParseFloat(words[3], 32)
 			if err != nil {
-				fmt.Println(err)
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex normal z coordinate, error: %s", err.Error())
 			}
 			norms.Push_back(math.Vec3{float32(x), float32(y), float32(z)}, 1, 1)
 		case "vt":
 			u, err := strconv.ParseFloat(words[1], 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront texture u coordinate, error: %s", err.Error())
+			}
 			v, err := strconv.ParseFloat(words[2], 32)
 			if err != nil {
-				fmt.Println(err)
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront texture v coordinate, error: %s", err.Error())
 			}
 			texes.Push_back(math.Vec2{float32(u), float32(v)}, 1, 1)
 		case "f":
@@ -160,10 +196,16 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 				return false
 			})
 			one, err := strconv.ParseInt(ints[0*numAttributes], 10, 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex index, error: %s", err.Error())
+			}
 			two, err := strconv.ParseInt(ints[1*numAttributes], 10, 32)
+			if err != nil {
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront texture coordinate index, error: %s", err.Error())
+			}
 			three, err := strconv.ParseInt(ints[2*numAttributes], 10, 32)
 			if err != nil {
-				fmt.Println(err)
+				return WavefrontData{}, fmt.Errorf("failed to parse wavefront vertex normal index, error: %s", err.Error())
 			}
 			index.Push_back(uint32(one-1), 1, 1)
 			index.Push_back(uint32(two-1), 1, 1)
@@ -186,5 +228,5 @@ func (rm *ResourceManager) LoadModelWavefront(modelName string) (*common.Vector,
 	}
 
 	boundingRadius := float32(gomath.Sqrt(float64(maxDistanceSqrd))) / 2
-	return verts, index, norms, texes, boundingRadius
+	return WavefrontData{verts, index, norms, texes, boundingRadius}, nil
 }

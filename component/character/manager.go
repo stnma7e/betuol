@@ -2,6 +2,7 @@ package character
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/component/scenemanager"
@@ -42,7 +43,7 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 	}
 	err := json.Unmarshal(data, &comp)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to unmarshal character component, error: %s", err.Error())
 	}
 
 	ca := CharacterAttributes{
