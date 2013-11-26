@@ -1,77 +1,27 @@
 package main
 
 import (
-	"fmt"
-	"runtime"
-	"time"
+	//"fmt"
 
-	"github.com/stnma7e/betuol/common"
-	"github.com/stnma7e/betuol/graphics"
 	"github.com/stnma7e/betuol/instance"
-	"github.com/stnma7e/betuol/math"
+	//"github.com/stnma7e/betuol/math"
 	"github.com/stnma7e/betuol/res"
-
-	glfw "github.com/go-gl/glfw3"
 )
 
-const X, Y = 640, 480
-
 func main() {
-	returnlink := make(chan bool)
 	rm := res.MakeResourceManager("./data/")
 
-	target, eye, up := math.Vec3{0, 0, 0}, math.Vec3{0, 6, -12}, math.Vec3{0, 1, 0}
-	cam := math.MakeFrustum(0.1, 100, 90, 1/1)
-	cam.LookAt(target, eye, up)
+	//target, eye, up := math.Vec3{0, 0, 0}, math.Vec3{0, 6, -12}, math.Vec3{0, 1, 0}
+	//cam := math.MakeFrustum(0.1, 100, 90, 1/1)
+	//cam.LookAt(target, eye, up)
 	//mat := math.Mult4m4m(cam.LookAtMatrix(), cam.Projection())
 	//fmt.Println(mat)
 	//fmt.Println(mat.Inverse())
 	//graphics.Trace(15,15, mat.Inverse())
 	//return
 
-	runtime.LockOSThread()
-	glg, err := graphics.MakeGlGraphicsManager(X, Y, "betuol", rm)
-	if err != nil {
-		common.LogErr.Println(err)
-		return
-	}
-	gm := graphics.MakeGraphicsManager(glg, rm)
-	in := instance.MakeInstance(rm, gm)
-
-	go func() {
-		in.Loop()
-		returnlink <- true
-	}()
-
-	oldtime := time.Now()
-	for i := true; i; {
-		secs := time.Since(oldtime).Seconds()
-		oldtime = time.Now()
-		fpsStr := fmt.Sprintf("%f", 100/secs)
-		spfStr := fmt.Sprintf("%f", secs/100)
-
-		x, y := gm.GetSize()
-		cam := math.MakeFrustum(0.1, 100, 90, float32(y)/float32(x))
-
-		for j := 0; j < 100 && i; j++ {
-			eye, target, up = gm.HandleInputs(eye, target, up)
-			cam.LookAt(target, eye, up)
-
-			tm := in.GetSceneManagerSnapshot()
-			gm.RenderAll(cam, tm)
-
-			gm.DrawString(10, 10, "fps: "+fpsStr)
-			gm.DrawString(10, 25, "spf: "+spfStr)
-
-			i = gm.Tick()
-			select {
-			case <-returnlink:
-				i = false
-			default:
-			}
-		}
-	}
-	glfw.Terminate()
+	in := instance.MakeInstance(rm)
+	in.Loop()
 }
 
 // loadobj player 0,0,0

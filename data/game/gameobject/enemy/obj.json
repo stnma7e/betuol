@@ -1,6 +1,7 @@
 {
   "component": [
       "character",
-      "ai"
+      "ai",
+      "graphics"
     ]
 }

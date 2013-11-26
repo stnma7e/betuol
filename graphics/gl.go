@@ -39,7 +39,7 @@ type GlGraphicsManager struct {
 // It initializes an OpenGL context and some basic values.
 func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManager) (*GlGraphicsManager, error) {
 	if !glfw.Init() {
-		common.LogErr.Fatal("GLFW init failed.")
+		return nil, fmt.Errorf("GLFW init failed")
 	}
 
 	glg := GlGraphicsManager{}
@@ -151,7 +151,7 @@ func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {
 }
 
 // LoadModel implements the GraphicsHandler interface and adds a component with a graphics model to the manager.
-func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp graphicsComponent) error {
+func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponent) error {
 	oldTime := time.Now()
 	glg.resizeArrays(id)
 
@@ -232,6 +232,11 @@ func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManag
 		loc, err := sm.GetTransform4m(id)
 		if err != nil {
 			common.LogErr.Println(err)
+			continue
+		}
+		if glg.modelList[id] == nil {
+			common.LogErr.Printf("model is nil, id %d\n", id)
+			continue
 		}
 		glg.renderMap[id].Render(*glg.modelList[id], loc, cam.LookAtMatrix(), cam.Projection())
 	}

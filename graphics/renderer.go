@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-gl/gl"
 
+	//"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/math"
 	"github.com/stnma7e/betuol/res"
 )
@@ -80,7 +81,7 @@ func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, p
 	fplr.program.Use()
 	defer NOPROGRAM.Use()
 
-	//fmt.Println(transMat, camMat, projectMat)
+	//common.LogInfo.Println(transMat, camMat, projectMat)
 
 	lightPosition := math.Vec3{40, 20, 20}
 	//lightPosCameraSpace := math.Mult4m3v(camMat, lightPosition)

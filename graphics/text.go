@@ -49,7 +49,7 @@ func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneMan
 }
 
 // LoadModel implements the GraphicsHandler interface and adds data used to render the components later.
-func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc graphicsComponent) error {
+func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc GraphicsComponent) error {
 	tgh.resizeArrays(id)
 	tgh.compList[id] = gc.TextDescription
 

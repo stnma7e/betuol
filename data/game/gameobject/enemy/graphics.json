@@ -1,0 +1,8 @@
+{
+  "modelName": "enemy",
+  "mesh": "cube",
+  "meshType": "wavefront",
+  "renderer": "fragmentLighting",
+  "textDescription": "The enemy looks aggressive."
+}
+

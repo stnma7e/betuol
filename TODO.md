@@ -12,14 +12,14 @@ TODO
 
 - Fix 4x4 matrix inverse
 
-- Add sorting method to sort events by time in EventManager
-
 <u>_Long-term_</u>
 ---------
 
 - Add to documentation. The docs are pretty much bare bones, so they need to be improved.
 
 - Get the project to work with Travis CI.
+
+- Add unit tests.
 
 - Collision/physics system.
 

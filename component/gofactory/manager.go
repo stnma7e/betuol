@@ -92,7 +92,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]componen
 func (gof *GameObjectFactory) Create(compList component.GameObject, location math.Vec3) (component.GOiD, error) {
 	id := gof.getNewGOiD()
 	if id < 1 {
-		common.LogErr.Print("invalid id: %v", id)
+		return 0, fmt.Errorf("invalid id: %v", id)
 	}
 
 	err := gof.tm.CreateComponent(id)

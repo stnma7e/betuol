@@ -1,6 +1,7 @@
 package instance
 
 import (
+	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/event"
 	"github.com/stnma7e/betuol/math"
 )
@@ -18,7 +19,10 @@ func (is *Instance) StartScript() error {
 	is.em.Send(event.ChatEvent{0, is.player, "Type 'player east' to move right."})
 	is.em.Send(event.ChatEvent{0, is.player, "Type 'player west' to move left."})
 
-	is.CreateObject("enemy", math.Vec3{10, 10, 10})
+	_, err = is.CreateObject("enemy", math.Vec3{00, 00, 05})
+	if err != nil {
+		common.LogErr.Println(err)
+	}
 
 	return nil
 }

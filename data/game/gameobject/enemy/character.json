@@ -5,6 +5,5 @@
   "intelligence": 10,
   "rangeOfSight": 5,
   "description": "An enemy",
-  "greeting": "Rawwrrr. Prepare to be destroyed.",
-  "aiFunction": "enemy"
+  "greeting": "Rawwrrr. Prepare to be destroyed."
 }

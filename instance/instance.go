@@ -15,11 +15,11 @@ import (
 	"github.com/stnma7e/betuol/component/ai"
 	"github.com/stnma7e/betuol/component/character"
 	"github.com/stnma7e/betuol/component/gofactory"
+	"github.com/stnma7e/betuol/component/graphics"
 	"github.com/stnma7e/betuol/component/physics"
 	"github.com/stnma7e/betuol/component/quest"
 	"github.com/stnma7e/betuol/component/scenemanager"
 	"github.com/stnma7e/betuol/event"
-	"github.com/stnma7e/betuol/graphics"
 	"github.com/stnma7e/betuol/math"
 	"github.com/stnma7e/betuol/res"
 )
@@ -45,7 +45,7 @@ type Instance struct {
 }
 
 // MakeInstance returns a pointer to an Instance.
-func MakeInstance(rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instance {
+func MakeInstance(rm *res.ResourceManager) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
 	gof := gofactory.MakeGameObjectFactory(tm)
@@ -59,7 +59,7 @@ func MakeInstance(rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instan
 		em,
 		ai.MakeAiManager(tm, cm, em),
 		quest.MakeQuestManager(em),
-		gm,
+		graphics.MakeGraphicsManager(em, rm, tm),
 		*tm,
 		make(chan string),
 		0,
@@ -75,7 +75,8 @@ func MakeInstance(rm *res.ResourceManager, gm *graphics.GraphicsManager) *Instan
 	//is.am.RegisterComputer("enemy", is.am.EnemyDecide)
 	//is.am.RegisterComputer("player", is.am.PlayerDecide)
 	is.am.RegisterComputer("player", is.am.PlayerAi)
-	is.am.RegisterComputer("enemy", is.am.WanderAi)
+	is.am.RegisterComputer("enemy", is.am.EnemyAi)
+	is.am.RegisterComputer("wander", is.am.WanderAi)
 
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
@@ -108,7 +109,9 @@ func (is *Instance) Loop() {
 	is.tm.SetLocation(is.player, math.Vec3{1, 0, 0})
 
 	is.qm.AddQuest(is.player, is.qm.AttackQuest)
-	is.StartScript()
+	if err := is.StartScript(); err != nil {
+		common.LogErr.Println(err)
+	}
 
 	go func() {
 		r := bufio.NewReaderSize(os.Stdin, 4*1024)
@@ -162,6 +165,8 @@ func (is *Instance) Loop() {
 		is.cm.Tick(secs)
 		is.pm.Tick(secs)
 		is.tm.Tick(secs)
+
+		is.gm.Tick(secs, &is.tmSnapshot)
 		is.tmSnapshot = *is.tm
 	}
 }
