@@ -18,7 +18,7 @@ type ComponentManager interface {
 // SceneManager is an interface used for location management. This can be a physics manager or simply a location manager.
 type SceneManager interface {
 	GetTransform4m(index GOiD) (math.Mat4x4, error)
-	GetObjectLocation(index GOiD) math.Vec3
+	GetObjectLocation(index GOiD) (math.Vec3, error)
 	SetTransform(id GOiD, newTransform math.Mat4x4)
 	GetMatrixList() []math.Mat4x4
 }

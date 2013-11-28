@@ -39,7 +39,10 @@ func (pm *PhysicsManager) Tick(delta float64) {
 		if matList[i].IsEmpty() {
 			continue
 		}
-		loc1 := pm.sm.GetObjectLocation(component.GOiD(i))
+		loc1, err := pm.sm.GetObjectLocation(component.GOiD(i))
+		if err != nil {
+			common.LogErr.Println(err)
+		}
 		sp1 := math.Sphere{loc1, pm.radii[i]}
 		for j := range pm.radii {
 			if i == j || j == 0 {
@@ -51,7 +54,10 @@ func (pm *PhysicsManager) Tick(delta float64) {
 			if matList[j].IsEmpty() {
 				continue
 			}
-			loc2 := pm.sm.GetObjectLocation(component.GOiD(j))
+			loc2, err := pm.sm.GetObjectLocation(component.GOiD(j))
+			if err != nil {
+				common.LogErr.Println(err)
+			}
 			sp2 := math.Sphere{loc2, pm.radii[j]}
 			if sp1.Intersects(sp2) {
 				common.LogWarn.Printf("collision between %d and %d\n", i, j)

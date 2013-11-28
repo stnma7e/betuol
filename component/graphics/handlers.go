@@ -27,6 +27,12 @@ func (gm *GraphicsManager) RunGraphicsHandlerFunc(compslink chan *common.Vector,
 
 // GlHandlerFunc starts an OpenGL rendering context and satisfies the GraphicsHandlerFunc function type.
 func (gm *GraphicsManager) GlHandlerFunc(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			common.LogInfo.Printf("recovered: %s", r)
+		}
+	}()
 	runtime.LockOSThread()
 	glg, err := graphics.MakeGlGraphicsManager(640, 480, "betuol", gm.rm)
 	if err != nil {

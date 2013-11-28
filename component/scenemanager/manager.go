@@ -104,13 +104,17 @@ func (tm *TransformManager) SetLocation(index component.GOiD, newLocation math.V
 
 // SetLocationOverTime is used to set the location of a transform component using a 3 dimensional vector.
 // This function will update the location interpolated across the timespan specified.
-func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) {
+func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) error {
 	if len(tm.moving)-1 < int(id) {
 		common.LogErr.Printf("invalid id, %v", id)
 	}
-	originalLocation := tm.GetObjectLocation(id)
+	originalLocation, err := tm.GetObjectLocation(id)
+	if err != nil {
+		return err
+	}
 	mot := moveOverTime{math.Mult3vf(math.Sub3v3v(newLocation, originalLocation), float32(1/timeToMove)), timeToMove}
 	tm.moving[id] = mot
+	return nil
 }
 
 // GetTransform4m implements the component.SceneManager interface and returns a matrix of the location of an object.
@@ -130,9 +134,15 @@ func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x
 }
 
 // GetObjectLocation returns the location of an object in a 3 dimensional vector.
-func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {
+func (tm *TransformManager) GetObjectLocation(index component.GOiD) (math.Vec3, error) {
+	if int(index) >= len(tm.matList) {
+		return math.Vec3{}, fmt.Errorf("invalid component.GOiD, %v: not in list")
+	}
+	if tm.matList[index].IsEmpty() {
+		return math.Vec3{}, fmt.Errorf("invalid component.GOiD, %v: empty matrix", index)
+	}
 	locMat := tm.matList[index]
-	return math.Mult4m3v(locMat, math.Vec3{})
+	return math.Mult4m3v(locMat, math.Vec3{}), nil
 }
 
 // GetObjectsInLocationRadius returns a list of GOiD's within a radius around a location.

@@ -17,7 +17,10 @@ type AiComputer func(id component.GOiD, eventlink chan event.Event)
 // It allows players to be treated as normal characters, but they have a special AI function that checks for input.
 func (am *AiManager) PlayerDecide(id component.GOiD) {
 	ca := am.cm.GetCharacterAttributes(id)
-	loc := am.tm.GetObjectLocation(id)
+	loc, err := am.tm.GetObjectLocation(id)
+	if err != nil {
+		common.LogErr.Printf("error in playerDecide, error: %s", err.Error())
+	}
 	fmt.Print(ca.Attributes[character.HEALTH], ca.Attributes[character.MANA], loc)
 
 	fmt.Print(" --> ")
@@ -30,7 +33,10 @@ func (am *AiManager) PlayerDecide(id component.GOiD) {
 // EnemyDecide looks for entities in close proximity and checks the health of these entities. If the health of the entity is lower than the health of the ai component, then the component initiates an attack with the character system.
 func (am *AiManager) EnemyDecide(id component.GOiD) {
 	this := am.cm.GetCharacterAttributes(id)
-	loc := am.tm.GetObjectLocation(id)
+	loc, err := am.tm.GetObjectLocation(id)
+	if err != nil {
+		common.LogErr.Printf("error in enemyDecide, error: %s", err.Error())
+	}
 	idQueue := am.tm.GetObjectsInLocationRadius(loc, this.Attributes[character.RANGEOFSIGHT])
 	size := idQueue.Size
 	neighbors := make([]component.GOiD, size)
@@ -63,29 +69,25 @@ func (am *AiManager) EnemyDecide(id component.GOiD) {
 // WanderDecide wanders in random directions each time called.
 func (am *AiManager) WanderDecide(id component.GOiD) {
 	r := rand.Int31()
+	loc, err := am.tm.GetObjectLocation(id)
+	if err != nil {
+		common.LogErr.Printf("error in wanderDecide, error: %s", err.Error())
+	}
 	switch r % 4 {
 	case 0:
-		loc := am.tm.GetObjectLocation(id)
-		newLoc := loc
-		newLoc[0] += 5
-		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+		loc[0] += 5
+		am.tm.SetLocationOverTime(id, loc, 2.0)
 	case 1:
-		loc := am.tm.GetObjectLocation(id)
-		newLoc := loc
-		newLoc[0] += 5
-		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+		loc[0] += 5
+		am.tm.SetLocationOverTime(id, loc, 2.0)
 	case 2:
-		loc := am.tm.GetObjectLocation(id)
-		newLoc := loc
-		newLoc[1] += 5
-		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+		loc[1] += 5
+		am.tm.SetLocationOverTime(id, loc, 2.0)
 	case 3:
-		loc := am.tm.GetObjectLocation(id)
-		newLoc := loc
-		newLoc[2] += 5
-		am.tm.SetLocationOverTime(id, newLoc, 2.0)
+		loc[2] += 5
+		am.tm.SetLocationOverTime(id, loc, 2.0)
 	default:
-		common.LogErr.Print("this dont work shit")
+		common.LogErr.Print("this don't work shit")
 	}
 }
 

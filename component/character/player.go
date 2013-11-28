@@ -40,7 +40,11 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 
 // PlayerLook prints a list of the surrounding character components within a specified proximity.
 func PlayerLook(id component.GOiD, chars *CharacterManager) {
-	loc := chars.sm.GetObjectLocation(id)
+	loc, err := chars.sm.GetObjectLocation(id)
+	if err != nil {
+		common.LogErr.Println(err)
+		return
+	}
 	ros := chars.attributeList[RANGEOFSIGHT][id]
 	stk := chars.sm.GetObjectsInLocationRadius(loc, ros)
 	numObj := stk.Size

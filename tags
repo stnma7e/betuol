@@ -79,7 +79,7 @@ GetEventType	event/events.go	/^func (rae RunAiEvent) GetEventType() string {$/;"
 GetFileContents	res/manager.go	/^func (rm *ResourceManager) GetFileContents(fileName string) ([]byte, error) {$/;"	d
 GetFileContents	res/manager.go	/^func GetFileContents(fileName string) ([]byte, error) {$/;"	d
 GetMatrixList	component/scenemanager/manager.go	/^func (tm *TransformManager) GetMatrixList() []math.Mat4x4 {$/;"	d
-GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) math.Vec3 {$/;"	d
+GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) (math.Vec3, error) {$/;"	d
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue {$/;"	d
 GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
 GetSize	graphics/gl.go	/^func (glg *GlGraphicsManager) GetSize() (int, int) {$/;"	d
@@ -210,7 +210,7 @@ RunGraphicsHandlerFunc	component/graphics/handlers.go	/^func (gm *GraphicsManage
 SceneManager	component/component.go	/^type SceneManager interface {$/;"	d
 Send	event/manager.go	/^func (em *EventManager) Send(evt Event) {$/;"	d
 SetLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocation(index component.GOiD, newLocation math.Vec3) {$/;"	d
-SetLocationOverTime	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) {$/;"	d
+SetLocationOverTime	component/scenemanager/manager.go	/^func (tm *TransformManager) SetLocationOverTime(id component.GOiD, newLocation math.Vec3, timeToMove float64) error {$/;"	d
 SetTransform	component/scenemanager/manager.go	/^func (tm *TransformManager) SetTransform(index component.GOiD, newLocalMat math.Mat4x4) {$/;"	d
 SetUpdateAiNearPlayer	component/ai/manager.go	/^func (am *AiManager) SetUpdateAiNearPlayer(yes bool) {$/;"	d
 Sort	event/manager.go	/^func (em *EventManager) Sort() {$/;"	d
@@ -223,7 +223,7 @@ TextGraphicsHandler	graphics/text.go	/^type TextGraphicsHandler struct {$/;"	d
 TextHandlerFunc	component/graphics/handlers.go	/^func (gm *GraphicsManager) TextHandlerFunc(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool) {$/;"	d
 Tick	component/ai/manager.go	/^func (am *AiManager) Tick(delta float64) {$/;"	d
 Tick	component/character/manager.go	/^func (cm *CharacterManager) Tick(delta float64) {$/;"	d
-Tick	component/graphics/manager.go	/^func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) (ret bool) {$/;"	d
+Tick	component/graphics/manager.go	/^func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) {$/;"	d
 Tick	component/physics/manager.go	/^func (pm *PhysicsManager) Tick(delta float64) {$/;"	d
 Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
 Tick	component/scenemanager/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d

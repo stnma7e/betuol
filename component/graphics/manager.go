@@ -84,12 +84,17 @@ func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) {
 		if comps[i] == nil {
 			continue
 		}
-		loc := gm.sm.GetObjectLocation(comps[i].(component.GOiD))
+		loc, err := gm.sm.GetObjectLocation(comps[i].(component.GOiD))
+		if err != nil {
+			common.LogErr.Println(err)
+		}
+		//common.LogInfo.Println(loc)
 		if gm.cam.ContainsPoint(loc) {
 			compsToSend.Insert(comps[i].(component.GOiD))
 		}
 	}
 
+	//common.LogInfo.Println(compsToSend)
 	for i = range gm.graphicsHandlersLink {
 		if gm.graphicsHandlersLink[i] == nil {
 			continue
