@@ -29,16 +29,16 @@ type GraphicsManager struct {
 	compList *common.Vector
 }
 
-// MakeGraphicsManager returns a pointer to a GraphicsManager
+// MakeGraphicsManager returns a pointer to a GraphicsManager.
 func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm component.SceneManager) *GraphicsManager {
 	gm := &GraphicsManager{
 		em,
 		rm,
 		sm,
-		make([]chan *common.Vector, 2),
-		make([]chan graphics.ModelTransfer, 2),
-		make([]chan component.GOiD, 2),
-		make([]chan bool, 2),
+		make([]chan *common.Vector, 1),
+		make([]chan graphics.ModelTransfer, 1),
+		make([]chan component.GOiD, 1),
+		make([]chan bool, 1),
 		make(chan error),
 		math.MakeFrustum(0.1, 100, 90, 1/1),
 		common.MakeVector(),
@@ -57,8 +57,7 @@ func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm com
 		gm.resizelink[i] = make(chan bool)
 	}
 
-	go gm.RunGraphicsHandlerFunc(gm.graphicsHandlersLink[0], gm.modellink[0], gm.deletelink[0], gm.resizelink[0], gm.GlHandlerFunc)
-	go gm.RunGraphicsHandlerFunc(gm.graphicsHandlersLink[1], gm.modellink[1], gm.deletelink[1], gm.resizelink[1], gm.TextHandlerFunc)
+	go gm.RunGraphicsHandlerFunc(gm.graphicsHandlersLink[0], gm.modellink[0], gm.deletelink[0], gm.resizelink[0], gm.TextHandlerFunc)
 
 	return gm
 }
@@ -70,7 +69,7 @@ func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) {
 	defer func() {
 		r := recover()
 		if r != nil {
-			common.LogInfo.Printf("recovered: %s", r)
+			common.LogInfo.Printf("a graphics handler must have closed. recovered: %s", r)
 		}
 		gm.graphicsHandlersLink[i] = nil
 		gm.resizelink[i] = nil
