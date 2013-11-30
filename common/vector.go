@@ -43,10 +43,10 @@ func (vc *Vector) Insert(data interface{}) int {
 	if err != nil {
 		vc.Push_back(data, 1, 1)
 		return vc.Length - 1
-	} else {
-		vc.array[space.(int)] = data
-		return space.(int)
 	}
+
+	vc.array[space.(int)] = data
+	return space.(int)
 }
 
 // Difference will return a vector that is composed of the data structures that were unique in one of the two input vectors.
@@ -63,7 +63,7 @@ func (vec1 *Vector) Difference(vec2 *Vector) *Vector {
 			}
 			return true
 		}() {
-			ret.Insert(i)
+			ret.Insert(list2[i])
 		}
 	}
 	return ret

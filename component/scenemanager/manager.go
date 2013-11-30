@@ -125,7 +125,7 @@ func (tm *TransformManager) GetTransform4m(index component.GOiD) (math.Mat4x4, e
 // GetTransformMatrix returns a matrix of the location of an object.
 func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {
 	if int(index) >= len(tm.matList) {
-		return math.Mat4x4{}, fmt.Errorf("invalid component.GOiD, %v: not in list")
+		return math.Mat4x4{}, fmt.Errorf("invalid component.GOiD, %v: not in list", index)
 	}
 	if tm.matList[index].IsEmpty() {
 		return math.Mat4x4{}, fmt.Errorf("invalid component.GOiD, %v: empty matrix", index)
@@ -136,7 +136,7 @@ func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x
 // GetObjectLocation returns the location of an object in a 3 dimensional vector.
 func (tm *TransformManager) GetObjectLocation(index component.GOiD) (math.Vec3, error) {
 	if int(index) >= len(tm.matList) {
-		return math.Vec3{}, fmt.Errorf("invalid component.GOiD, %v: not in list")
+		return math.Vec3{}, fmt.Errorf("invalid component.GOiD, %v: not in list", index)
 	}
 	if tm.matList[index].IsEmpty() {
 		return math.Vec3{}, fmt.Errorf("invalid component.GOiD, %v: empty matrix", index)

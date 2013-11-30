@@ -16,7 +16,6 @@ CharacterAttributes	component/character/character.go	/^type CharacterAttributes 
 CharacterManager	component/character/manager.go	/^type CharacterManager struct {$/;"	d
 CharacterMoveEvent	event/events.go	/^type CharacterMoveEvent struct {$/;"	d
 ChatEvent	event/events.go	/^type ChatEvent struct {$/;"	d
-Close	graphics/gl.go	/^func (glg *GlGraphicsManager) Close() {$/;"	d
 ComponentManager	component/component.go	/^type ComponentManager interface {$/;"	d
 ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bool {$/;"	d
 ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere) int {$/;"	d
@@ -33,14 +32,12 @@ CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName str
 Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	d
 DeathEvent	event/events.go	/^type DeathEvent struct {$/;"	d
 Delete	component/gofactory/manager.go	/^func (gof *GameObjectFactory) Delete(index component.GOiD) {$/;"	d
-Delete	graphics/model.go	/^func (mh *Model) Delete() {$/;"	d
 DeleteComponent	component/ai/manager.go	/^func (am *AiManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/character/manager.go	/^func (cm *CharacterManager) DeleteComponent(index component.GOiD) {$/;"	d
 DeleteComponent	component/graphics/manager.go	/^func (gm *GraphicsManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/physics/manager.go	/^func (pm *PhysicsManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/quest/manager.go	/^func (qm *QuestManager) DeleteComponent(id component.GOiD) {$/;"	d
 DeleteComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) DeleteComponent(index component.GOiD) {$/;"	d
-DeleteModel	graphics/gl.go	/^func (glg *GlGraphicsManager) DeleteModel(id component.GOiD) {$/;"	d
 DeleteModel	graphics/text.go	/^func (tgh *TextGraphicsHandler) DeleteModel(id component.GOiD) {$/;"	d
 Dequeue	common/queue.go	/^func (stk *Queue) Dequeue() (interface{}, error) {$/;"	d
 Difference	common/vector.go	/^func (vec1 *Vector) Difference(vec2 *Vector) *Vector {$/;"	d
@@ -48,7 +45,6 @@ Dist3v3v	math/vec3.go	/^func Dist3v3v(vec1, vec2 Vec3) float32 {$/;"	d
 DistSqrd3v3v	math/vec3.go	/^func DistSqrd3v3v(vec1, vec2 Vec3) float32 {$/;"	d
 Distance	math/plane.go	/^func (pl *Plane) Distance(vec Vec3) float32 {$/;"	d
 Dot3v3v	math/vec3.go	/^func Dot3v3v(vec1, vec2 Vec3) float32 {$/;"	d
-DrawString	graphics/gl.go	/^func (glg *GlGraphicsManager) DrawString(x, y float32, text string) {$/;"	d
 DrawString	graphics/text.go	/^func (tgh *TextGraphicsHandler) DrawString(x, y float32, text string) {$/;"	d
 Empty	common/vector.go	/^func (vc *Vector) Empty() {$/;"	d
 EnemyAi	component/ai/computer.go	/^func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
@@ -61,7 +57,6 @@ EventListener	event/manager.go	/^type EventListener func(evt Event)$/;"	d
 EventManager	event/manager.go	/^type EventManager struct {$/;"	d
 EventMessage	event/manager.go	/^type EventMessage struct {$/;"	d
 FirstMoveQuest	component/quest/states.go	/^func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {$/;"	d
-FragmentPointLightingRenderer	graphics/renderer.go	/^type FragmentPointLightingRenderer struct {$/;"	d
 Frustum	math/frustum.go	/^type Frustum struct {$/;"	d
 GOiD	component/component.go	/^type GOiD uint32$/;"	d
 GameObject	component/component.go	/^type GameObject map[string][]byte$/;"	d
@@ -82,13 +77,9 @@ GetMatrixList	component/scenemanager/manager.go	/^func (tm *TransformManager) Ge
 GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) (math.Vec3, error) {$/;"	d
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue {$/;"	d
 GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
-GetSize	graphics/gl.go	/^func (glg *GlGraphicsManager) GetSize() (int, int) {$/;"	d
 GetSize	graphics/text.go	/^func (tgh *TextGraphicsHandler) GetSize() (int, int) {$/;"	d
 GetTransform4m	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransform4m(index component.GOiD) (math.Mat4x4, error) {$/;"	d
 GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {$/;"	d
-GlGraphicsManager	graphics/gl.go	/^type GlGraphicsManager struct {$/;"	d
-GlHandlerFunc	component/graphics/handlers.go	/^func (gm *GraphicsManager) GlHandlerFunc(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool) {$/;"	d
-GlLoadTexture	graphics/image.go	/^func GlLoadTexture(filename string) gl.Texture {$/;"	d
 GraphicsComponent	graphics/graphics.go	/^type GraphicsComponent struct {$/;"	d
 GraphicsHandler	graphics/graphics.go	/^type GraphicsHandler interface {$/;"	d
 GraphicsHandlerFunc	component/graphics/handlers.go	/^type GraphicsHandlerFunc func(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool)$/;"	d
@@ -98,9 +89,7 @@ HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) Hand
 HandleChat	component/character/delegates.go	/^func (cm *CharacterManager) HandleChat(evt event.Event) {$/;"	d
 HandleDeath	component/gofactory/manager.go	/^func (gof *GameObjectFactory) HandleDeath(evt event.Event) {$/;"	d
 HandleEvent	component/quest/manager.go	/^func (qm *QuestManager) HandleEvent(evt event.Event) {$/;"	d
-HandleInputs	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs() Inputs {$/;"	d
 HandleInputs	graphics/text.go	/^func (tgh *TextGraphicsHandler) HandleInputs() Inputs {$/;"	d
-HandleInputs0	graphics/gl.go	/^func (glg *GlGraphicsManager) HandleInputs0(eye, target, up math.Vec3) (math.Vec3, math.Vec3, math.Vec3) {$/;"	d
 Inputs	graphics/graphics.go	/^type Inputs struct {$/;"	d
 Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) int {$/;"	d
 Instance	instance/instance.go	/^type Instance struct {$/;"	d
@@ -108,7 +97,6 @@ Intersects	math/sphere.go	/^func (sp *Sphere) Intersects(sp2 Sphere) bool {$/;"	
 Inverse	math/mat4x4.go	/^\/\/func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
 Inverse	math/mat4x4.go	/^func (mat Mat4x4) Inverse() Mat4x4 {$/;"	d
 Invert	math/mat2x2.go	/^func (mat *Mat2x2) Invert() {$/;"	d
-IsClosing	graphics/gl.go	/^func (glg *GlGraphicsManager) IsClosing() bool {$/;"	d
 IsEmpty	common/queue.go	/^func (stk *Queue) IsEmpty() bool {$/;"	d
 IsEmpty	common/stack.go	/^func (stk *Stack) IsEmpty() bool {$/;"	d
 IsEmpty	common/vector.go	/^func (vc *Vector) IsEmpty() bool {$/;"	d
@@ -122,14 +110,10 @@ JsonCreate	component/physics/manager.go	/^func (pm *PhysicsManager) JsonCreate(i
 JsonCreate	component/quest/manager.go	/^func (qm *QuestManager) JsonCreate(id component.GOiD, data []byte) error {$/;"	d
 KillEvent	event/events.go	/^type KillEvent struct {$/;"	d
 KillQuest	component/quest/states.go	/^func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {$/;"	d
-LinkProgram	graphics/gl.go	/^func LinkProgram(program gl.Program, shaderList []gl.Shader) ([NUMATTR]gl.AttribLocation, error) {$/;"	d
-LoadFont	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadFont() {$/;"	d
 LoadGameObject	res/manager.go	/^func (rm *ResourceManager) LoadGameObject(objType string) (component.GameObject, error) {$/;"	d
 LoadJsonMap	res/manager.go	/^func (rm *ResourceManager) LoadJsonMap(mapName string) (component.Map, error) {$/;"	d
-LoadModel	graphics/gl.go	/^func (glg *GlGraphicsManager) LoadModel(id component.GOiD, comp GraphicsComponent) error {$/;"	d
 LoadModel	graphics/text.go	/^func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc GraphicsComponent) error {$/;"	d
 LoadModelWavefront	res/manager.go	/^func (rm *ResourceManager) LoadModelWavefront(modelName string) (WavefrontData, error) {$/;"	d
-LoadShader	graphics/gl.go	/^func LoadShader(shadType gl.GLenum, shadStr string) (gl.Shader, error) {$/;"	d
 LogErr	common/log.go	/^var LogErr, LogWarn, LogInfo *log.Logger$/;"	d
 LookAt	math/frustum.go	/^func (frust *Frustum) LookAt(target, eye, up Vec3) {$/;"	d
 LookAtMatrix	math/frustum.go	/^func (frust *Frustum) LookAtMatrix() Mat4x4 {$/;"	d
@@ -141,14 +125,11 @@ MagSqrd4v	math/vec4.go	/^func MagSqrd4v(vec Vec4) float32 {$/;"	d
 MakeAiManager	component/ai/manager.go	/^func MakeAiManager(tm *scenemanager.TransformManager, cm *character.CharacterManager, em *event.EventManager) *AiManager {$/;"	d
 MakeCharacterManager	component/character/manager.go	/^func MakeCharacterManager(tm *scenemanager.TransformManager, em *event.EventManager) *CharacterManager {$/;"	d
 MakeEventManager	event/manager.go	/^func MakeEventManager() *EventManager {$/;"	d
-MakeFragmentPointLightingRenderer	graphics/renderer.go	/^func MakeFragmentPointLightingRenderer(rm *res.ResourceManager, glg *GlGraphicsManager) (Renderer, error) {$/;"	d
 MakeFrustum	math/frustum.go	/^func MakeFrustum(nearDist, farDist, fov, aspect float32) *Frustum {$/;"	d
 MakeGameObjectFactory	component/gofactory/manager.go	/^func MakeGameObjectFactory(tm *scenemanager.TransformManager) *GameObjectFactory {$/;"	d
-MakeGlGraphicsManager	graphics/gl.go	/^func MakeGlGraphicsManager(sizeX, sizeY int, title string, rm *res.ResourceManager) (*GlGraphicsManager, error) {$/;"	d
 MakeGraphicsManager	component/graphics/manager.go	/^func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm component.SceneManager) *GraphicsManager {$/;"	d
 MakeIdentity	math/mat4x4.go	/^func (m *Mat4x4) MakeIdentity() {$/;"	d
 MakeInstance	instance/instance.go	/^func MakeInstance(rm *res.ResourceManager) *Instance {$/;"	d
-MakeModel	graphics/model.go	/^func MakeModel(vertexList []math.Vec3, indexList []uint32, normalList []math.Vec3, texUvList []math.Vec2) Model {$/;"	d
 MakePerspectiveMatrix	math/mat4x4.go	/^func MakePerspectiveMatrix(near, far, fov, aspect float32) (mat Mat4x4) {$/;"	d
 MakePhysicsManager	component/physics/manager.go	/^func MakePhysicsManager(sm component.SceneManager) *PhysicsManager {$/;"	d
 MakePlane	math/plane.go	/^func MakePlane(p1, p2, p3 Vec3) Plane {$/;"	d
@@ -162,7 +143,6 @@ MapEntity	component/component.go	/^type MapEntity struct {$/;"	d
 MapLocation	component/component.go	/^type MapLocation struct {$/;"	d
 Mat2x2	math/mat2x2.go	/^type Mat2x2 [4]float32$/;"	d
 Mat4x4	math/mat4x4.go	/^type Mat4x4 [16]float32$/;"	d
-Model	graphics/model.go	/^type Model struct {$/;"	d
 ModelTransfer	graphics/graphics.go	/^type ModelTransfer struct {$/;"	d
 Mult	math/mat2x2.go	/^func (mat *Mat2x2) Mult(scalar float32) {$/;"	d
 Mult3vf	math/vec3.go	/^func Mult3vf(vec Vec3, scalar float32) Vec3 {$/;"	d
@@ -199,10 +179,7 @@ RegisterComputer	component/ai/manager.go	/^func (am *AiManager) RegisterComputer
 RegisterGraphicsHandler	component/graphics/manager.go	/^func (gm *GraphicsManager) RegisterGraphicsHandler(handler GraphicsHandlerFunc) {$/;"	d
 RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eventType string, listener EventListener) {$/;"	d
 RegisterListeningChannel	event/manager.go	/^func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {$/;"	d
-Render	graphics/gl.go	/^func (glg *GlGraphicsManager) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	d
-Render	graphics/renderer.go	/^func (fplr *FragmentPointLightingRenderer) Render(mod Model, transMat, camMat, projectMat math.Mat4x4) {$/;"	d
 Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	d
-Renderer	graphics/renderer.go	/^type Renderer interface {$/;"	d
 ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	d
 RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$/;"	d
 RunAiEvent	event/events.go	/^type RunAiEvent struct {$/;"	d
@@ -228,7 +205,6 @@ Tick	component/physics/manager.go	/^func (pm *PhysicsManager) Tick(delta float64
 Tick	component/quest/manager.go	/^func (qm *QuestManager) Tick(delta float64) {$/;"	d
 Tick	component/scenemanager/manager.go	/^func (tm *TransformManager) Tick(delta float64) {$/;"	d
 Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
-Tick	graphics/gl.go	/^func (glg *GlGraphicsManager) Tick() bool {$/;"	d
 Tick	graphics/text.go	/^func (tgh *TextGraphicsHandler) Tick() bool {$/;"	d
 ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	d
 Top	common/stack.go	/^func (stk *Stack) Top() interface{} {$/;"	d
@@ -245,7 +221,6 @@ WanderDecide	component/ai/computer.go	/^func (am *AiManager) WanderDecide(id com
 WavefrontData	res/manager.go	/^type WavefrontData struct {$/;"	d
 arg	component/character/player.go	/^		var arg string$/;"	d
 attr	component/ai/computer.go	/^	var attr *character.CharacterAttributes$/;"	d
-boundingRadius	graphics/gl.go	/^	\/\/var boundingRadius float32$/;"	d
 chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string) {$/;"	d
 cols	math/mat4x4.go	/^\/\/      var cols [4]Vec4$/;"	d
 command	component/ai/computer.go	/^	var command string$/;"	d
@@ -264,13 +239,11 @@ idToUse	component/gofactory/manager.go	/^	var idToUse component.GOiD$/;"	d
 information	component/component.go	/^\/\/ Type used to specify the type information and quantity of an entity on a map.$/;"	d
 init	common/log.go	/^func init() {$/;"	d
 init	math/frustum.go	/^func (frust *Frustum) init() {$/;"	d
-lightingRenderer	graphics/renderer.go	/^type lightingRenderer struct {$/;"	d
 logWriter	common/log.go	/^type logWriter struct {$/;"	d
 main	betuol.go	/^func main() {$/;"	d
 maxDistanceSqrd	res/manager.go	/^	var maxDistanceSqrd float32$/;"	d
 moveOverTime	component/scenemanager/manager.go	/^type moveOverTime struct {$/;"	d
 moveQuestTicker	component/quest/states.go	/^var moveQuestTicker int$/;"	d
-normArray	graphics/renderer.go	/^	var normArray [9]float32$/;"	d
 normDot	math/plane.go	/^	var normDot float32$/;"	d
 normal	math/plane.go	/^	var normal [4]float32$/;"	d
 obj	component/ai/manager.go	/^	var obj struct {$/;"	d
@@ -278,15 +251,11 @@ obj	component/physics/manager.go	/^	var obj struct {$/;"	d
 obj	res/manager.go	/^	var obj []component.MapLocation$/;"	d
 obj	res/manager.go	/^	var obj struct {$/;"	d
 of	component/ai/manager.go	/^\/\/ Higher level creation functions extract the type of ai computer to be used for the component from a data source and pass the low level information to CreateComponent in order to do the real work of initialization.$/;"	d
-of	graphics/model.go	/^\/\/ Model contains data used by GlGraphicsManager to render and display a type of mesh.$/;"	d
 queueNode	common/queue.go	/^type queueNode struct {$/;"	d
-renderModel	graphics/renderer.go	/^func (rd *renderer) renderModel(mod Model) {$/;"	d
-renderer	graphics/renderer.go	/^type renderer struct {$/;"	d
 resizeArray	component/ai/manager.go	/^func (am *AiManager) resizeArray(index component.GOiD) {$/;"	d
 resizeArray	component/scenemanager/manager.go	/^func (tm *TransformManager) resizeArray(index component.GOiD) {$/;"	d
 resizeArrays	component/character/manager.go	/^func (cm *CharacterManager) resizeArrays(index component.GOiD) {$/;"	d
 resizeArrays	component/physics/manager.go	/^func (pm *PhysicsManager) resizeArrays(index component.GOiD) {$/;"	d
-resizeArrays	graphics/gl.go	/^func (glg *GlGraphicsManager) resizeArrays(id component.GOiD) {$/;"	d
 resizeArrays	graphics/text.go	/^func (tgh *TextGraphicsHandler) resizeArrays(id component.GOiD) {$/;"	d
 row1	math/vec3.go	/^	var row1, row2, row3 float32$/;"	d
 row1	math/vec4.go	/^	var row1, row2, row3, row4 float32$/;"	d
@@ -296,5 +265,4 @@ stackNode	common/stack.go	/^type stackNode struct {$/;"	d
 tmp	common/queue.go	/^	var tmp *queueNode = stk.tail$/;"	d
 to	component/ai/manager.go	/^\/\/ RegisterComputer will register an ai computer type to be used for component initialization.$/;"	d
 used	component/component.go	/^\/\/ GOiD stands for GameObject ID. It is the type used by all component managers to represent a specific GameObject.$/;"	d
-vertsVector	graphics/gl.go	/^	var vertsVector, indiciesVector, normsVector, uvVector *common.Vector$/;"	d
 with	component/gofactory/manager.go	/^\/\/ The compType string passed as an argument is used to assosiate a component type with the component manager.$/;"	d

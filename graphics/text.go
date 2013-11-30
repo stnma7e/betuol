@@ -1,6 +1,8 @@
 package graphics
 
 import (
+	"fmt"
+
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/math"
@@ -30,22 +32,15 @@ func (tgh *TextGraphicsHandler) Tick() bool {
 // The function will only output a new text description if the model has newly come into the scene.
 func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {
 	diff := tgh.lastIdList.Difference(ids)
+	tgh.lastIdList = *ids
 
-	if ids.Length == tgh.lastIdList.Length && diff.Length < 1 {
-		//common.LogInfo.Println(ids)
-		return
-	}
-
-	//common.LogInfo.Println(ids)
+	//common.LogInfo.Println(ids, tgh.lastIdList, diff)
+	//tgh.lastIdList = *ids
 	comps := diff.Array()
 	for i := range comps {
-		id := comps[i].(int)
-		if id == 0 {
-			continue
-		}
-		common.LogInfo.Printf("%d, \"%s\"\n", id, tgh.compList[id])
+		id := comps[i].(component.GOiD)
+		fmt.Printf("%d, \"%s\"\n", id, tgh.compList[id])
 	}
-	tgh.lastIdList = *ids
 }
 
 // LoadModel implements the GraphicsHandler interface and adds data used to render the components later.

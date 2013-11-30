@@ -80,7 +80,7 @@ func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]componen
 		num, err := idQueue.Dequeue()
 		if err != nil {
 			common.LogErr.Print(err)
-			return []component.GOiD{}, fmt.Errorf("map creation failed when loading gameobject #%d, error: %s", i, err.Error())
+			return []component.GOiD{}, fmt.Errorf("map creation failed when dequeueing gameobject %d from map list, error: %s", i, err.Error())
 		}
 		idList[i] = component.GOiD(num.(int))
 	}

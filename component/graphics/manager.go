@@ -43,6 +43,8 @@ func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm com
 		math.MakeFrustum(0.1, 100, 90, 1/1),
 		common.MakeVector(),
 	}
+	target, eye, up := math.Vec3{0, 0, 0}, math.Vec3{0, 6, -12}, math.Vec3{0, 1, 0}
+	gm.cam.LookAt(target, eye, up)
 
 	for i := range gm.graphicsHandlersLink {
 		gm.graphicsHandlersLink[i] = make(chan *common.Vector)
@@ -83,14 +85,14 @@ func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) {
 		if comps[i] == nil {
 			continue
 		}
-		loc, err := gm.sm.GetObjectLocation(comps[i].(component.GOiD))
+		_, err := gm.sm.GetObjectLocation(comps[i].(component.GOiD))
 		if err != nil {
-			common.LogErr.Println(err)
+			common.LogErr.Printf("requesting location from scene manager failed, error: %s", err.Error())
 		}
 		//common.LogInfo.Println(loc)
-		if gm.cam.ContainsPoint(loc) {
-			compsToSend.Insert(comps[i].(component.GOiD))
-		}
+		//if gm.cam.ContainsPoint(loc) {
+		compsToSend.Insert(comps[i].(component.GOiD))
+		//}
 	}
 
 	//common.LogInfo.Println(compsToSend)

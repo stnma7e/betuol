@@ -60,7 +60,7 @@ func (pm *PhysicsManager) Tick(delta float64) {
 			}
 			sp2 := math.Sphere{loc2, pm.radii[j]}
 			if sp1.Intersects(sp2) {
-				common.LogWarn.Printf("collision between %d and %d\n", i, j)
+				//common.LogWarn.Printf("collision between %d and %d\n", i, j)
 				penetration := math.Sub3v3v(sp1.Center, sp2.Center)
 				pSqrd := math.MagSqrd3v(penetration)
 				if pSqrd-(sp1.Radius+sp2.Radius)*(sp1.Radius+sp2.Radius) > 0 {
