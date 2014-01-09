@@ -86,7 +86,11 @@ func (em *EventManager) Tick(delta float64) {
 		} else {
 			channelsArray := channels.Array()
 			for j := range channelsArray {
-				channelsArray[j].(chan Event) <- evt
+				select {
+				case channelsArray[j].(chan Event) <- evt:
+				default:
+					common.LogWarn.Printf("channel %d missed event %v", j, evt)
+				}
 			}
 		}
 	}

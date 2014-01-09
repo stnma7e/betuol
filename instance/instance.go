@@ -45,6 +45,7 @@ type Instance struct {
 }
 
 // MakeInstance returns a pointer to an Instance.
+// A series of managers for various systems are created inside the function and a fully initialized Instance is returned.
 func MakeInstance(rm *res.ResourceManager) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
@@ -94,7 +95,7 @@ func MakeInstance(rm *res.ResourceManager) *Instance {
 // Loop is launched as a goroutine and updates on its own.
 // This function does some initialization, but then jumps into an infinite loop.
 // When the loop breaks, a bool will be sent along the returnlink that the instance was created with.
-// This returnlink is expected to be periodically checked for activity because this indicates an exit of the main loop of the instance.
+// The returnlink is expected to be periodically checked for activity because this indicates an exit of the main loop of the instance.
 func (is *Instance) Loop() {
 	oldTime := time.Now()
 	ticks := time.NewTicker(time.Second / 60)

@@ -37,6 +37,9 @@ func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneMan
 	//common.LogInfo.Println(ids, tgh.lastIdList, diff)
 	//tgh.lastIdList = *ids
 	comps := diff.Array()
+	if len(comps) > 0 {
+		fmt.Print("\x0c")
+	}
 	for i := range comps {
 		id := comps[i].(component.GOiD)
 		fmt.Printf("%d, \"%s\"\n", id, tgh.compList[id])

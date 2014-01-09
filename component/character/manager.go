@@ -11,11 +11,8 @@ import (
 
 // CharacterManager is the character component manager that handles the creation, deletion, and updating of character components.
 type CharacterManager struct {
-	attributeList   [NUM_ATTRIBUTES][]float32
-	descriptionList []string
-	greetingList    []string
-
-	movedlink chan component.GOiD
+	attributeList [NUM_ATTRIBUTES][]float32 // List of character attributes for each component.
+	greetingList  []string                  // List of each component's text greeting that is used for PlayerLook().
 
 	sm *scenemanager.TransformManager
 	em *event.EventManager
@@ -24,7 +21,6 @@ type CharacterManager struct {
 // MakeCharacterManager returns a pointer to a CharacterManager.
 func MakeCharacterManager(tm *scenemanager.TransformManager, em *event.EventManager) *CharacterManager {
 	cm := CharacterManager{}
-	cm.movedlink = make(chan component.GOiD)
 	cm.sm = tm
 	cm.em = em
 
@@ -54,7 +50,6 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 			comp.Intelligence,
 			comp.RangeOfSight,
 		},
-		comp.Description,
 		comp.Greeting,
 	}
 
@@ -68,7 +63,6 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 		cm.attributeList[i][index] = ca.Attributes[i]
 	}
 
-	cm.descriptionList[index] = ca.Description
 	cm.greetingList[index] = ca.Greeting
 
 	return nil
@@ -87,14 +81,6 @@ func (cm *CharacterManager) resizeArrays(index component.GOiD) {
 		}
 	}
 
-	if cap(cm.descriptionList)-1 < int(index) {
-		tmp := cm.descriptionList
-		cm.descriptionList = make([]string, index+RESIZESTEP)
-		for i := range tmp {
-			cm.descriptionList[i] = tmp[i]
-		}
-	}
-
 	if cap(cm.greetingList)-1 < int(index) {
 		tmp := cm.greetingList
 		cm.greetingList = make([]string, index+RESIZESTEP)
@@ -109,7 +95,6 @@ func (cm *CharacterManager) DeleteComponent(index component.GOiD) {
 	for i := range cm.attributeList {
 		cm.attributeList[i][index] = -1
 	}
-	cm.descriptionList[index] = ""
 	cm.greetingList[index] = ""
 }
 
@@ -123,7 +108,6 @@ func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *Charac
 	for i := range ca.Attributes {
 		ca.Attributes[i] = cm.attributeList[i][index]
 	}
-	ca.Description = cm.descriptionList[index]
 	ca.Greeting = cm.greetingList[index]
 
 	return ca

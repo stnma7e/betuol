@@ -16,11 +16,11 @@ const (
 
 // CharacterAttributes is a helper object to group attributes of characters.
 type CharacterAttributes struct {
-	Attributes            [NUM_ATTRIBUTES]float32
-	Description, Greeting string
+	Attributes [NUM_ATTRIBUTES]float32
+	Greeting   string
 }
 
 // Greet is helper function to combine the description and greeting of character components.
 func (ca *CharacterAttributes) Greet() string {
-	return ca.Description + " says: " + ca.Greeting
+	return " says: " + ca.Greeting
 }

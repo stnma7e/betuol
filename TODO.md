@@ -8,6 +8,9 @@ TODO
 	- Type of interaction:
 		- Attack
 		- Run: removes interaction after certain distance.
+	- Combat system:
+		- Set up a targeted combat system: WoW-like. You must select a target to attack/interact with. Should be changed to more like Neverwinter: all abilities can be used at any time, but they may not be near anything. This change will happen whenever possible.
+		- Combat is not turn based. Attacks take a certain amount of time, and blocks are instantaneous. There are visual cues to show when the player should block <s>and counterattacks can be used to have more damage</s>.
 
 
 - Fix 4x4 matrix inverse
@@ -17,13 +20,13 @@ TODO
 
 - Add to documentation. The docs are pretty much bare bones, so they need to be improved.
 
-- Get the project to work with Travis CI.
-
 - Add unit tests.
 
 - Collision/physics system.
 
-<u>_Story_</u>
+- WRITE STORY!!!
+
+<u>_Gameplay_</u>
 -------------
 
 - Character attributes are leveled based on activity. If a character uses strength a lot, then the character will level his strength.

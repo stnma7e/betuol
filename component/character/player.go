@@ -54,14 +54,12 @@ func PlayerLook(id component.GOiD, chars *CharacterManager) {
 			common.LogErr.Print(err)
 		}
 
-		if charId == int(id) || id == 0 {
+		if charId.(component.GOiD) == id || id == 0 {
 			continue
 		}
 
 		ca := chars.GetCharacterAttributes(charId.(component.GOiD))
-		if ca.Description != "" {
-			fmt.Println("\t", ca.Greet())
-		}
+		fmt.Printf("\t %d, %s\n", charId.(component.GOiD), ca.Greet())
 	}
 }
 
