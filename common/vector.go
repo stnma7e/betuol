@@ -49,6 +49,18 @@ func (vc *Vector) Insert(data interface{}) int {
 	return space.(int)
 }
 
+func (vc *Vector) InsertInto(index int, data interface{}) {
+	if cap(vc.array) <= vc.Length+index {
+		tmp := vc.array
+		vc.array = make([]interface{}, vc.Length+index)
+		for i := range tmp {
+			vc.array[i] = tmp[i]
+		}
+	}
+	vc.array[index] = data
+	vc.Length = len(vc.array)
+}
+
 // Difference will return a vector that is composed of the data structures that were unique in one of the two input vectors.
 func (vec1 *Vector) Difference(vec2 *Vector) *Vector {
 	ret := MakeVector()

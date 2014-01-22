@@ -9,6 +9,8 @@ Add3v3v	math/vec3.go	/^func Add3v3v(vec1, vec2 Vec3) Vec3 {$/;"	d
 Add3v3v	math/vec3.go	/^func Add3v3v(vec1, vec2 Vec3) Vec3 {$/;"	f
 AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	d
 AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	f
+AddQuest	instance/interface.go	/^func (is *Instance) AddQuest(id component.GOiD, questName string) {$/;"	d
+AddQuest	instance/interface.go	/^func (is *Instance) AddQuest(id component.GOiD, questName string) {$/;"	f
 AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, eventlink chan event.Event)$/;"	d
 AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, eventlink chan event.Event)$/;"	t
 AiManager	component/ai/manager.go	/^type AiManager struct {$/;"	d
@@ -34,8 +36,6 @@ ChatEvent	event/events.go	/^type ChatEvent struct {$/;"	d
 ChatEvent	event/events.go	/^type ChatEvent struct {$/;"	t
 ComponentManager	component/component.go	/^type ComponentManager interface {$/;"	d
 ComponentManager	component/component.go	/^type ComponentManager interface {$/;"	t
-ContactFunc	component/physics/manager.go	/^type ContactFunc func(pm *PhysicsManager, mat1, mat2 math.Mat4x4) math.Mat4x4$/;"	d
-ContactFunc	component/physics/manager.go	/^type ContactFunc func(pm *PhysicsManager, mat1, mat2 math.Mat4x4) math.Mat4x4$/;"	t
 ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bool {$/;"	d
 ContainsPoint	math/frustum.go	/^func (frust *Frustum) ContainsPoint(vec Vec3) bool {$/;"	f
 ContainsSphere	math/frustum.go	/^func (frust *Frustum) ContainsSphere(sp Sphere) int {$/;"	d
@@ -56,10 +56,10 @@ CreateComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) 
 CreateComponent	component/scenemanager/manager.go	/^func (tm *TransformManager) CreateComponent(index component.GOiD) error {$/;"	f
 CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]component.GOiD, error) {$/;"	d
 CreateFromMap	component/gofactory/manager.go	/^func (gof *GameObjectFactory) CreateFromMap(sceneMap *component.Map) ([]component.GOiD, error) {$/;"	f
-CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {$/;"	d
-CreateFromMap	instance/instance.go	/^func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {$/;"	f
-CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {$/;"	d
-CreateObject	instance/instance.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {$/;"	f
+CreateFromMap	instance/interface.go	/^func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {$/;"	d
+CreateFromMap	instance/interface.go	/^func (is *Instance) CreateFromMap(mapName string) ([]component.GOiD, error) {$/;"	f
+CreateObject	instance/interface.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {$/;"	d
+CreateObject	instance/interface.go	/^func (is *Instance) CreateObject(objName string, loc math.Vec3) (component.GOiD, error) {$/;"	f
 Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	d
 Cross3v3v	math/vec3.go	/^func Cross3v3v(vec1, vec2 Vec3) (ret Vec3) {$/;"	f
 D	math/plane.go	/^	C = iota$/;"	c
@@ -128,8 +128,8 @@ GameObjectFactory	component/gofactory/manager.go	/^type GameObjectFactory struct
 GameObjectFactory	component/gofactory/manager.go	/^type GameObjectFactory struct {$/;"	t
 GetCharacterAttributes	component/character/manager.go	/^func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {$/;"	d
 GetCharacterAttributes	component/character/manager.go	/^func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *CharacterAttributes {$/;"	f
-GetEventManager	instance/instance.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	d
-GetEventManager	instance/instance.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	f
+GetEventManager	instance/interface.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	d
+GetEventManager	instance/interface.go	/^func (is *Instance) GetEventManager() *event.EventManager {$/;"	f
 GetEventType	event/events.go	/^func (at AttackEvent) GetEventType() string {$/;"	d
 GetEventType	event/events.go	/^func (at AttackEvent) GetEventType() string {$/;"	f
 GetEventType	event/events.go	/^func (ce ChatEvent) GetEventType() string {$/;"	d
@@ -156,16 +156,14 @@ GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager
 GetObjectLocation	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectLocation(index component.GOiD) (math.Vec3, error) {$/;"	f
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue {$/;"	d
 GetObjectsInLocationRadius	component/scenemanager/manager.go	/^func (tm *TransformManager) GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue {$/;"	f
-GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
-GetSceneManagerSnapshot	instance/instance.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	f
+GetSceneManagerSnapshot	instance/interface.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	d
+GetSceneManagerSnapshot	instance/interface.go	/^func (is *Instance) GetSceneManagerSnapshot() component.SceneManager {$/;"	f
 GetSize	graphics/text.go	/^func (tgh *TextGraphicsHandler) GetSize() (int, int) {$/;"	d
 GetSize	graphics/text.go	/^func (tgh *TextGraphicsHandler) GetSize() (int, int) {$/;"	f
 GetTransform4m	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransform4m(index component.GOiD) (math.Mat4x4, error) {$/;"	d
 GetTransform4m	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransform4m(index component.GOiD) (math.Mat4x4, error) {$/;"	f
 GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {$/;"	d
 GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {$/;"	f
-GraphicalContact	component/physics/manager.go	/^func GraphicalContact(pm *PhysicsManager, mat1, mat2 math.Mat4x4) math.Mat4x4 {$/;"	d
-GraphicalContact	component/physics/manager.go	/^func GraphicalContact(pm *PhysicsManager, mat1, mat2 math.Mat4x4) math.Mat4x4 {$/;"	f
 GraphicsComponent	graphics/graphics.go	/^type GraphicsComponent struct {$/;"	d
 GraphicsComponent	graphics/graphics.go	/^type GraphicsComponent struct {$/;"	t
 GraphicsHandler	graphics/graphics.go	/^type GraphicsHandler interface {$/;"	d
@@ -187,6 +185,8 @@ HandleEvent	component/quest/manager.go	/^func (qm *QuestManager) HandleEvent(evt
 HandleEvent	component/quest/manager.go	/^func (qm *QuestManager) HandleEvent(evt event.Event) {$/;"	f
 HandleInputs	graphics/text.go	/^func (tgh *TextGraphicsHandler) HandleInputs() Inputs {$/;"	d
 HandleInputs	graphics/text.go	/^func (tgh *TextGraphicsHandler) HandleInputs() Inputs {$/;"	f
+IInstance	instance/interface.go	/^type IInstance interface {$/;"	d
+IInstance	instance/interface.go	/^type IInstance interface {$/;"	t
 INSIDE	math/frustum.go	/^	OUTSIDE   int = iota$/;"	c
 INTELLIGENCE	component/character/character.go	/^	STRENGTH     = iota$/;"	c
 INTERSECT	math/frustum.go	/^	INSIDE    int = iota$/;"	c
@@ -194,6 +194,8 @@ Inputs	graphics/graphics.go	/^type Inputs struct {$/;"	d
 Inputs	graphics/graphics.go	/^type Inputs struct {$/;"	t
 Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) int {$/;"	d
 Insert	common/vector.go	/^func (vc *Vector) Insert(data interface{}) int {$/;"	f
+InsertInto	common/vector.go	/^func (vc *Vector) InsertInto(index int, data interface{}) {$/;"	d
+InsertInto	common/vector.go	/^func (vc *Vector) InsertInto(index int, data interface{}) {$/;"	f
 Instance	instance/instance.go	/^type Instance struct {$/;"	d
 Instance	instance/instance.go	/^type Instance struct {$/;"	t
 Intersects	math/sphere.go	/^func (sp *Sphere) Intersects(sp2 Sphere) bool {$/;"	d
@@ -246,8 +248,6 @@ LookAt	math/frustum.go	/^func (frust *Frustum) LookAt(target, eye, up Vec3) {$/;
 LookAt	math/frustum.go	/^func (frust *Frustum) LookAt(target, eye, up Vec3) {$/;"	f
 LookAtMatrix	math/frustum.go	/^func (frust *Frustum) LookAtMatrix() Mat4x4 {$/;"	d
 LookAtMatrix	math/frustum.go	/^func (frust *Frustum) LookAtMatrix() Mat4x4 {$/;"	f
-Loop	instance/instance.go	/^func (is *Instance) Loop() {$/;"	d
-Loop	instance/instance.go	/^func (is *Instance) Loop() {$/;"	f
 MANA	component/character/character.go	/^	HEALTH       = iota$/;"	c
 Mag3v	math/vec3.go	/^func Mag3v(vec Vec3) float32 {$/;"	d
 Mag3v	math/vec3.go	/^func Mag3v(vec Vec3) float32 {$/;"	f
@@ -301,6 +301,8 @@ Mat4x4	math/mat4x4.go	/^type Mat4x4 [16]float32$/;"	d
 Mat4x4	math/mat4x4.go	/^type Mat4x4 [16]float32$/;"	t
 ModelTransfer	graphics/graphics.go	/^type ModelTransfer struct {$/;"	d
 ModelTransfer	graphics/graphics.go	/^type ModelTransfer struct {$/;"	t
+MoveGameObject	instance/interface.go	/^func (is *Instance) MoveGameObject(id component.GOiD, newLoc math.Vec3) {$/;"	d
+MoveGameObject	instance/interface.go	/^func (is *Instance) MoveGameObject(id component.GOiD, newLoc math.Vec3) {$/;"	f
 Mult	math/mat2x2.go	/^func (mat *Mat2x2) Mult(scalar float32) {$/;"	d
 Mult	math/mat2x2.go	/^func (mat *Mat2x2) Mult(scalar float32) {$/;"	f
 Mult3vf	math/vec3.go	/^func Mult3vf(vec Vec3, scalar float32) Vec3 {$/;"	d
@@ -324,8 +326,6 @@ Normalize3v	math/vec3.go	/^func Normalize3v(vec Vec3) Vec3 {$/;"	f
 OUTSIDE	math/frustum.go	/^const ($/;"	c
 ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {$/;"	d
 ParsePlayerCommand	component/character/player.go	/^func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {$/;"	f
-ParseSysConsole	instance/instance.go	/^func (is *Instance) ParseSysConsole() bool {$/;"	d
-ParseSysConsole	instance/instance.go	/^func (is *Instance) ParseSysConsole() bool {$/;"	f
 Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	d
 Peek	common/queue.go	/^func (stk *Queue) Peek() interface{} {$/;"	f
 PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
@@ -358,6 +358,7 @@ QuestComplete	event/events.go	/^type QuestComplete struct {$/;"	d
 QuestComplete	event/events.go	/^type QuestComplete struct {$/;"	t
 QuestManager	component/quest/manager.go	/^type QuestManager struct {$/;"	d
 QuestManager	component/quest/manager.go	/^type QuestManager struct {$/;"	t
+QuestNames	instance/interface.go	/^	var QuestNames = map[string]quest.QuestState{$/;"	d
 QuestState	component/quest/states.go	/^type QuestState func(id component.GOiD, evt event.Event)$/;"	d
 QuestState	component/quest/states.go	/^type QuestState func(id component.GOiD, evt event.Event)$/;"	t
 Queue	common/queue.go	/^func (stk *Queue) Queue(a interface{}) {$/;"	d
@@ -383,6 +384,8 @@ ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	d
 ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	t
 RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$/;"	d
 RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$/;"	f
+RunAi	instance/interface.go	/^func (is *Instance) RunAi(id component.GOiD) {$/;"	d
+RunAi	instance/interface.go	/^func (is *Instance) RunAi(id component.GOiD) {$/;"	f
 RunAiEvent	event/events.go	/^type RunAiEvent struct {$/;"	d
 RunAiEvent	event/events.go	/^type RunAiEvent struct {$/;"	t
 RunGraphicsHandlerFunc	component/graphics/handlers.go	/^func (gm *GraphicsManager) RunGraphicsHandlerFunc(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool, ghf GraphicsHandlerFunc) {$/;"	d
@@ -410,8 +413,8 @@ Split	math/mat2x2.go	/^func (segs *Mat2x2) Split() (a, b, c, d float32) {$/;"	d
 Split	math/mat2x2.go	/^func (segs *Mat2x2) Split() (a, b, c, d float32) {$/;"	f
 Stack	common/stack.go	/^type Stack struct {$/;"	d
 Stack	common/stack.go	/^type Stack struct {$/;"	t
-StartScript	instance/script.go	/^func (is *Instance) StartScript() error {$/;"	d
-StartScript	instance/script.go	/^func (is *Instance) StartScript() error {$/;"	f
+StartScript	instance/script.go	/^func StartScript(is IInstance, charsToActOn ...component.GOiD) error {$/;"	d
+StartScript	instance/script.go	/^func StartScript(is IInstance, charsToActOn ...component.GOiD) error {$/;"	f
 Sub3v3v	math/vec3.go	/^func Sub3v3v(vec1, vec2 Vec3) Vec3 {$/;"	d
 Sub3v3v	math/vec3.go	/^func Sub3v3v(vec1, vec2 Vec3) Vec3 {$/;"	f
 TOP	math/frustum.go	/^	FAR        byte = iota$/;"	c
@@ -435,6 +438,8 @@ Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	d
 Tick	event/manager.go	/^func (em *EventManager) Tick(delta float64) {$/;"	f
 Tick	graphics/text.go	/^func (tgh *TextGraphicsHandler) Tick() bool {$/;"	d
 Tick	graphics/text.go	/^func (tgh *TextGraphicsHandler) Tick() bool {$/;"	f
+Tick	instance/instance.go	/^func (is *Instance) Tick(secs float64) {$/;"	d
+Tick	instance/instance.go	/^func (is *Instance) Tick(secs float64) {$/;"	f
 ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	d
 ToJson	math/vec3.go	/^func (vec Vec3) ToJson() []byte {$/;"	f
 Top	common/stack.go	/^func (stk *Stack) Top() interface{} {$/;"	d
@@ -473,6 +478,8 @@ chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string)
 chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string) {$/;"	f
 cols	math/mat4x4.go	/^\/\/      var cols [4]Vec4$/;"	d
 command	component/ai/computer.go	/^	var command string$/;"	d
+commandLineReader	betuol.go	/^func commandLineReader(commandlink chan string) {$/;"	d
+commandLineReader	betuol.go	/^func commandLineReader(commandlink chan string) {$/;"	f
 common	common/log.go	/^package common$/;"	p
 common	common/queue.go	/^package common$/;"	p
 common	common/stack.go	/^package common$/;"	p
@@ -483,9 +490,8 @@ creationFunction	component/gofactory/manager.go	/^type creationFunction func(com
 creationFunction	component/gofactory/manager.go	/^type creationFunction func(component.GOiD, []byte) error$/;"	t
 creationManager	component/gofactory/manager.go	/^type creationManager struct {$/;"	d
 creationManager	component/gofactory/manager.go	/^type creationManager struct {$/;"	t
-decodeVec3String	instance/instance.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	d
-decodeVec3String	instance/instance.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	f
-err	instance/instance.go	/^	var err error$/;"	d
+decodeVec3String	betuol.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	d
+decodeVec3String	betuol.go	/^func decodeVec3String(vec3 string) math.Vec3 {$/;"	f
 event	event/events.go	/^package event$/;"	p
 event	event/manager.go	/^package event$/;"	p
 eventType	event/manager.go	/^\/\/ RegisterListener registers a listening function to be called every time an event of type eventType is processed.$/;"	d
@@ -507,7 +513,9 @@ init	common/log.go	/^func init() {$/;"	f
 init	math/frustum.go	/^func (frust *Frustum) init() {$/;"	d
 init	math/frustum.go	/^func (frust *Frustum) init() {$/;"	f
 instance	instance/instance.go	/^package instance$/;"	p
+instance	instance/interface.go	/^package instance$/;"	p
 instance	instance/script.go	/^package instance$/;"	p
+is	betuol.go	/^	var is instance.IInstance = instance.MakeInstance(rm)$/;"	d
 logWriter	common/log.go	/^type logWriter struct {$/;"	d
 logWriter	common/log.go	/^type logWriter struct {$/;"	t
 main	betuol.go	/^func main() {$/;"	d
@@ -533,6 +541,8 @@ obj	component/physics/manager.go	/^	var obj struct {$/;"	d
 obj	res/manager.go	/^	var obj []component.MapLocation$/;"	d
 obj	res/manager.go	/^	var obj struct {$/;"	d
 of	component/ai/manager.go	/^\/\/ Higher level creation functions extract the type of ai computer to be used for the component from a data source and pass the low level information to CreateComponent in order to do the real work of initialization.$/;"	d
+parseSysConsole	betuol.go	/^func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink chan string) bool {$/;"	d
+parseSysConsole	betuol.go	/^func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink chan string) bool {$/;"	f
 physics	component/physics/manager.go	/^package physics$/;"	p
 quest	component/quest/manager.go	/^package quest$/;"	p
 quest	component/quest/states.go	/^package quest$/;"	p

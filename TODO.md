@@ -24,6 +24,8 @@ TODO
 
 - Collision/physics system.
 
+- Quest system. It sucks right now. It's kind of functional, but it could be done much better.
+
 - WRITE STORY!!!
 
 <u>_Gameplay_</u>

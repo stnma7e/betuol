@@ -1,12 +1,12 @@
 package instance
 
 import (
-	//"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/event"
 	//"github.com/stnma7e/betuol/math"
 )
 
-func (is *Instance) StartScript() error {
+func StartScript(is IInstance, charsToActOn ...component.GOiD) error {
 	goList, err := is.CreateFromMap("map1")
 	if err != nil {
 		return err
@@ -24,9 +24,12 @@ func (is *Instance) StartScript() error {
 	//common.LogErr.Println(err)
 	//}
 
-	// fade in
-	is.em.Send(event.ChatEvent{goList[0], is.player, "*hushed* Hey, the jury is returning. They'll be giving the verdict to the judge."})
-	is.em.Send(event.ChatEvent{goList[0], is.player, "Judge, the jury has reached a decision. Those in the jury have found the defendant guilty."})
+	em := is.GetEventManager()
+	for i := range charsToActOn {
+		em.Send(event.ChatEvent{goList[0], charsToActOn[i], "*hushed* Hey, the jury is returning. They'll be giving the verdict to the judge."})
+		em.Send(event.ChatEvent{goList[0], charsToActOn[i], "Judge, the jury has reached a decision. Those in the jury have found the defendant guilty."})
+
+	}
 
 	return nil
 }
