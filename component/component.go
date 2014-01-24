@@ -2,7 +2,10 @@
 // This package only includes types relevant to all of the component managers (GOiD).
 package component
 
-import "github.com/stnma7e/betuol/math"
+import (
+	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/math"
+)
 
 // GOiD stands for GameObject ID. It is the type used by all component managers to represent a specific GameObject.
 type GOiD uint32
@@ -21,6 +24,8 @@ type SceneManager interface {
 	GetObjectLocation(index GOiD) (math.Vec3, error)
 	SetTransform(id GOiD, newTransform math.Mat4x4)
 	GetMatrixList() []math.Mat4x4
+	SetLocationOverTime(id GOiD, newLocation math.Vec3, timeToMove float64) error
+	GetObjectsInLocationRadius(loc math.Vec3, lookRange float32) *common.Queue
 }
 
 // Type used by the GameObject Factory for handling creation data for various component types.

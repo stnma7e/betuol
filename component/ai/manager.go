@@ -19,7 +19,7 @@ type AiManager struct {
 	players         *common.Vector
 
 	cm *character.CharacterManager
-	tm *scenemanager.TransformManager
+	sm *scenemanager.TransformManager
 	em *event.EventManager
 
 	aiTicker func(delta float64)
@@ -74,11 +74,11 @@ func (am *AiManager) UpdateAi(delta float64) {
 func (am *AiManager) UpdateAiNearPlayer(delta float64) {
 	players := am.players.Array()
 	for i := range players {
-		loc, err := am.tm.GetObjectLocation(players[i].(component.GOiD))
+		loc, err := am.sm.GetObjectLocation(players[i].(component.GOiD))
 		if err != nil {
 			common.LogErr.Println(err)
 		}
-		charsInRadius := am.tm.GetObjectsInLocationRadius(loc, 5)
+		charsInRadius := am.sm.GetObjectsInLocationRadius(loc, 5)
 		chars := charsInRadius.Array()
 		for j := 0; j < len(chars); j++ {
 			if func() bool {
@@ -128,7 +128,7 @@ func (am *AiManager) CreateComponent(id component.GOiD, computerType string) err
 	}
 
 	am.compList[id] = make(chan event.Event)
-	go computer(id, am.compList[id])
+	go computer(am.cm, am.sm, am.em, id, am.compList[id])
 
 	if computerType == "player" {
 		am.players.Insert(id)

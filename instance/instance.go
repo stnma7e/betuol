@@ -65,9 +65,9 @@ func MakeInstance(rm *res.ResourceManager) *Instance {
 	is.gof.Register("physics", is.pm, is.pm.JsonCreate)
 
 	is.am.SetUpdateAiNearPlayer(false)
-	is.am.RegisterComputer("player", is.am.PlayerAi)
-	is.am.RegisterComputer("enemy", is.am.EnemyAi)
-	is.am.RegisterComputer("wander", is.am.WanderAi)
+	is.am.RegisterComputer("player", ai.PlayerAi)
+	is.am.RegisterComputer("enemy", ai.EnemyAi)
+	is.am.RegisterComputer("wander", ai.WanderAi)
 
 	is.em.RegisterListener("attack", is.cm.HandleAttack)
 	is.em.RegisterListener("death", is.gof.HandleDeath)
@@ -108,4 +108,5 @@ func (is *Instance) Tick(secs float64) {
 
 	is.gm.Tick(secs, &is.tmSnapshot)
 	is.tmSnapshot = *is.tm
+	is.numTicks++
 }

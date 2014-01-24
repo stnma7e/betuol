@@ -11,8 +11,8 @@ AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id compon
 AddQuest	component/quest/manager.go	/^func (qm *QuestManager) AddQuest(id component.GOiD, state QuestState) {$/;"	f
 AddQuest	instance/interface.go	/^func (is *Instance) AddQuest(id component.GOiD, questName string) {$/;"	d
 AddQuest	instance/interface.go	/^func (is *Instance) AddQuest(id component.GOiD, questName string) {$/;"	f
-AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, eventlink chan event.Event)$/;"	d
-AiComputer	component/ai/computer.go	/^type AiComputer func(id component.GOiD, eventlink chan event.Event)$/;"	t
+AiComputer	component/ai/computer.go	/^type AiComputer func(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event)$/;"	d
+AiComputer	component/ai/computer.go	/^type AiComputer func(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event)$/;"	t
 AiManager	component/ai/manager.go	/^type AiManager struct {$/;"	d
 AiManager	component/ai/manager.go	/^type AiManager struct {$/;"	t
 Array	common/queue.go	/^func (stk *Queue) Array() []interface{} {$/;"	d
@@ -97,10 +97,10 @@ DrawString	graphics/text.go	/^func (tgh *TextGraphicsHandler) DrawString(x, y fl
 DrawString	graphics/text.go	/^func (tgh *TextGraphicsHandler) DrawString(x, y float32, text string) {$/;"	f
 Empty	common/vector.go	/^func (vc *Vector) Empty() {$/;"	d
 Empty	common/vector.go	/^func (vc *Vector) Empty() {$/;"	f
-EnemyAi	component/ai/computer.go	/^func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
-EnemyAi	component/ai/computer.go	/^func (am *AiManager) EnemyAi(id component.GOiD, eventlink chan event.Event) {$/;"	f
-EnemyDecide	component/ai/computer.go	/^func (am *AiManager) EnemyDecide(id component.GOiD) {$/;"	d
-EnemyDecide	component/ai/computer.go	/^func (am *AiManager) EnemyDecide(id component.GOiD) {$/;"	f
+EnemyAi	component/ai/computer.go	/^func EnemyAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	d
+EnemyAi	component/ai/computer.go	/^func EnemyAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	f
+EnemyDecide	component/ai/computer.go	/^func EnemyDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) (eventlist *common.Vector) {$/;"	d
+EnemyDecide	component/ai/computer.go	/^func EnemyDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) (eventlist *common.Vector) {$/;"	f
 Equal3v3v	math/vec3.go	/^func Equal3v3v(vec1, vec2 Vec3) bool {$/;"	d
 Equal3v3v	math/vec3.go	/^func Equal3v3v(vec1, vec2 Vec3) bool {$/;"	f
 Equals4m4m	math/mat4x4.go	/^func Equals4m4m(mat, mat2 Mat4x4) bool {$/;"	d
@@ -332,14 +332,14 @@ PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	d
 PhysicsManager	component/physics/manager.go	/^type PhysicsManager struct {$/;"	t
 Plane	math/plane.go	/^type Plane Vec4$/;"	d
 Plane	math/plane.go	/^type Plane Vec4$/;"	t
-PlayerAi	component/ai/computer.go	/^func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
-PlayerAi	component/ai/computer.go	/^func (am *AiManager) PlayerAi(id component.GOiD, eventlink chan event.Event) {$/;"	f
+PlayerAi	component/ai/computer.go	/^func PlayerAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	d
+PlayerAi	component/ai/computer.go	/^func PlayerAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	f
 PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	d
 PlayerAttack	component/character/player.go	/^func PlayerAttack(player, enemy component.GOiD, chars *CharacterManager) {$/;"	f
 PlayerCreatedEvent	event/events.go	/^type PlayerCreatedEvent struct {$/;"	d
 PlayerCreatedEvent	event/events.go	/^type PlayerCreatedEvent struct {$/;"	t
-PlayerDecide	component/ai/computer.go	/^func (am *AiManager) PlayerDecide(id component.GOiD) {$/;"	d
-PlayerDecide	component/ai/computer.go	/^func (am *AiManager) PlayerDecide(id component.GOiD) {$/;"	f
+PlayerDecide	component/ai/computer.go	/^func PlayerDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	d
+PlayerDecide	component/ai/computer.go	/^func PlayerDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	f
 PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	d
 PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	f
 PlayerMove	component/character/player.go	/^func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {$/;"	d
@@ -460,10 +460,10 @@ Vec4	math/vec4.go	/^type Vec4 [4]float32$/;"	d
 Vec4	math/vec4.go	/^type Vec4 [4]float32$/;"	t
 Vector	common/vector.go	/^type Vector struct {$/;"	d
 Vector	common/vector.go	/^type Vector struct {$/;"	t
-WanderAi	component/ai/computer.go	/^func (am *AiManager) WanderAi(id component.GOiD, eventlink chan event.Event) {$/;"	d
-WanderAi	component/ai/computer.go	/^func (am *AiManager) WanderAi(id component.GOiD, eventlink chan event.Event) {$/;"	f
-WanderDecide	component/ai/computer.go	/^func (am *AiManager) WanderDecide(id component.GOiD) {$/;"	d
-WanderDecide	component/ai/computer.go	/^func (am *AiManager) WanderDecide(id component.GOiD) {$/;"	f
+WanderAi	component/ai/computer.go	/^func WanderAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	d
+WanderAi	component/ai/computer.go	/^func WanderAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {$/;"	f
+WanderDecide	component/ai/computer.go	/^func WanderDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	d
+WanderDecide	component/ai/computer.go	/^func WanderDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	f
 WavefrontData	res/manager.go	/^type WavefrontData struct {$/;"	d
 WavefrontData	res/manager.go	/^type WavefrontData struct {$/;"	t
 ai	component/ai/computer.go	/^package ai$/;"	p
