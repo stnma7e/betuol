@@ -5,7 +5,6 @@ import (
 
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/component"
-	"github.com/stnma7e/betuol/math"
 )
 
 // TextGraphicsHandler implements the GraphicsHandler interface, but instead of rendering to a graphics context, TextGraphicsHandler instead outputs textual descriptions of each model.
@@ -28,21 +27,26 @@ func (tgh *TextGraphicsHandler) Tick() bool {
 	return true
 }
 
-// Render implements the Renderer interface and outputs text based on the GOiD's in the list passed as an argument.
+// RenderDiff outputs text based on the GOiD's in the list passed as an argument.
 // The function will only output a new text description if the model has newly come into the scene.
-func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {
+func (tgh *TextGraphicsHandler) RenderDiff(ids *common.Vector, sm component.SceneManager) {
 	diff := tgh.lastIdList.Difference(ids)
-	tgh.lastIdList = *ids
-
 	//common.LogInfo.Println(ids, tgh.lastIdList, diff)
-	//tgh.lastIdList = *ids
-	comps := diff.Array()
-	if len(comps) > 0 {
-		fmt.Print("\x0c")
-	}
+	tgh.lastIdList = *ids
+	tgh.Render(diff, sm)
+}
+
+// Render implements the Renderer interface and outputs text based on the GOiD's in the list passed as an argument.
+func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager) {
+	comps := ids.Array()
 	for i := range comps {
 		id := comps[i].(component.GOiD)
-		fmt.Printf("%d, \"%s\"\n", id, tgh.compList[id])
+		locStr := "no location"
+		loc, err := sm.GetObjectLocation(id)
+		if err == nil {
+			locStr = fmt.Sprint(loc)
+		}
+		fmt.Printf("%d %s, \"%s\"\n", id, locStr, tgh.compList[id])
 	}
 }
 
@@ -56,7 +60,7 @@ func (tgh *TextGraphicsHandler) LoadModel(id component.GOiD, gc GraphicsComponen
 
 // DeleteModel implements the GraphicsHandler interface and deletes the data used for rendering.
 func (tgh *TextGraphicsHandler) DeleteModel(id component.GOiD) {
-	tgh.compList[id] = ""
+	tgh.compList[id] = "dead."
 }
 
 func (tgh *TextGraphicsHandler) resizeArrays(id component.GOiD) {

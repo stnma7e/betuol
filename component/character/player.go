@@ -14,8 +14,6 @@ import (
 // This function parses the command and responds accordingly.
 func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManager) {
 	switch command {
-	case "look":
-		PlayerLook(id, chars)
 	case "north":
 		PlayerMove("north", id, chars)
 	case "south":
@@ -35,31 +33,6 @@ func ParsePlayerCommand(command string, id component.GOiD, chars *CharacterManag
 		PlayerAttack(id, component.GOiD(enemy), chars)
 	default:
 		fmt.Printf("\tInvalid player command, '%s'.\n", command)
-	}
-}
-
-// PlayerLook prints a list of the surrounding character components within a specified proximity.
-func PlayerLook(id component.GOiD, chars *CharacterManager) {
-	loc, err := chars.sm.GetObjectLocation(id)
-	if err != nil {
-		common.LogErr.Println(err)
-		return
-	}
-	ros := chars.attributeList[RANGEOFSIGHT][id]
-	stk := chars.sm.GetObjectsInLocationRadius(loc, ros)
-	numObj := stk.Size
-	for i := 0; i < numObj; i++ {
-		charId, err := stk.Dequeue()
-		if err != nil {
-			common.LogErr.Print(err)
-		}
-
-		if charId.(component.GOiD) == id || id == 0 {
-			continue
-		}
-
-		ca := chars.GetCharacterAttributes(charId.(component.GOiD))
-		fmt.Printf("\t %d, %s\n", charId.(component.GOiD), ca.Greet())
 	}
 }
 

@@ -15,9 +15,10 @@ import (
 // GraphicsManager is a component manager used to visualize the game onscreen.
 // It uses multiple GraphicsHandlers to render the world in a variety of ways.
 type GraphicsManager struct {
-	em *event.EventManager
-	rm *res.ResourceManager
-	sm component.SceneManager
+	em                *event.EventManager
+	rm                *res.ResourceManager
+	sm                component.SceneManager
+	justForcedARender bool
 
 	graphicsHandlersLink []chan *common.Vector
 	modellink            []chan graphics.ModelTransfer
@@ -35,6 +36,7 @@ func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm com
 		em,
 		rm,
 		sm,
+		false,
 		make([]chan *common.Vector, 1),
 		make([]chan graphics.ModelTransfer, 1),
 		make([]chan component.GOiD, 1),
@@ -64,53 +66,115 @@ func MakeGraphicsManager(em *event.EventManager, rm *res.ResourceManager, sm com
 	return gm
 }
 
+func (gm *GraphicsManager) handleClosedGraphicsHandler(indexOfClosedHandler int) {
+	r := recover()
+	if r != nil {
+		common.LogErr.Printf("a graphics handler might have closed. deleting the handler now. recovered: %s", r)
+		gm.graphicsHandlersLink[indexOfClosedHandler] = nil
+		gm.resizelink[indexOfClosedHandler] = nil
+		gm.deletelink[indexOfClosedHandler] = nil
+	}
+}
+
 // Tick calls the Tick function of each GraphicsHandler in the manager's list.
 // If any Tick functions return false, then GraphicsManager.Tick returns false.
 func (gm *GraphicsManager) Tick(delta float64, sm component.SceneManager) {
-	var i int
-	defer func() {
-		r := recover()
-		if r != nil {
-			common.LogInfo.Printf("a graphics handler must have closed. recovered: %s", r)
-		}
-		gm.graphicsHandlersLink[i] = nil
-		gm.resizelink[i] = nil
-		gm.deletelink[i] = nil
-	}()
 	gm.sm = sm
 
+	if gm.justForcedARender {
+		gm.justForcedARender = false
+		return
+	}
+
+	compsToSend, errs := gm.RenderAll(sm)
+	if errs != nil {
+		errArray := errs.Array()
+		if errArray != nil && len(errArray) > 0 {
+			for i := range errArray {
+				common.LogErr.Print(errArray[i].(error))
+			}
+		}
+	}
+	gm.Render(compsToSend)
+}
+
+// ForceRender sends a resize message to all of the handlers, signaling a redraw.
+func (gm *GraphicsManager) ForceRender(compsToSend *common.Vector) {
+	handlerIndex := 0
+	defer gm.handleClosedGraphicsHandler(handlerIndex)
+
+	gm.Render(compsToSend)
+	for handlerIndex = range gm.resizelink {
+		if gm.resizelink[handlerIndex] == nil {
+			continue
+		}
+		gm.resizelink[handlerIndex] <- true
+	}
+
+	gm.justForcedARender = true
+
+}
+
+// Render sends a new list of components to be rendered to the graphics handlers.
+func (gm *GraphicsManager) Render(compsToSend *common.Vector) {
+	handlerIndex := 0
+	defer gm.handleClosedGraphicsHandler(handlerIndex)
+
+	//common.LogInfo.Println(compsToSend)
+	for handlerIndex = range gm.graphicsHandlersLink {
+		if gm.graphicsHandlersLink[handlerIndex] == nil {
+			continue
+		}
+		gm.graphicsHandlersLink[handlerIndex] <- compsToSend
+	}
+}
+
+// RenderAllFromPerspective returns a list of all the game objects with graphics components that can be seen from the perspective of a single game object, id.
+func (gm *GraphicsManager) RenderAllFromPerspective(id component.GOiD, sm component.SceneManager) (*common.Vector, *common.Vector) {
+	errs := common.MakeVector()
 	compsToSend := common.MakeVector()
 	comps := gm.compList.Array()
+
+	perspLoc, err := sm.GetObjectLocation(id)
+	if err != nil {
+		errs.Insert(fmt.Errorf("requesting location from scene manager failed in perspective render, error %s", err.Error()))
+		return nil, errs
+	}
+	compsNearPerspective := sm.GetObjectsInLocationRadius(perspLoc, 5.0).Array()
+
 	for i := range comps {
 		if comps[i] == nil {
 			continue
 		}
-		_, err := gm.sm.GetObjectLocation(comps[i].(component.GOiD))
-		if err != nil {
-			common.LogErr.Printf("requesting location from scene manager failed, error: %s", err.Error())
+
+		if comps[i].(component.GOiD) == id || comps[i].(component.GOiD) == 0 {
+			continue
 		}
-		//common.LogInfo.Println(loc)
-		//if gm.cam.ContainsPoint(loc) {
+
+		for j := range compsNearPerspective {
+			if comps[i].(component.GOiD) == compsNearPerspective[j].(component.GOiD) {
+				compsToSend.Insert(comps[i].(component.GOiD))
+			}
+		}
+	}
+
+	return compsToSend, errs
+}
+
+// RenderAll returns a list of all of the game objects with graphics components.
+func (gm *GraphicsManager) RenderAll(sm component.SceneManager) (*common.Vector, *common.Vector) {
+	errs := common.MakeVector()
+	compsToSend := common.MakeVector()
+	comps := gm.compList.Array()
+
+	for i := range comps {
+		if comps[i] == nil {
+			continue
+		}
 		compsToSend.Insert(comps[i].(component.GOiD))
-		//}
 	}
 
-	//common.LogInfo.Println(compsToSend)
-	for i = range gm.graphicsHandlersLink {
-		if gm.graphicsHandlersLink[i] == nil {
-			continue
-		}
-		gm.graphicsHandlersLink[i] <- compsToSend
-	}
-
-	for i = range gm.resizelink {
-		if gm.resizelink[i] == nil {
-			continue
-		}
-		gm.resizelink[i] <- true
-	}
-
-	return
+	return compsToSend, errs
 }
 
 // JsonCreate extracts creation data from a byte array of json text to pass to CreateComponent.

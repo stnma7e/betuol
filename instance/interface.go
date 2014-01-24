@@ -16,6 +16,7 @@ type IInstance interface {
 	MoveGameObject(id component.GOiD, newLoc math.Vec3)
 	AddQuest(id component.GOiD, questName string)
 	RunAi(id component.GOiD)
+	RenderFromPerspective(id component.GOiD)
 
 	GetSceneManagerSnapshot() component.SceneManager
 	GetEventManager() *event.EventManager
@@ -81,4 +82,17 @@ func (is *Instance) MoveGameObject(id component.GOiD, newLoc math.Vec3) {
 // RunAi calls the RunAi function on the ai manager.
 func (is *Instance) RunAi(id component.GOiD) {
 	is.am.RunAi(id)
+}
+
+func (is *Instance) RenderFromPerspective(id component.GOiD) {
+	compsToSend, errs := is.gm.RenderAllFromPerspective(id, is.tm)
+	if errs != nil {
+		errArray := errs.Array()
+		if errArray != nil && len(errArray) > 0 {
+			for i := range errArray {
+				common.LogErr.Print(errArray[i].(error))
+			}
+		}
+	}
+	is.gm.ForceRender(compsToSend)
 }

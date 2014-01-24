@@ -31,10 +31,10 @@ func main() {
 		common.LogErr.Println(err)
 	}
 
-	exitlink := make(chan bool)
+	commandlink := make(chan string)
 	go func() {
 		for {
-			commandLineReader(is, player, exitlink)
+			commandLineReader(is, player, commandlink)
 		}
 	}()
 
@@ -44,17 +44,17 @@ func main() {
 	for {
 		select {
 		case <-ticks.C:
-			common.LogWarn.Printf("last tick took longer than 1/60th of a second. it took %v", time.Since(oldTime))
+			if newTime := time.Since(oldTime).Seconds() * 1000; newTime > 16 {
+				//common.LogWarn.Printf("last tick took longer than 1/60th of a second. it took %vms.", newTime)
+			}
 		default:
 			<-ticks.C
 		}
 		newTime := time.Since(oldTime)
 		oldTime = time.Now()
 
-		select {
-		case <-exitlink:
-			return
-		default:
+		if exit := parseSysConsole(is, player, commandlink); exit == true {
+			break
 		}
 
 		is.Tick(newTime.Seconds())
@@ -62,7 +62,14 @@ func main() {
 }
 
 // ParseSysConsole is used to parse the commands input into the console.  // These commands can be used to control the internal state of the instance.
-func parseSysConsole(is instance.IInstance, player component.GOiD, exitlink chan bool, command string) {
+func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink chan string) bool {
+	command := ""
+	select {
+	case command = <-commandlink:
+	default:
+		return false
+	}
+
 	args := strings.SplitAfter(command, " ")
 	for i := range args {
 		if i == len(args)-1 {
@@ -74,8 +81,7 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, exitlink chan
 
 	switch args[0] {
 	case "exit":
-		exitlink <- true
-		return
+		return true
 	case "loadmap":
 		if !(len(args) >= 2) {
 			common.LogErr.Print("not enough arguments to 'loadmap'")
@@ -98,15 +104,36 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, exitlink chan
 		if err != nil {
 			common.LogErr.Println(err)
 		}
-		is.RunAi(component.GOiD(arg))
+		go func() {
+			is.RunAi(component.GOiD(arg))
+			commandlink <- ""
+		}()
+		return false
 	case "player":
-		is.RunAi(player)
+		go func() {
+			is.RunAi(player)
+			commandlink <- ""
+		}()
+		return false
+	case "render":
+		if !(len(args) >= 2) {
+			common.LogErr.Print("not enough arguments to 'render'")
+			break
+		}
+		arg, err := strconv.Atoi(args[1])
+		if err != nil {
+			common.LogErr.Println(err)
+		}
+		is.RenderFromPerspective(component.GOiD(arg))
 	default:
 		fmt.Println("\tInvalid command. Type \"help\" for choices.")
 	}
+
+	commandlink <- ""
+	return false
 }
 
-func commandLineReader(is instance.IInstance, player component.GOiD, exitlink chan bool) {
+func commandLineReader(is instance.IInstance, player component.GOiD, commandlink chan string) {
 	r := bufio.NewReaderSize(os.Stdin, 4*1024)
 	line, err := r.ReadString('\n')
 	if err != nil {
@@ -120,8 +147,9 @@ func commandLineReader(is instance.IInstance, player component.GOiD, exitlink ch
 		s = line[:len(s)-1]
 	}
 	if s != "" {
-		parseSysConsole(is, player, exitlink, s)
+		commandlink <- s
 		s = ""
+		<-commandlink
 	}
 }
 

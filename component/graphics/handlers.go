@@ -24,13 +24,16 @@ func (gm *GraphicsManager) TextHandlerFunc(compslink chan *common.Vector, modell
 	for i := true; i; {
 		select {
 		case comps = <-compslink:
+			// the above line replaces the previous value of comps with the new one from the graphics manager
 		case model := <-modellink:
 			gm.errorlink <- tr.LoadModel(model.Id, model.Gc)
 		case id := <-deletelink:
 			tr.DeleteModel(id)
+			// resizelink has special meaning for the text renderer. when a value comes in here, it means to redisplay the entire scene. do not do a diff of the scene.
 		case <-resizelink:
+			tr.Render(comps, gm.sm)
+		default:
+			tr.RenderDiff(comps, gm.sm)
 		}
-
-		tr.Render(comps, gm.sm, gm.cam)
 	}
 }

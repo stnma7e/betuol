@@ -118,6 +118,8 @@ EventMessage	event/manager.go	/^type EventMessage struct {$/;"	t
 FAR	math/frustum.go	/^	NEAR       byte = iota$/;"	c
 FirstMoveQuest	component/quest/states.go	/^func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {$/;"	d
 FirstMoveQuest	component/quest/states.go	/^func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {$/;"	f
+ForceRender	component/graphics/manager.go	/^func (gm *GraphicsManager) ForceRender(compsToSend *common.Vector) {$/;"	d
+ForceRender	component/graphics/manager.go	/^func (gm *GraphicsManager) ForceRender(compsToSend *common.Vector) {$/;"	f
 Frustum	math/frustum.go	/^type Frustum struct {$/;"	d
 Frustum	math/frustum.go	/^type Frustum struct {$/;"	t
 GOiD	component/component.go	/^type GOiD uint32$/;"	d
@@ -166,14 +168,10 @@ GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManage
 GetTransformMatrix	component/scenemanager/manager.go	/^func (tm *TransformManager) GetTransformMatrix(index component.GOiD) (math.Mat4x4, error) {$/;"	f
 GraphicsComponent	graphics/graphics.go	/^type GraphicsComponent struct {$/;"	d
 GraphicsComponent	graphics/graphics.go	/^type GraphicsComponent struct {$/;"	t
-GraphicsHandler	graphics/graphics.go	/^type GraphicsHandler interface {$/;"	d
-GraphicsHandler	graphics/graphics.go	/^type GraphicsHandler interface {$/;"	t
 GraphicsHandlerFunc	component/graphics/handlers.go	/^type GraphicsHandlerFunc func(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool)$/;"	d
 GraphicsHandlerFunc	component/graphics/handlers.go	/^type GraphicsHandlerFunc func(compslink chan *common.Vector, modellink chan graphics.ModelTransfer, deletelink chan component.GOiD, resizelink chan bool)$/;"	t
 GraphicsManager	component/graphics/manager.go	/^type GraphicsManager struct {$/;"	d
 GraphicsManager	component/graphics/manager.go	/^type GraphicsManager struct {$/;"	t
-Greet	component/character/character.go	/^func (ca *CharacterAttributes) Greet() string {$/;"	d
-Greet	component/character/character.go	/^func (ca *CharacterAttributes) Greet() string {$/;"	f
 HEALTH	component/character/character.go	/^const ($/;"	c
 HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) HandleAttack(evt event.Event) {$/;"	d
 HandleAttack	component/character/delegates.go	/^func (cm *CharacterManager) HandleAttack(evt event.Event) {$/;"	f
@@ -340,8 +338,6 @@ PlayerCreatedEvent	event/events.go	/^type PlayerCreatedEvent struct {$/;"	d
 PlayerCreatedEvent	event/events.go	/^type PlayerCreatedEvent struct {$/;"	t
 PlayerDecide	component/ai/computer.go	/^func PlayerDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	d
 PlayerDecide	component/ai/computer.go	/^func PlayerDecide(cm *character.CharacterManager, sm component.SceneManager, id component.GOiD) {$/;"	f
-PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	d
-PlayerLook	component/character/player.go	/^func PlayerLook(id component.GOiD, chars *CharacterManager) {$/;"	f
 PlayerMove	component/character/player.go	/^func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {$/;"	d
 PlayerMove	component/character/player.go	/^func PlayerMove(direction string, id component.GOiD, chars *CharacterManager) {$/;"	f
 Pop	common/stack.go	/^func (stk *Stack) Pop() interface{} {$/;"	d
@@ -378,8 +374,18 @@ RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eve
 RegisterListener	event/manager.go	/^func (em *EventManager) RegisterListener(eventType string, listener EventListener) {$/;"	f
 RegisterListeningChannel	event/manager.go	/^func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {$/;"	d
 RegisterListeningChannel	event/manager.go	/^func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {$/;"	f
-Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	d
-Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager, cam *math.Frustum) {$/;"	f
+Render	component/graphics/manager.go	/^func (gm *GraphicsManager) Render(compsToSend *common.Vector) {$/;"	d
+Render	component/graphics/manager.go	/^func (gm *GraphicsManager) Render(compsToSend *common.Vector) {$/;"	f
+Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager) {$/;"	d
+Render	graphics/text.go	/^func (tgh *TextGraphicsHandler) Render(ids *common.Vector, sm component.SceneManager) {$/;"	f
+RenderAll	component/graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(sm component.SceneManager) (*common.Vector, *common.Vector) {$/;"	d
+RenderAll	component/graphics/manager.go	/^func (gm *GraphicsManager) RenderAll(sm component.SceneManager) (*common.Vector, *common.Vector) {$/;"	f
+RenderAllFromPerspective	component/graphics/manager.go	/^func (gm *GraphicsManager) RenderAllFromPerspective(id component.GOiD, sm component.SceneManager) (*common.Vector, *common.Vector) {$/;"	d
+RenderAllFromPerspective	component/graphics/manager.go	/^func (gm *GraphicsManager) RenderAllFromPerspective(id component.GOiD, sm component.SceneManager) (*common.Vector, *common.Vector) {$/;"	f
+RenderDiff	graphics/text.go	/^func (tgh *TextGraphicsHandler) RenderDiff(ids *common.Vector, sm component.SceneManager) {$/;"	d
+RenderDiff	graphics/text.go	/^func (tgh *TextGraphicsHandler) RenderDiff(ids *common.Vector, sm component.SceneManager) {$/;"	f
+RenderFromPerspective	instance/interface.go	/^func (is *Instance) RenderFromPerspective(id component.GOiD) {$/;"	d
+RenderFromPerspective	instance/interface.go	/^func (is *Instance) RenderFromPerspective(id component.GOiD) {$/;"	f
 ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	d
 ResourceManager	res/manager.go	/^type ResourceManager struct {$/;"	t
 RunAi	component/ai/manager.go	/^func (am *AiManager) RunAi(id component.GOiD) {$/;"	d
@@ -478,8 +484,8 @@ chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string)
 chat	component/character/delegates.go	/^func chat(r, s component.GOiD, m string) {$/;"	f
 cols	math/mat4x4.go	/^\/\/      var cols [4]Vec4$/;"	d
 command	component/ai/computer.go	/^	var command string$/;"	d
-commandLineReader	betuol.go	/^func commandLineReader(commandlink chan string) {$/;"	d
-commandLineReader	betuol.go	/^func commandLineReader(commandlink chan string) {$/;"	f
+commandLineReader	betuol.go	/^func commandLineReader(is instance.IInstance, player component.GOiD, commandlink chan string) {$/;"	d
+commandLineReader	betuol.go	/^func commandLineReader(is instance.IInstance, player component.GOiD, commandlink chan string) {$/;"	f
 common	common/log.go	/^package common$/;"	p
 common	common/queue.go	/^package common$/;"	p
 common	common/stack.go	/^package common$/;"	p
@@ -505,6 +511,8 @@ graphics	component/graphics/handlers.go	/^package graphics$/;"	p
 graphics	component/graphics/manager.go	/^package graphics$/;"	p
 graphics	graphics/graphics.go	/^package graphics$/;"	p
 graphics	graphics/text.go	/^package graphics$/;"	p
+handleClosedGraphicsHandler	component/graphics/manager.go	/^func (gm *GraphicsManager) handleClosedGraphicsHandler(indexOfClosedHandler int) {$/;"	d
+handleClosedGraphicsHandler	component/graphics/manager.go	/^func (gm *GraphicsManager) handleClosedGraphicsHandler(indexOfClosedHandler int) {$/;"	f
 idQueue	component/gofactory/manager.go	/^	var idQueue common.Queue$/;"	d
 idToUse	component/gofactory/manager.go	/^	var idToUse component.GOiD$/;"	d
 information	component/component.go	/^\/\/ Type used to specify the type information and quantity of an entity on a map.$/;"	d

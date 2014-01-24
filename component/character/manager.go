@@ -50,7 +50,6 @@ func (cm *CharacterManager) JsonCreate(index component.GOiD, data []byte) error 
 			comp.Intelligence,
 			comp.RangeOfSight,
 		},
-		comp.Greeting,
 	}
 
 	return cm.CreateComponent(index, ca)
@@ -62,8 +61,6 @@ func (cm *CharacterManager) CreateComponent(index component.GOiD, ca CharacterAt
 	for i := range ca.Attributes {
 		cm.attributeList[i][index] = ca.Attributes[i]
 	}
-
-	cm.greetingList[index] = ca.Greeting
 
 	return nil
 }
@@ -108,7 +105,6 @@ func (cm *CharacterManager) GetCharacterAttributes(index component.GOiD) *Charac
 	for i := range ca.Attributes {
 		ca.Attributes[i] = cm.attributeList[i][index]
 	}
-	ca.Greeting = cm.greetingList[index]
 
 	return ca
 }
