@@ -98,10 +98,10 @@ func WanderDecide(cm *character.CharacterManager, sm component.SceneManager, id 
 // EnemyAi implements the AiComputer function template.
 // It handles the event response and registers for events to respond to.
 func EnemyAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {
-	em.RegisterListeningChannel("attack", eventlink)
+	em.RegisterListeningChannel(eventlink, "attack")
 	for alive := true; alive; {
 		evt := <-eventlink
-		switch evt.GetEventType() {
+		switch evt.GetType() {
 		case "death":
 			alive = false
 		case "runAi":
@@ -124,7 +124,7 @@ func EnemyAi(cm *character.CharacterManager, sm component.SceneManager, em *even
 func PlayerAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {
 	for alive := true; alive; {
 		evt := <-eventlink
-		switch evt.GetEventType() {
+		switch evt.GetType() {
 		case "death":
 			alive = false
 		case "runAi":
@@ -139,7 +139,7 @@ func PlayerAi(cm *character.CharacterManager, sm component.SceneManager, em *eve
 func WanderAi(cm *character.CharacterManager, sm component.SceneManager, em *event.EventManager, id component.GOiD, eventlink chan event.Event) {
 	for alive := true; alive; {
 		evt := <-eventlink
-		switch evt.GetEventType() {
+		switch evt.GetType() {
 		case "death":
 			alive = false
 		case "runAi":

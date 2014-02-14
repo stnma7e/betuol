@@ -11,7 +11,7 @@ type EventListener func(evt Event)
 
 // Event is an interface to allow many different structs to be used as events as long as they specify their type.
 type Event interface {
-	GetEventType() string
+	GetType() string
 }
 
 // EventMessage is a helper struct for keeping track of the time that an event was added to the queue.
@@ -70,9 +70,9 @@ func (em *EventManager) Tick(delta float64) {
 	}
 	for i := range events {
 		evt := events[i].(Event)
-		listeners, ok := em.listenerMap[evt.GetEventType()]
+		listeners, ok := em.listenerMap[evt.GetType()]
 		if !ok {
-			//common.LogWarn.Printf("no listener registered for %s", evt.GetEventType())
+			//common.LogWarn.Printf("no listener registered for %s", evt.GetType())
 		} else {
 			listenersArray := listeners.Array()
 			for j := range listenersArray {
@@ -80,16 +80,16 @@ func (em *EventManager) Tick(delta float64) {
 			}
 		}
 
-		channels, ok := em.listeningChannels[evt.GetEventType()]
+		channels, ok := em.listeningChannels[evt.GetType()]
 		if !ok {
-			//common.LogWarn.Printf("no channel registered for %s", evt.GetEventType())
+			//common.LogWarn.Printf("no channel registered for %s", evt.GetType())
 		} else {
 			channelsArray := channels.Array()
 			for j := range channelsArray {
 				select {
 				case channelsArray[j].(chan Event) <- evt:
 				default:
-					common.LogWarn.Printf("channel %d missed %v event %v", j, evt.GetEventType(), evt)
+					common.LogWarn.Printf("channel %d missed %v event %v", j, evt.GetType(), evt)
 				}
 			}
 		}
@@ -97,27 +97,31 @@ func (em *EventManager) Tick(delta float64) {
 }
 
 // RegisterListener registers a listening function to be called every time an event of type eventType is processed.
-func (em *EventManager) RegisterListener(eventType string, listener EventListener) {
-	_, ok := em.listenerMap[eventType]
-	if !ok {
-		em.listenerMap[eventType] = common.MakeVector()
+func (em *EventManager) RegisterListener(listener EventListener, eventType ...string) {
+	for i := range eventType {
+		_, ok := em.listenerMap[eventType[i]]
+		if !ok {
+			em.listenerMap[eventType[i]] = common.MakeVector()
+		}
+		if em.listenerMap[eventType[i]] == nil {
+			em.listenerMap[eventType[i]] = common.MakeVector()
+		}
+		em.listenerMap[eventType[i]].Insert(listener)
 	}
-	if em.listenerMap[eventType] == nil {
-		em.listenerMap[eventType] = common.MakeVector()
-	}
-	em.listenerMap[eventType].Insert(listener)
 }
 
 // RegisterListeningChannel registers a listening channel to be sent the event every time an event of type eventType is processed.
-func (em *EventManager) RegisterListeningChannel(eventType string, eventlink chan Event) {
-	_, ok := em.listeningChannels[eventType]
-	if !ok {
-		em.listeningChannels[eventType] = common.MakeVector()
+func (em *EventManager) RegisterListeningChannel(eventlink chan Event, eventType ...string) {
+	for i := range eventType {
+		_, ok := em.listeningChannels[eventType[i]]
+		if !ok {
+			em.listeningChannels[eventType[i]] = common.MakeVector()
+		}
+		if em.listeningChannels[eventType[i]] == nil {
+			em.listeningChannels[eventType[i]] = common.MakeVector()
+		}
+		em.listeningChannels[eventType[i]].Insert(eventlink)
 	}
-	if em.listeningChannels[eventType] == nil {
-		em.listeningChannels[eventType] = common.MakeVector()
-	}
-	em.listeningChannels[eventType].Insert(eventlink)
 }
 
 // Send will add an event passed as an argument to the event queue to be processed.

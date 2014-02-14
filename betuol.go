@@ -10,14 +10,28 @@ import (
 
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/component"
+	"github.com/stnma7e/betuol/event"
 	"github.com/stnma7e/betuol/instance"
 	"github.com/stnma7e/betuol/math"
+	"github.com/stnma7e/betuol/net"
 	"github.com/stnma7e/betuol/res"
 )
 
 func main() {
+	eventlink := make(chan event.Event)
+	nm := net.MakeNetworkManager("localhost:13560", eventlink)
 	rm := res.MakeResourceManager("./data/")
 	var is instance.IInstance = instance.MakeInstance(rm)
+
+	go func() {
+		is.GetEventManager().RegisterListeningChannel(eventlink, []string{
+			"attack",
+			"death",
+		}...)
+		for {
+			nm.Tick()
+		}
+	}()
 
 	player, err := is.CreateObject("player", math.Vec3{0, 0, 0})
 	if err != nil {
@@ -80,7 +94,7 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink c
 	fmt.Println(args)
 
 	switch args[0] {
-	case "exit":
+	case "quit":
 		return true
 	case "loadmap":
 		if !(len(args) >= 2) {

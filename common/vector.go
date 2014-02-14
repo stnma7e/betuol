@@ -1,6 +1,10 @@
 // Package common is composed of data structures and other common structures to ease development.
 package common
 
+import (
+	"fmt"
+)
+
 // Vector is a resizeable array. It takes its name from the C++ std::vector class.
 type Vector struct {
 	array        []interface{}
@@ -86,6 +90,15 @@ func (vc *Vector) Erase(index int) {
 	vc.array[index] = nil
 	vc.emptyIndices.Queue(index)
 	vc.Length--
+}
+
+// GetValueOfIndex returns the value at the index requested.
+func (vc *Vector) GetValueOfIndex(index int) (interface{}, error) {
+	if index < len(vc.array) {
+		return vc.array[index], nil
+	} else {
+		return nil, fmt.Errorf("invalid index into vector: %s", index)
+	}
 }
 
 // Empty will delete all data in the vector and essentially create a new vector.

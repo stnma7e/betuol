@@ -12,7 +12,7 @@ var moveQuestTicker int
 
 // AttackQuest is an example quest that completes upon attacking another character.
 func (qm *QuestManager) AttackQuest(id component.GOiD, evt event.Event) {
-	if evt.GetEventType() != "attack" {
+	if evt.GetType() != "attack" {
 		return
 	}
 	aevt := evt.(event.AttackEvent)
@@ -22,7 +22,7 @@ func (qm *QuestManager) AttackQuest(id component.GOiD, evt event.Event) {
 
 // KillQuest is an example quest that completes upon killing another character.
 func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {
-	if evt.GetEventType() != "kill" {
+	if evt.GetType() != "kill" {
 		return
 	}
 	kevt := evt.(event.KillEvent)
@@ -34,7 +34,7 @@ func (qm *QuestManager) KillQuest(id component.GOiD, evt event.Event) {
 
 // FirstMoveQuest is an example quest that completes upon moving your character for the first time.
 func (qm *QuestManager) FirstMoveQuest(id component.GOiD, evt event.Event) {
-	if evt.GetEventType() != "characterMoved" {
+	if evt.GetType() != "characterMoved" {
 		return
 	}
 	cevt := evt.(event.CharacterMoveEvent)

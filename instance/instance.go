@@ -69,13 +69,13 @@ func MakeInstance(rm *res.ResourceManager) *Instance {
 	is.am.RegisterComputer("enemy", ai.EnemyAi)
 	is.am.RegisterComputer("wander", ai.WanderAi)
 
-	is.em.RegisterListener("attack", is.cm.HandleAttack)
-	is.em.RegisterListener("death", is.gof.HandleDeath)
-	is.em.RegisterListener("attack", is.qm.HandleEvent)
-	is.em.RegisterListener("characterMoved", is.qm.HandleEvent)
-	is.em.RegisterListener("kill", is.qm.HandleEvent)
-	is.em.RegisterListener("questComplete", is.qm.QuestComplete)
-	is.em.RegisterListener("chat", is.cm.HandleChat)
+	is.em.RegisterListener(is.cm.HandleAttack, "attack")
+	is.em.RegisterListener(is.gof.HandleDeath, "death")
+	is.em.RegisterListener(is.qm.HandleEvent, "attack")
+	is.em.RegisterListener(is.qm.HandleEvent, "characterMoved")
+	is.em.RegisterListener(is.qm.HandleEvent, "kill")
+	is.em.RegisterListener(is.qm.QuestComplete, "questComplete")
+	is.em.RegisterListener(is.cm.HandleChat, "chat")
 
 	rand.Seed(time.Now().UnixNano())
 

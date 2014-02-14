@@ -9,7 +9,7 @@ type AttackEvent struct {
 	Char1, Char2 component.GOiD
 }
 
-func (at AttackEvent) GetEventType() string {
+func (at AttackEvent) GetType() string {
 	return "attack"
 }
 
@@ -17,7 +17,7 @@ type DeathEvent struct {
 	Id component.GOiD
 }
 
-func (dt DeathEvent) GetEventType() string {
+func (dt DeathEvent) GetType() string {
 	return "death"
 }
 
@@ -25,7 +25,7 @@ type KillEvent struct {
 	Killer, Dead component.GOiD
 }
 
-func (ke KillEvent) GetEventType() string {
+func (ke KillEvent) GetType() string {
 	return "kill"
 }
 
@@ -34,7 +34,7 @@ type QuestComplete struct {
 	QuestName string
 }
 
-func (qt QuestComplete) GetEventType() string {
+func (qt QuestComplete) GetType() string {
 	return "questComplete"
 }
 
@@ -44,7 +44,7 @@ type ChatEvent struct {
 	Message  string
 }
 
-func (ce ChatEvent) GetEventType() string {
+func (ce ChatEvent) GetType() string {
 	return "chat"
 }
 
@@ -52,7 +52,7 @@ type PlayerCreatedEvent struct {
 	PlayerID component.GOiD
 }
 
-func (ce PlayerCreatedEvent) GetEventType() string {
+func (ce PlayerCreatedEvent) GetType() string {
 	return "playerCreated"
 }
 
@@ -61,13 +61,13 @@ type CharacterMoveEvent struct {
 	NewLocation math.Vec3
 }
 
-func (cme CharacterMoveEvent) GetEventType() string {
+func (cme CharacterMoveEvent) GetType() string {
 	return "characterMoved"
 }
 
 type RunAiEvent struct {
 }
 
-func (rae RunAiEvent) GetEventType() string {
+func (rae RunAiEvent) GetType() string {
 	return "runAi"
 }
