@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	//"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -18,10 +19,14 @@ import (
 )
 
 func main() {
-	eventlink := make(chan event.Event)
-	nm := net.MakeNetworkManager("localhost:13560", eventlink)
+	//rand.Seed(time.Now().UnixNano())
+
+	em := event.MakeEventManager()
 	rm := res.MakeResourceManager("./data/")
-	var is instance.IInstance = instance.MakeInstance(rm)
+
+	eventlink := make(chan event.Event)
+	nm := net.MakeNetworkManager(em, "localhost:13560", eventlink)
+	var is instance.IInstance = instance.MakeInstance(rm, em.Send)
 
 	go func() {
 		is.GetEventManager().RegisterListeningChannel(eventlink, []string{

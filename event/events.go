@@ -71,3 +71,12 @@ type RunAiEvent struct {
 func (rae RunAiEvent) GetType() string {
 	return "runAi"
 }
+
+type NetworkEvent struct {
+	Type  string `json:"eventType"`
+	Event string `json:"event"`
+}
+
+func (ne NetworkEvent) GetType() string {
+	return "network"
+}

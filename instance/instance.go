@@ -2,9 +2,6 @@
 package instance
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/stnma7e/betuol/component/ai"
 	"github.com/stnma7e/betuol/component/character"
 	"github.com/stnma7e/betuol/component/gofactory"
@@ -37,8 +34,10 @@ type Instance struct {
 }
 
 // MakeInstance returns a pointer to an Instance.
+// parentEventDelegate is a function that certain events will get passed along to.
+// This will be used to help string together multiple instances to work together.
 // A series of managers for various systems are created inside the function and a fully initialized Instance is returned.
-func MakeInstance(rm *res.ResourceManager) *Instance {
+func MakeInstance(rm *res.ResourceManager, parentEventDelegate event.EventListener) *Instance {
 	em := event.MakeEventManager()
 	tm := scenemanager.MakeTransformManager(em)
 	gof := gofactory.MakeGameObjectFactory(tm)
@@ -69,15 +68,15 @@ func MakeInstance(rm *res.ResourceManager) *Instance {
 	is.am.RegisterComputer("enemy", ai.EnemyAi)
 	is.am.RegisterComputer("wander", ai.WanderAi)
 
-	is.em.RegisterListener(is.cm.HandleAttack, "attack")
-	is.em.RegisterListener(is.gof.HandleDeath, "death")
-	is.em.RegisterListener(is.qm.HandleEvent, "attack")
-	is.em.RegisterListener(is.qm.HandleEvent, "characterMoved")
-	is.em.RegisterListener(is.qm.HandleEvent, "kill")
-	is.em.RegisterListener(is.qm.QuestComplete, "questComplete")
-	is.em.RegisterListener(is.cm.HandleChat, "chat")
+	is.em.RegisterListeningFunction(is.cm.HandleAttack, "attack")
+	is.em.RegisterListeningFunction(is.gof.HandleDeath, "death")
+	is.em.RegisterListeningFunction(is.qm.HandleEvent, "attack", "kill", "characterMoved", "questComplete")
+	is.em.RegisterListeningFunction(is.cm.HandleChat, "chat")
 
-	rand.Seed(time.Now().UnixNano())
+	//is.em.RegisterListeningFunction(parentEventDelegate,
+	//"attack", "death",
+	//"characterMoved", "kill",
+	//"chat", "questComplete")
 
 	return is
 }

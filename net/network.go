@@ -3,23 +3,21 @@ package net
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/event"
 )
 
-type NetworkEvent struct {
-	Type  string `json:"eventType"`
-	Event string `json:"event"`
-}
-
 type NetworkManager struct {
+	em *event.EventManager
+
 	listener *net.TCPListener
 	conns    *common.Vector
 }
 
-func MakeNetworkManager(hostToListenTo string, eventlink chan event.Event) *NetworkManager {
+func MakeNetworkManager(em *event.EventManager, hostToListenTo string, eventlink chan event.Event) *NetworkManager {
 	hostAddr, err := net.ResolveTCPAddr("tcp", hostToListenTo)
 	if err != nil {
 		common.LogErr.Fatal(err)
@@ -31,6 +29,7 @@ func MakeNetworkManager(hostToListenTo string, eventlink chan event.Event) *Netw
 	}
 
 	nm := NetworkManager{
+		em,
 		listener,
 		common.MakeVector(),
 	}
@@ -62,6 +61,7 @@ func (nm *NetworkManager) Tick() {
 func (nm *NetworkManager) TCPTick(conn *net.TCPConn, eventlink chan event.Event) {
 	go func() {
 		for evt := range eventlink {
+			common.LogInfo.Println("got a new event")
 			SendEvent(evt, conn)
 		}
 	}()
@@ -73,35 +73,37 @@ func (nm *NetworkManager) TCPTick(conn *net.TCPConn, eventlink chan event.Event)
 	}()
 
 	for {
-		data := []byte{}
+		data := make([]byte, 256)
 		num, err := conn.Read(data)
 		if err != nil {
-			//common.LogErr.Println(err)
+			if err != io.EOF {
+				common.LogErr.Println(err)
+			}
 			continue
 		}
 		if num == 0 {
 			continue
 		}
 
-		nm.Dispatch(conn, data)
+		nm.Dispatch(conn, data[:num])
 	}
 
 }
 
-func (nm *NetworkManager) Dispatch(addr net.Conn, data []byte) {
-	var obj struct {
-		Type  string
-		Event event.Event
-	}
-	err := json.Unmarshal(data, &obj)
+func (nm *NetworkManager) Dispatch(conn net.Conn, data []byte) {
+	evt := event.NetworkEvent{}
+	err := json.Unmarshal(data, &evt)
 	if err != nil {
 		common.LogErr.Println(err)
+		common.LogErr.Println(string(data)+"\n", data)
+		return
 	}
-	common.LogInfo.Println(obj)
+	common.LogInfo.Println("received network event: ", evt)
+	nm.em.Send(evt)
 }
 
 func SendEvent(evt event.Event, conn net.Conn) {
-	json, err := json.Marshal(NetworkEvent{
+	json, err := json.Marshal(event.NetworkEvent{
 		Type:  evt.GetType(),
 		Event: fmt.Sprint(evt),
 	})

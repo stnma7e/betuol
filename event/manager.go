@@ -97,7 +97,7 @@ func (em *EventManager) Tick(delta float64) {
 }
 
 // RegisterListener registers a listening function to be called every time an event of type eventType is processed.
-func (em *EventManager) RegisterListener(listener EventListener, eventType ...string) {
+func (em *EventManager) RegisterListeningFunction(listener EventListener, eventType ...string) {
 	for i := range eventType {
 		_, ok := em.listenerMap[eventType[i]]
 		if !ok {
