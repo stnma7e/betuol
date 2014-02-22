@@ -73,10 +73,10 @@ func MakeInstance(rm *res.ResourceManager, parentEventDelegate event.EventListen
 	is.em.RegisterListeningFunction(is.qm.HandleEvent, "attack", "kill", "characterMoved", "questComplete")
 	is.em.RegisterListeningFunction(is.cm.HandleChat, "chat")
 
-	//is.em.RegisterListeningFunction(parentEventDelegate,
-	//"attack", "death",
-	//"characterMoved", "kill",
-	//"chat", "questComplete")
+	is.em.RegisterListeningFunction(parentEventDelegate,
+		"attack", "death",
+		"characterMoved", "kill",
+		"chat", "questComplete")
 
 	return is
 }
@@ -86,14 +86,6 @@ func MakeInstance(rm *res.ResourceManager, parentEventDelegate event.EventListen
 // When the loop breaks, a bool will be sent along the returnlink that the instance was created with.
 // The returnlink is expected to be periodically checked for activity because this indicates an exit of the main loop of the instance.
 func (is *Instance) Tick(secs float64) {
-	// fmt.Println(newTime)
-
-	//_, err := is.nm.RecieveBytes(100, 5)
-	//if err != nil {
-	//common.LogWarn.Print(err)
-	//}
-	//fmt.Println(data)
-
 	if is.numTicks > 60 {
 		is.am.Tick(secs)
 		is.numTicks = 0

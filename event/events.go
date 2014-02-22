@@ -1,6 +1,8 @@
 package event
 
 import (
+	"net"
+
 	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/math"
 )
@@ -73,10 +75,28 @@ func (rae RunAiEvent) GetType() string {
 }
 
 type NetworkEvent struct {
-	Type  string `json:"eventType"`
-	Event string `json:"event"`
+	Type  string
+	Event map[string]interface{}
 }
 
 func (ne NetworkEvent) GetType() string {
 	return "network"
+}
+
+type RequestCharacterCreationEvent struct {
+	Type          string
+	Location      math.Vec3
+	RequestOrigin net.Conn
+}
+
+func (rcce RequestCharacterCreationEvent) GetType() string {
+	return "requestCharacterCreation"
+}
+
+type ApproveCharacterCreationRequestEvent struct {
+	ID component.GOiD
+}
+
+func (apccre *ApproveCharacterCreationRequestEvent) GetType() string {
+	return "approveCharacterCreationRequest"
 }

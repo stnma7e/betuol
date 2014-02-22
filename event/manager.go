@@ -47,6 +47,10 @@ func (em *EventManager) Sort() {
 	// need to implement some sorting scheme to order events by the time that they were created
 	for {
 		evtMsg := <-em.eventlink
+		if evtMsg.evt == nil {
+			continue
+		}
+
 		if em.changeQueue {
 			em.eventList[0].Insert(evtMsg.evt)
 		} else {
@@ -68,8 +72,12 @@ func (em *EventManager) Tick(delta float64) {
 		events = em.eventList[1].Array()
 		em.eventList[1].Empty()
 	}
+
 	for i := range events {
 		evt := events[i].(Event)
+		if evt.GetType() == "requestCharacterCreationEvent" {
+			common.LogInfo.Println("here")
+		}
 		listeners, ok := em.listenerMap[evt.GetType()]
 		if !ok {
 			//common.LogWarn.Printf("no listener registered for %s", evt.GetType())

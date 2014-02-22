@@ -105,7 +105,7 @@ func (gof *GameObjectFactory) Create(compList component.GameObject, location mat
 	for k, v := range compList {
 		mang, ok := gof.EventManagers[k]
 		if !ok {
-			common.LogWarn.Print("unregistered component type (%s) in compList", k)
+			return component.NULLINDEX, fmt.Errorf("unregistered component type (%s) in compList", k)
 		}
 
 		err := mang.create(id, v)

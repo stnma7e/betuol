@@ -28,14 +28,30 @@ func main() {
 	nm := net.MakeNetworkManager(em, "localhost:13560", eventlink)
 	var is instance.IInstance = instance.MakeInstance(rm, em.Send)
 
+	em.RegisterListeningFunction(func(evt event.Event) {
+		rcce, ok := evt.(*event.RequestCharacterCreationEvent)
+		if !ok {
+			common.LogErr.Println("here2")
+			return
+		}
+
+		char, err := is.CreateObject(rcce.Type, rcce.Location)
+		if err != nil {
+			common.LogErr.Println(err)
+		}
+
+		net.SendEvent(&event.ApproveCharacterCreationRequestEvent{
+			char,
+		}, rcce.RequestOrigin)
+	}, "requestCharacterCreation")
+
 	go func() {
-		is.GetEventManager().RegisterListeningChannel(eventlink, []string{
+		em.RegisterListeningChannel(eventlink, []string{
 			"attack",
 			"death",
+			"characterMoved",
 		}...)
-		for {
-			nm.Tick()
-		}
+		nm.Tick()
 	}()
 
 	player, err := is.CreateObject("player", math.Vec3{0, 0, 0})
@@ -76,7 +92,9 @@ func main() {
 			break
 		}
 
-		is.Tick(newTime.Seconds())
+		dtime := newTime.Seconds()
+		em.Tick(dtime)
+		is.Tick(dtime)
 	}
 }
 
@@ -96,7 +114,6 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink c
 		}
 		args[i] = args[i][:len(args[i])-1]
 	}
-	fmt.Println(args)
 
 	switch args[0] {
 	case "quit":
