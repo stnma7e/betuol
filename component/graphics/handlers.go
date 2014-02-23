@@ -32,8 +32,8 @@ func (gm *GraphicsManager) TextHandlerFunc(compslink chan *common.Vector, modell
 			// resizelink has special meaning for the text renderer. when a value comes in here, it means to redisplay the entire scene. do not do a diff of the scene.
 		case <-resizelink:
 			tr.Render(comps, gm.sm)
-		default:
-			tr.RenderDiff(comps, gm.sm)
 		}
+
+		tr.RenderDiff(comps, gm.sm)
 	}
 }

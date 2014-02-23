@@ -67,11 +67,7 @@ func main() {
 	}
 
 	commandlink := make(chan string)
-	go func() {
-		for {
-			commandLineReader(is, player, commandlink)
-		}
-	}()
+	go commandLineReader(is, player, commandlink)
 
 	oldTime := time.Now()
 	ticks := time.NewTicker(time.Second / 60)
@@ -139,18 +135,11 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink c
 		arg, err := strconv.Atoi(args[1])
 		if err != nil {
 			common.LogErr.Println(err)
+			break
 		}
-		go func() {
-			is.RunAi(component.GOiD(arg))
-			commandlink <- ""
-		}()
-		return false
+		is.RunAi(component.GOiD(arg))
 	case "player":
-		go func() {
-			is.RunAi(player)
-			commandlink <- ""
-		}()
-		return false
+		is.RunAi(player)
 	case "render":
 		if !(len(args) >= 2) {
 			common.LogErr.Print("not enough arguments to 'render'")
@@ -159,6 +148,7 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink c
 		arg, err := strconv.Atoi(args[1])
 		if err != nil {
 			common.LogErr.Println(err)
+			break
 		}
 		is.RenderFromPerspective(component.GOiD(arg))
 	default:
@@ -170,22 +160,25 @@ func parseSysConsole(is instance.IInstance, player component.GOiD, commandlink c
 }
 
 func commandLineReader(is instance.IInstance, player component.GOiD, commandlink chan string) {
-	r := bufio.NewReaderSize(os.Stdin, 4*1024)
-	line, err := r.ReadString('\n')
-	if err != nil {
-		common.LogErr.Println(err)
-	}
-	s := string(line)
-	if len(s) > 0 && s[len(s)-1] == '\n' {
-		s = line[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '\r' {
-		s = line[:len(s)-1]
-	}
-	if s != "" {
-		commandlink <- s
-		s = ""
-		<-commandlink
+	for {
+		r := bufio.NewReaderSize(os.Stdin, 4*1024)
+		line, err := r.ReadString('\n')
+		if err != nil {
+			common.LogErr.Println(err)
+			continue
+		}
+		s := string(line)
+		if len(s) > 0 && s[len(s)-1] == '\n' {
+			s = line[:len(s)-1]
+		}
+		if len(s) > 0 && s[len(s)-1] == '\r' {
+			s = line[:len(s)-1]
+		}
+		if s != "" {
+			commandlink <- s
+			s = ""
+			<-commandlink
+		}
 	}
 }
 

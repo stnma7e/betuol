@@ -97,7 +97,7 @@ func (em *EventManager) Tick(delta float64) {
 				select {
 				case channelsArray[j].(chan Event) <- evt:
 				default:
-					common.LogWarn.Printf("channel %d missed %v event %v", j, evt.GetType(), evt)
+					//common.LogWarn.Printf("channel %d missed %v event %v", j, evt.GetType(), evt)
 				}
 			}
 		}
