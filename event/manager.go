@@ -75,6 +75,7 @@ func (em *EventManager) Tick(delta float64) {
 
 	for i := range events {
 		evt := events[i].(Event)
+		common.LogInfo.Printf("new %s event: %v\n", evt.GetType(), evt)
 		if evt.GetType() == "requestCharacterCreationEvent" {
 			common.LogInfo.Println("here")
 		}

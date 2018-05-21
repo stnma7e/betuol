@@ -72,7 +72,12 @@ func (pm *PhysicsManager) Tick(delta float64) {
 				trans[3] += smallestDistanceToRemoveIntersection[0]
 				trans[7] += smallestDistanceToRemoveIntersection[1]
 				trans[11] += smallestDistanceToRemoveIntersection[2]
-				pm.sm.SetTransform(component.GOiD(i), trans)
+
+				transVec := math.Vec3{trans[3], trans[7], trans[11]}
+				if dist := math.DistSqrd3v3v(loc1, transVec); dist > 1 {
+					common.LogInfo.Println("physics movement", dist)
+					pm.sm.SetTransform(component.GOiD(i), trans)
+				}
 			}
 		}
 	}

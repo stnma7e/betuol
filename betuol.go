@@ -9,6 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"flag"
+	"runtime/pprof"
+
 	"github.com/stnma7e/betuol/common"
 	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/event"
@@ -18,7 +21,18 @@ import (
 	"github.com/stnma7e/betuol/res"
 )
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			common.LogErr.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 	//rand.Seed(time.Now().UnixNano())
 
 	em := event.MakeEventManager()
@@ -44,6 +58,16 @@ func main() {
 			char,
 		}, rcce.RequestOrigin)
 	}, "requestCharacterCreation")
+
+	em.RegisterListeningFunction(func(evt event.Event) {
+		cme, ok := evt.(*event.CharacterMoveEvent)
+		if !ok {
+			common.LogErr.Println("here3")
+			return
+		}
+
+		is.MoveGameObject(cme.CharID, cme.NewLocation)
+	}, "characterMoved")
 
 	go func() {
 		em.RegisterListeningChannel(eventlink, []string{

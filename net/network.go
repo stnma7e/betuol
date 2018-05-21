@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/stnma7e/betuol/common"
+	"github.com/stnma7e/betuol/component"
 	"github.com/stnma7e/betuol/event"
 	"github.com/stnma7e/betuol/math"
 )
@@ -38,6 +39,10 @@ func MakeNetworkManager(em *event.EventManager, hostToListenTo string, eventlink
 		for evt := range eventlink {
 			allConnChans := nm.conns.Array()
 			for i := range allConnChans {
+				if allConnChans[i] == nil {
+					continue
+				}
+
 				allConnChans[i].(chan event.Event) <- evt
 			}
 		}
@@ -55,23 +60,24 @@ func (nm *NetworkManager) Tick() {
 		}
 
 		eventlink := make(chan event.Event)
-		nm.conns.Insert(eventlink)
-		go nm.TCPTick(conn, eventlink)
+		index := nm.conns.Insert(eventlink)
+		go nm.TCPTick(conn, eventlink, index)
 	}
 }
 
-func (nm *NetworkManager) TCPTick(conn *net.TCPConn, eventlink chan event.Event) {
+func (nm *NetworkManager) TCPTick(conn *net.TCPConn, eventlink chan event.Event, indexOfEventlink int) {
 	go func() {
 		for evt := range eventlink {
 			common.LogInfo.Println("got a new event to send over network")
-			SendEvent(evt, conn)
+			n, _ := SendEvent(evt, conn)
+			if n == 0 {
+				common.LogErr.Println("no data sent; removing connection from manager")
+				nm.conns.Erase(indexOfEventlink)
+				//common.LogErr.Println("attempted payload of"+
+				//"\n\tevent:", evt,
+				//"\n\tdata: ", json)
+			}
 		}
-	}()
-
-	defer func() {
-		conn.Close()
-		conn = nil
-		eventlink = nil
 	}()
 
 	for {
@@ -90,6 +96,7 @@ func (nm *NetworkManager) TCPTick(conn *net.TCPConn, eventlink chan event.Event)
 		nm.Dispatch(conn, data[:num])
 	}
 
+	conn.Close()
 }
 
 func (nm *NetworkManager) Dispatch(conn net.Conn, data []byte) {
@@ -120,17 +127,27 @@ func ConvertJSONToEvent(eventType string, eventData map[string]interface{}, conn
 			Location:      loc,
 			RequestOrigin: conn,
 		}
+	case "characterMoved":
+		loc := math.Vec3{}
+		interfaceLoc := eventData["NewLocation"].([]interface{})
+		for i := range loc {
+			loc[i] = float32(interfaceLoc[i].(float64))
+		}
+		return &event.CharacterMoveEvent{
+			CharID:      component.GOiD(eventData["CharID"].(float64)),
+			NewLocation: loc,
+		}
 	}
 
 	common.LogWarn.Println("no eventType")
 	return nil
 }
 
-func SendEvent(evt event.Event, conn net.Conn) {
+func SendEvent(evt event.Event, conn net.Conn) (bytesSent int, dataSent []byte) {
 	evtJSONbs, err := json.Marshal(evt)
 	if err != nil {
 		common.LogErr.Print(err)
-		return
+		return 0, []byte{}
 	}
 
 	evtJSONis := make([]int, len(evtJSONbs))
@@ -149,20 +166,15 @@ func SendEvent(evt event.Event, conn net.Conn) {
 	json, err := json.Marshal(obj)
 	if err != nil {
 		common.LogErr.Println(err)
+		return 0, json
 	}
 
 	n, err := conn.Write(json)
 	if err != nil {
 		common.LogErr.Println(err)
-		if n == 0 {
-			common.LogErr.Println("no data sent; attempted payload of", json)
-		}
-		return
-	}
-	if n == 0 {
-		common.LogErr.Println("no data sent; attempted payload of", json)
-		return
+		return n, json
 	}
 
 	common.LogInfo.Printf("sent %s event: %v", evt.GetType(), evt)
+	return n, json
 }

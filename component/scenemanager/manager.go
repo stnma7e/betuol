@@ -87,8 +87,13 @@ func (tm *TransformManager) DeleteComponent(index component.GOiD) {
 	tm.matList[index] = math.Mat4x4{}
 }
 
+var i = 0
+
 // SetTransform is used to set the location of a transform component using a new matrix.
 func (tm *TransformManager) SetTransform(index component.GOiD, newLocalMat math.Mat4x4) {
+	if i++; i == 10 {
+		//panic("")
+	}
 	tm.matList[index] = newLocalMat
 	newLocation := math.Vec3{newLocalMat[3], newLocalMat[7], newLocalMat[11]}
 	tm.em.Send(event.CharacterMoveEvent{index, newLocation})
